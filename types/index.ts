@@ -7,3 +7,5 @@ export * from "./imageCropModal";
 export type { ProfileUploadProps } from "./profileUpload";
 export * from "./accountType";
 export * from "./registerForm";
+export * from "./otp";
+export * from "./common";

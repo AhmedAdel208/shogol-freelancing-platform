@@ -4,3 +4,8 @@ export interface ProfileUploadProps {
   defaultImage?: string;
   maxSizeMB?: number;
 }
+export interface UseProfileUploadProps {
+  onImageSelect?: (file: File) => void;
+  onImageRemove?: () => void;
+  maxSizeMB?: number;
+}

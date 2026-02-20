@@ -1,6 +1,4 @@
-"use client";
 
-import React from "react";
 import type { SelectInputProps } from "@/types/form";
 
 export default function SelectInput({

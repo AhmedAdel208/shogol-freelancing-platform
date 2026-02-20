@@ -1,77 +1,59 @@
-import { RegisterFormData, ApiResponse, RegisterResponse } from "@/types/auth";
+import { apiClient } from "./apiClient";
+import {
+  RegisterFormData,
+  RegisterResponse,
+  VerifyOtpData,
+  VerifyOtpResponse,
+} from "@/types/auth";
 
 class AuthService {
-  private baseUrl = "https://shogol.runasp.net/api/Auth";
-
   async register(
     userData: RegisterFormData,
     profilePicture?: File,
-  ): Promise<ApiResponse<RegisterResponse>> {
-    try {
-      // Create FormData for multipart/form-data
+  ): Promise<RegisterResponse> {
       const formData = new FormData();
-
-      // Map our form data to API field names
       formData.append("FirstName", userData.firstName);
       formData.append("LastName", userData.lastName);
       formData.append("Email", userData.email);
       formData.append("PhoneNumber", userData.phone);
       formData.append("Password", userData.password);
-      formData.append("Nationality", userData.nationality);
+      formData.append("Nationality", userData.nationality || "");
       formData.append("Gender", userData.gender || "");
       formData.append("AccountType", userData.accountType);
-      formData.append("UserType", userData.accountType); // API might expect both
-      formData.append("CompanyName", ""); // Empty for individual accounts
+      formData.append("UserType", userData.accountType);
+      formData.append("CompanyName", "");
 
-      // Add profile picture if provided
       if (profilePicture) {
         formData.append("ProfilePicture", profilePicture);
       } else {
-        formData.append("ProfilePicture", new Blob(), "empty.jpg"); // Empty file
+        formData.append("ProfilePicture", new Blob(), "empty.jpg");
       }
 
-      const response = await fetch(`${this.baseUrl}/register`, {
-        method: "POST",
-        headers: {
-          accept: "*/*",
-        },
-        body: formData,
+      const { data } = await apiClient.post("/Auth/register", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      const data = await response.json();
+      return data;
+  }
 
-      // Debug: log the actual API response
-      console.log("API Response Status:", response.status);
-      console.log("API Response Data:", data);
-
-      // Check if registration was successful
-      const isSuccess =
-        response.ok ||
-        data.succeeded ||
-        data.isSuccess ||
-        (typeof data.message === "string" &&
-          (data.message.includes("نجاح") || data.message.includes("success")));
-
-      if (isSuccess) {
-        return {
-          success: true,
-          message: data.message || "تم التسجيل بنجاح",
-          data: data,
-        };
+  async verifyOtp(
+    otpData: VerifyOtpData,
+  ): Promise<VerifyOtpResponse> {
+      const { data } = await apiClient.post("/Auth/verify-otp", otpData);
+      
+      // Standarizing error check based on common backends
+      if (data.isSuccess === false || data.succeeded === false) {
+          throw new Error(data.message || "فشل التحقق");
       }
 
-      // Handle API errors
-      return {
-        success: false,
-        message: data.message || data.title || "فشل التسجيل",
-        errors: data.errors || {},
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: "حدث خطأ في الاتصال بالخادم",
-      };
-    }
+      return data;
+  }
+
+  async resendOtp(
+    payload: { phoneNumber?: string; email?: string },
+  ): Promise<{ message: string }> {
+      const { data } = await apiClient.post("/Auth/resend-otp", payload);
+      return data;
   }
 }
 

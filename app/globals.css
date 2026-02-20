@@ -80,10 +80,11 @@
   html {
     scroll-behavior: smooth;
     direction: rtl;
+    scrollbar-gutter: stable;
   }
 
   body {
-    @apply bg-bg mx-auto text-gray-dark antialiased;
+    @apply bg-bg text-gray-dark antialiased;
     font-family: var(--font-cairo), var(--font-el-missiri), sans-serif;
     font-size: 16px;
     max-width: 1920px;
@@ -218,6 +219,31 @@
 
 .delay-200 {
   animation-delay: 200ms;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1eaaad;
+  border-radius: 20px;
+  border: 2px solid #f8fafc;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1a9295;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1eaaad transparent;
 }
 
 /* Zoom Slider Styles */

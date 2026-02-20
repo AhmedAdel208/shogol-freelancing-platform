@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useEffect, useState, useMemo } from "react";
+import { useRef, useEffect } from "react";
 import { CheckCircle, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useSuccessRedirect } from "@/hooks/useSuccessRedirect";
 import { SucessRegisterProps } from "@/types/auth";
 
 export default function SucessRegister({
@@ -14,47 +15,21 @@ export default function SucessRegister({
 }: SucessRegisterProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
-  const [countdown, setCountdown] = useState(5);
 
-  // Memoize the image URL to avoid recreating object URLs unnecessarily
-  const imageUrl = useMemo(() => {
-    if (!userImage) return null;
-    return URL.createObjectURL(userImage);
-  }, [userImage]);
+  const redirectUrl = (() => {
+    const params = new URLSearchParams();
+    if (userData?.email) params.set("email", userData.email);
+    if (userData?.phone) params.set("phone", userData.phone);
+    const queryString = params.toString();
+    return `/verify${queryString ? `?${queryString}` : ""}`;
+  })();
 
-  // Cleanup object URL when component unmounts or imageUrl changes
-  useEffect(() => {
-    return () => {
-      if (imageUrl) {
-        URL.revokeObjectURL(imageUrl);
-      }
-    };
-  }, [imageUrl]);
-
-  // Auto-close modal after 5 seconds
-  useEffect(() => {
-    if (isOpen) {
-      const timer = setTimeout(() => {
-        router.push("/signup");
-      }, 5000);
-
-      const countdownTimer = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(countdownTimer);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => {
-        clearTimeout(timer);
-        clearInterval(countdownTimer);
-        setCountdown(5);
-      };
-    }
-  }, [isOpen, router]);
+  const { countdown, imageUrl } = useSuccessRedirect({
+    isOpen,
+    onClose,
+    redirectUrl,
+    userImage,
+  });
 
   // Sync the dialog open/close state with the isOpen prop
   useEffect(() => {
@@ -82,7 +57,7 @@ export default function SucessRegister({
 
   const handleGoToVerify = () => {
     onClose();
-    router.push("/verify");
+    router.push(redirectUrl);
   };
 
   return (
@@ -92,53 +67,55 @@ export default function SucessRegister({
       onClick={handleBackdropClick}
       className="
         backdrop:bg-black/50 backdrop:backdrop-blur-sm
-        bg-transparent p-0 m-auto
-        open:animate-[dialogFadeIn_0.3s_ease-out]
+        bg-transparent p-0 m-auto overflow-hidden
+        open:animate-in open:fade-in open:zoom-in-95 duration-300
       "
     >
-      <div className="bg-white rounded-2xl overflow-hidden w-full max-w-md p-8 text-center relative shadow-2xl animate-fadeIn">
+      <div className="bg-white rounded-3xl w-[90vw] max-w-md p-10 text-center relative shadow-2xl">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 left-4 w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+          className="absolute top-5 left-5 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5 text-gray-400" />
         </button>
 
         {/* Success Icon */}
-        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+        <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border-4 border-white shadow-inner">
           {imageUrl ? (
             <Image
               src={imageUrl}
               alt="Profile"
-              width={80}
-              height={80}
+              width={96}
+              height={96}
               className="w-full h-full object-cover"
             />
           ) : (
-            <CheckCircle className="w-10 h-10 text-primary" />
+            <CheckCircle className="w-12 h-12 text-primary" />
           )}
         </div>
 
         {/* Title */}
-        <h3 className="text-2xl font-bold text-dark mb-3">
-          {userData?.accountType}
+        <h3 className="text-2xl font-bold text-dark mb-4">
+          تم إنشاء الحساب بنجاح!
         </h3>
 
         {/* Message */}
-        <p className="text-dark text-lg leading-relaxed mb-8">
+        <p className="text-gray-600 text-lg leading-relaxed mb-10 px-4">
           {userData?.email
-            ? `تم إرسال رمز التحقق إلى ${userData.email}`
-            : "تم إرسال رمز التحقق إلى بريدك الإلكتروني"}
+            ? `تم إرسال رمز التحقق إلى بريدك الإلكتروني`
+            : "تم إرسال رمز التحقق لتأكيد حسابك"}
+          <br />
+          <span className="text-primary font-bold mt-2 block">{userData?.email}</span>
         </p>
 
         {/* Actions */}
         <div className="flex flex-col gap-3">
           <button
             onClick={handleGoToVerify}
-            className="w-full py-3.5 cursor-pointer bg-primary text-white rounded-xl text-lg font-semibold hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="w-full py-4 cursor-pointer bg-primary text-white rounded-2xl text-lg font-bold hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg hover:shadow-primary/25"
           >
-            التالي ({countdown}s)
+            التحقق من الرمز ({countdown}s)
           </button>
         </div>
       </div>

@@ -13,6 +13,7 @@ export default function Button({
   const variantClasses = {
     primary: "bg-primary text-white hover:bg-primary/90",
     secondary: "bg-gray-200 text-dark hover:bg-gray-300",
+    outline: "bg-transparent border-2 border-primary text-primary hover:bg-primary/5",
   };
 
   return (

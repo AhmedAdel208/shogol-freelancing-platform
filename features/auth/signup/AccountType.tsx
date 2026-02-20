@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-
 import { accountTypes } from "@/data/accountTypes";
 import type { AccountTypeProps } from "@/types/accountType";
 import CheckIcon from "@/public/icons/CheckIcon";
@@ -13,7 +12,6 @@ export default function AccountType({ onSelectType }: AccountTypeProps) {
   const handleSelectType = (typeId: string) => {
     setSelectedType(typeId);
     onSelectType(typeId);
-    console.log(selectedType);
   };
   return (
     <section className="pt-20 lg:py-28 bg-bg grow flex flex-col">

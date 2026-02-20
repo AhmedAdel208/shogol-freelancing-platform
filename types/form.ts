@@ -51,6 +51,6 @@ export interface ButtonProps {
   type?: "button" | "submit";
   onClick?: () => void;
   className?: string;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "outline";
   disabled?: boolean;
 }
