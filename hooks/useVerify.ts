@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { authService } from "@/lib/api/auth";
 import { useTimer } from "@/hooks/useTimer";
 import { useOtpInput } from "@/hooks/useOtpInput";
+import { VerifyOtpData } from "@/types/auth";
 
 export function useVerify() {
   const router = useRouter();
@@ -30,16 +31,18 @@ export function useVerify() {
     mutationFn: async () => {
       if (fullCode.length !== 6) throw new Error("يرجى إدخال الرمز كاملاً");
 
-      const verifyPayload: any = { otpCode: fullCode };
+      const verifyPayload: VerifyOtpData = { otpCode: fullCode };
       if (phoneNumber) verifyPayload.phoneNumber = phoneNumber;
       if (email) verifyPayload.email = email;
 
       return authService.verifyOtp(verifyPayload);
     },
     onSuccess: (response) => {
-      const token = response.token || (response as any)?.data?.token;
+      const token = response.token;
       if (token) {
-        localStorage.setItem("authToken", token);
+        localStorage.setItem("token", token);
+        // Dispatch storage event to trigger auth state update
+        window.dispatchEvent(new Event("storage"));
       }
       router.replace("/onboarding/skills");
     },
@@ -48,7 +51,7 @@ export function useVerify() {
   // Resend OTP Mutation
   const resendMutation = useMutation({
     mutationFn: async () => {
-      const resendPayload: any = {};
+      const resendPayload: VerifyOtpData = {} as VerifyOtpData;
       if (phoneNumber) resendPayload.phoneNumber = phoneNumber;
       if (email) resendPayload.email = email;
 
@@ -58,9 +61,11 @@ export function useVerify() {
       resetTimer(30);
       clearCode();
     },
-    onError: (error: any) => {
-      alert(error.message || "فشل إعادة إرسال الرمز");
-    }
+    onError: (error: unknown) => {
+      const errorMessage =
+        error instanceof Error ? error.message : "فشل التحقق من الرمز";
+      alert(errorMessage);
+    },
   });
 
   const handleVerify = () => {
@@ -79,7 +84,7 @@ export function useVerify() {
     code,
     timer,
     fullCode,
-    error: (verifyMutation.error as any)?.message || "",
+    error: (verifyMutation.error as Error)?.message || "",
     isLoading: verifyMutation.isPending || resendMutation.isPending,
     isPending: verifyMutation.isPending,
     isResending: resendMutation.isPending,

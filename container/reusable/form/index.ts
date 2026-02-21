@@ -5,3 +5,5 @@ export { default as SelectInput } from './SelectInput';
 export { default as Checkbox } from './Checkbox';
 export { default as Button } from './Button';
 export { default as ProfileUpload } from './ProfileUpload';
+export { default as OtpInput } from './OtpInput';
+export { default as ImageCropModal } from './ImageCropModal';

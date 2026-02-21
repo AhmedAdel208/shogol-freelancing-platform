@@ -56,3 +56,29 @@ export interface VerifyActionState {
   error: string;
   success?: boolean;
 }
+
+export type LoginFormData = {
+  EmailOrPhone: string;
+  password: string;
+};
+
+export type ForgotPasswordFormData = {
+  email: string;
+};
+
+export type ResetPasswordFormData = {
+  code: string;
+  password: string;
+  confirmPassword: string;
+};
+
+export interface ResetPasswordData {
+  email: string;
+  resetToken: string;
+  newPassword: string;
+}
+
+export interface ResetPasswordResponse {
+  success: boolean;
+  message?: string;
+}
