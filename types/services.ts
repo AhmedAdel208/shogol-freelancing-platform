@@ -9,4 +9,7 @@ export interface Service {
   description: string;
   price: string;
   duration: string;
+  AnnouncementsImage: string;
+  personImage: string;
+  location?: string;
 }

@@ -11,6 +11,9 @@ export const services = [
       "مصمم جرافيك مخرجا أنا أبو عدنان السوري أعمل لدي شركة ميراكو للخدمات الصحية و لدي العديد من الخبرات في هذا المجال",
     price: "250 ريال",
     duration: "قبل 30 دقيقة",
+    AnnouncementsImage: "/images/web-design.png",
+    personImage: "/images/person1.png",
+    location: "الرياض، السعودية",
   },
   {
     id: 2,
@@ -24,6 +27,9 @@ export const services = [
       "مصمم جرافيك مخرجا أنا أبو عدنان السوري أعمل لدي شركة ميراكو للخدمات الصحية و لدي العديد من الخبرات في هذا المجال",
     price: "250 ريال",
     duration: "قبل 30 دقيقة",
+    AnnouncementsImage: "/images/web-design.png",
+    personImage: "/images/person1.png",
+    location: "جدة، السعودية",
   },
   {
     id: 3,
@@ -37,6 +43,9 @@ export const services = [
       "مصمم جرافيك مخرجا أنا أبو عدنان السوري أعمل لدي شركة ميراكو للخدمات الصحية و لدي العديد من الخبرات في هذا المجال",
     price: "250 ريال",
     duration: "قبل 30 دقيقة",
+    AnnouncementsImage: "/images/web-design.png",
+    personImage: "/images/web-design.png",
+    location: "الدمام، السعودية",
   },
   {
     id: 4,
@@ -50,5 +59,8 @@ export const services = [
       "مصمم جرافيك مخرجا أنا أبو عدنان السوري أعمل لدي شركة ميراكو للخدمات الصحية و لدي العديد من الخبرات في هذا المجال",
     price: "250 ريال",
     duration: "قبل 30 دقيقة",
+    AnnouncementsImage: "/images/web-design.png",
+    personImage: "/images/person1.png",
+    location: "الخبر، السعودية",
   },
 ];
