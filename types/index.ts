@@ -9,3 +9,5 @@ export * from "./accountType";
 export * from "./registerForm";
 export * from "./otp";
 export * from "./common";
+export * from "./pages";
+export * from "./announcements";

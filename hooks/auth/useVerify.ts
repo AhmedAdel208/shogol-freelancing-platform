@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "@/lib/api/auth";
 import { useTimer } from "@/hooks/useTimer";
-import { useOtpInput } from "@/hooks/useOtpInput";
+import { useOtpInput } from "@/hooks/auth/useOtpInput";
 import { VerifyOtpData } from "@/types/auth";
 
 export function useVerify() {

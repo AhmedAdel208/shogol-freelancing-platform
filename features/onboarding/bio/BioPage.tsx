@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ChevronLeft, Info, CheckCircle2, Loader2 } from "lucide-react";
-import { useBio } from "@/hooks/useBio";
+import { useBio } from "@/hooks/onboarding/useBio";
 import { BIO_TIPS } from "@/data/bioTips";
 
 export default function BioPage() {
@@ -14,7 +14,7 @@ export default function BioPage() {
     isSubmitting,
     handleFinish,
     remainingChars,
-    progressPercentage
+    progressPercentage,
   } = useBio();
 
   const handleBack = () => {
@@ -22,8 +22,10 @@ export default function BioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-4 font-sans" dir="rtl">
-    
+    <div
+      className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-4 font-sans"
+      dir="rtl"
+    >
       <div className="text-center mb-8 space-y-3 animate-fadeIn">
         <h1 className="text-4xl md:text-5xl font-extrabold text-primary tracking-wide">
           أخبرنا عنك أكثر
@@ -35,13 +37,14 @@ export default function BioPage() {
 
       {/* Main Card */}
       <div className="w-full max-w-4xl bg-white rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] overflow-hidden mb-8 border border-gray-100 p-8 animate-fadeIn delay-100 fill-mode-both">
-        
         {/* Text Area Container */}
         <div className="mb-6">
-          <div className={`relative rounded-2xl border-2 transition-all duration-300 p-4 min-h-[250px]
+          <div
+            className={`relative rounded-2xl border-2 transition-all duration-300 p-4 min-h-[250px]
             ${bio.length > 0 ? "border-primary shadow-[0_4px_20px_-4px_rgba(30,170,173,0.15)]" : "border-gray-200 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10"}
-          `}>
-             <textarea
+          `}
+          >
+            <textarea
               className="w-full h-full min-h-[220px] resize-none outline-none text-gray-700 text-lg placeholder:text-gray-400 leading-relaxed bg-transparent"
               placeholder="مطور ويب محترف مع خبرة كبيرة في عديد من التقنيات مثل مكتبة رياكت..."
               value={bio}
@@ -57,14 +60,16 @@ export default function BioPage() {
           {/* Counter & Progress */}
           <div className="mt-3 flex flex-col gap-2">
             <div className="flex justify-between items-center text-sm font-medium">
-               <span className={`${remainingChars < 50 ? "text-red-500" : "text-gray-500"}`}>
+              <span
+                className={`${remainingChars < 50 ? "text-red-500" : "text-gray-500"}`}
+              >
                 {remainingChars} حرف متبقي
               </span>
             </div>
-            
+
             {/* Progress Bar */}
             <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden relative">
-              <div 
+              <div
                 className={`h-full bg-primary transition-all duration-700 ease-out rounded-full ${bio.length > 0 ? "shadow-[0_0_8px_rgba(30,170,173,0.5)]" : ""}`}
                 style={{ width: `${progressPercentage}%` }}
               />
@@ -78,11 +83,11 @@ export default function BioPage() {
             <Info size={20} />
             <h3 className="font-bold text-lg">نصائح لكتابة نبذة مميزة:</h3>
           </div>
-          
+
           <ul className="space-y-3 pr-2">
             {BIO_TIPS.map((tip, idx) => (
-              <li 
-                key={idx} 
+              <li
+                key={idx}
                 className="flex items-center gap-3 text-gray-600 font-medium animate-fadeIn fill-mode-both"
                 style={{ animationDelay: `${300 + idx * 100}ms` }}
               >
@@ -91,14 +96,12 @@ export default function BioPage() {
               </li>
             ))}
           </ul>
-
         </div>
-
       </div>
 
       {/* Footer Actions */}
       <div className="w-full max-w-4xl flex items-center justify-between gap-4 mt-4 animate-fadeIn delay-200 fill-mode-both">
-         <button
+        <button
           onClick={handleBack}
           disabled={isSubmitting}
           className="px-8 py-3 bg-white text-gray-600 rounded-xl font-bold text-lg border-2 border-gray-200
@@ -120,7 +123,6 @@ export default function BioPage() {
           {isSubmitting ? "جاري الحفظ..." : "إنهاء التسجيل"}
         </button>
       </div>
-
     </div>
   );
 }

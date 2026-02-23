@@ -1,5 +1,5 @@
 "use client"
-import { useVerify } from "@/hooks/useVerify";
+import { useVerify } from "@/hooks/auth/useVerify";
 export default function VerifyPage() {
   const {
     phoneNumber,

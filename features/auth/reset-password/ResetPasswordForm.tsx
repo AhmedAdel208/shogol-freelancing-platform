@@ -4,7 +4,7 @@ import shogol from "@/public/images/shogol.png";
 import { PasswordInput, Button, OtpInput } from "@/container/reusable/form";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { useResetPassword } from "@/hooks/useResetPassword";
+import { useResetPassword } from "@/hooks/auth/useResetPassword";
 
 export default function ResetPasswordForm() {
   const searchParams = useSearchParams();

@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { X, ZoomIn, ZoomOut, RotateCw } from "lucide-react";
 import Image from "next/image";
-import { useImageCrop } from "@/hooks/useImageCrop";
+import { useImageCrop } from "@/hooks/auth/useImageCrop";
 import type { ImageCropModalProps } from "@/types/imageCropModal";
 
 export default function ImageCropModal({

@@ -4,7 +4,7 @@ import { useRef, useEffect } from "react";
 import { CheckCircle, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useSuccessRedirect } from "@/hooks/useSuccessRedirect";
+import { useSuccessRedirect } from "@/hooks/auth/useSuccessRedirect";
 import { SucessRegisterProps } from "@/types/auth";
 
 export default function SucessRegister({

@@ -20,7 +20,9 @@ export default function Navlinks() {
         <li key={link.href}>
           <Link
             href={link.href}
-            className={pathname === link.href ? "font-bold" : "font-normal"}
+            className={
+              pathname === link.href ? "font-bold text-primary" : "font-normal"
+            }
           >
             {link.label}
           </Link>

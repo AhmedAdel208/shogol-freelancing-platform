@@ -27,7 +27,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     // Extract backend error message
-    const backendData = error.response?.data;
+    const backendData = error.response?.data as { message?: string, title?: string, errors?: any } | undefined;
 
     // Create a standardized error object
     const standardizedError = {

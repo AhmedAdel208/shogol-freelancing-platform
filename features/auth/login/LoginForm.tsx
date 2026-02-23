@@ -5,7 +5,7 @@ import { FormInput, PasswordInput, Button } from "@/container/reusable/form";
 import Link from "next/link";
 import Image from "next/image";
 
-import { useLogin } from "@/hooks/useLogin";
+import { useLogin } from "@/hooks/auth/useLogin";
 
 export default function LoginForm() {
   const { register, handleSubmit, errors, isSubmitting } = useLogin();
