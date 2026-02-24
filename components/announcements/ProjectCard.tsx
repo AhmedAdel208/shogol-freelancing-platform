@@ -1,11 +1,21 @@
 import Image from "next/image";
 import { Banknote, Clock, User, CalendarDays } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { formatTimeAgo, mapStatus } from "@/utils";
 import { ProjectCardProps } from "@/types/announcements";
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/announcements/${project.id}`);
+  };
+
   return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-300 group flex flex-col ">
+    <div
+      onClick={handleClick}
+      className="bg-white rounded-2xl p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-300 group flex flex-col cursor-pointer border border-transparent hover:border-primary "
+    >
       {/* Card Header */}
       <div className="flex justify-between items-start mb-4 gap-4">
         <h2 className="text-xl sm:text-[22px] font-bold font-el-missiri text-slate-900 group-hover:text-primary transition-colors cursor-pointer leading-tight">

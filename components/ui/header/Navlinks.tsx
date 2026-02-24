@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -21,7 +19,10 @@ export default function Navlinks() {
           <Link
             href={link.href}
             className={
-              pathname === link.href ? "font-bold text-primary" : "font-normal"
+              pathname === link.href ||
+              (link.href !== "/" && pathname.startsWith(link.href))
+                ? "font-bold text-primary"
+                : "font-normal"
             }
           >
             {link.label}

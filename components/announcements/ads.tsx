@@ -10,14 +10,14 @@ import ResultsCounter from "./ResultsCounter";
 
 export default function AdsSection() {
   const { apiParams, filters, updateFilter } = useAnnouncementsFilters();
-
   const { data, isLoading, error } = useJobRequests(apiParams);
+
   const projects = data?.jobRequests || [];
   const totalCount = data?.totalCount || 0;
 
   return (
     <div
-      className="min-h-screen bg-[#F8FAFC] py-12 px-4 sm:px-6 lg:px-8 font-sans"
+      className="min-h-screen bg-[#F8FAFC] py-12 px-4  sm:px-6 lg:px-8 font-sans"
       dir="rtl"
     >
       <div className="max-w-8xl mx-auto space-y-8">
@@ -63,7 +63,7 @@ export default function AdsSection() {
 
         {/* Project Cards List */}
         {!isLoading && !error && projects.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2  gap-6 ">
             {projects.map((project) => (
               <ProjectCard
                 key={project.id}

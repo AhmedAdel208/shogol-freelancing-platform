@@ -11,3 +11,5 @@ export * from "./otp";
 export * from "./common";
 export * from "./pages";
 export * from "./announcements";
+export * from "./projectDetail";
+export * from "./detailComponents";

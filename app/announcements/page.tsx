@@ -9,7 +9,6 @@ export default function AnnouncementsPage() {
       <Gradientline />
       <LinksHeader />
       <AdsSection />
-
       <Footer />
     </div>
   );

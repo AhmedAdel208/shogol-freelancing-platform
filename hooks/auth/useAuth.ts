@@ -17,7 +17,7 @@ const checkTokenValidity = () => {
     const isExpired = decoded.exp && decoded.exp * 1000 < Date.now();
     return !isExpired;
   } catch (error) {
-    // If the token is malformed
+    console.warn("Invalid JWT token:", error);
     return false;
   }
 };
