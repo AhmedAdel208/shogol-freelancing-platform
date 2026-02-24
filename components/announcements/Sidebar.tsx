@@ -63,21 +63,21 @@ export default function Sidebar({
       {/* Mobile Overlay */}
       {!isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 md:hidden z-30"
+          className="fixed inset-0 bg-black/50 lg:hidden z-30"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:relative top-0 right-0 h-screen lg:h-auto w-56 sm:w-60 md:w-64 lg:w-72 bg-white border-l border-border transform transition-transform duration-300 z-40 lg:z-0 overflow-y-auto flex flex-col shrink-0 max-w-[80vw] lg:max-w-none ${
+        className={`fixed lg:relative top-0 right-0 h-screen lg:h-auto w-64 bg-white border-l border-border transform transition-transform duration-300 z-40 lg:z-0 overflow-y-auto flex flex-col ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         dir="rtl"
       >
         {/* Close Button (Mobile) */}
-        <div className="md:hidden flex items-center justify-between p-3 md:p-4 border-b border-border">
-          <h2 className="font-bold text-gray-dark text-sm md:text-base">الفلاتر</h2>
+        <div className="lg:hidden flex items-center justify-between p-4 border-b border-border">
+          <h2 className="font-bold text-gray-dark">الفلاتر</h2>
           <button
             onClick={onClose}
             className="text-gray-medium hover:text-gray-dark"
@@ -87,11 +87,11 @@ export default function Sidebar({
         </div>
 
     <div>
-        <p className="pr-3 md:pr-4 font-bold text-xs md:text-sm">البحث باسم المشتغل </p>
+        <p className="pr-4 font-bold  text-sm">البحث باسم المشتغل </p>
     </div>
 
         {/* Search Input */}
-        <div className="p-3 md:p-4 border-b border-border">
+        <div className="p-4 border-b border-border">
           <div className="relative">
             <Search className="absolute right-3 top-3 text-gray-medium w-5 h-5" />
             <input
@@ -99,7 +99,7 @@ export default function Sidebar({
               placeholder="ابحث..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pr-10 pl-4 py-2 md:py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 text-xs md:text-sm text-right"
+              className="w-full pr-10 pl-4 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm text-right"
               dir="rtl"
             />
           </div>
@@ -113,14 +113,14 @@ export default function Sidebar({
               className="border-b border-border last:border-b-0"
             >
               {/* Category Header - Static */}
-              <div className="w-full flex items-center justify-between p-3 md:p-4">
-                <span className="text-gray-dark font-bold text-xs md:text-sm flex items-center gap-2">
+              <div className="w-full flex items-center justify-between p-4">
+                <span className="text-gray-dark font-bold text-sm flex items-center gap-2">
                   {category.label}
                 </span>
               </div>
 
               {/* Category Items - Always Visible */}
-              <div className="px-3 md:px-4 pb-3 md:pb-4 space-y-2">
+              <div className="px-4 pb-4 space-y-2">
                 {category.items.map((item) => {
                   const isObject =
                     typeof item === "object" &&
@@ -157,7 +157,7 @@ export default function Sidebar({
                             }}
                             className="w-4 h-4 text-primary rounded cursor-pointer"
                           />
-                          <span className="text-xs md:text-sm text-gray-dark font-medium">
+                          <span className="text-sm text-gray-dark font-medium">
                             {itemName}
                           </span>
                         </label>
@@ -180,11 +180,11 @@ export default function Sidebar({
 
                       {/* Sub Items */}
                       {expandedField === itemName && (
-                        <div className="pr-4 md:pr-6 space-y-2">
+                        <div className="pr-6 space-y-2">
                           {item.subitems.map((subitem: string) => (
                             <label
                               key={subitem}
-                              className="flex items-center gap-3 cursor-pointer hover:bg-bg p-2 rounded transition-colors text-xs md:text-sm"
+                              className="flex items-center gap-3 cursor-pointer hover:bg-bg p-2 rounded transition-colors"
                             >
                               <input
                                 type="checkbox"
