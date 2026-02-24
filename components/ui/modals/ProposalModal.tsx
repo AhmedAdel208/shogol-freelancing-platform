@@ -2,41 +2,37 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-const proposalSchema = z.object({
-  description: z.string().min(20, "يجب أن يكون الوصف 20 حرفاً على الأقل"),
-  price: z
-    .number({ invalid_type_error: "أدخل سعراً صحيحاً" })
-    .min(1, "السعر يجب أن يكون أكبر من 0"),
-  duration: z
-    .number({ invalid_type_error: "أدخل مدة صحيحة" })
-    .min(1, "المدة يجب أن تكون أكبر من 0"),
-});
-
-type ProposalFormData = z.infer<typeof proposalSchema>;
+import {
+  proposalSchema,
+  type ProposalFormData,
+} from "@/lib/validation/proposalSchema";
 
 interface ProposalModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: ProposalFormData) => void;
   isSubmitting?: boolean;
+  jobRequestId: number;
 }
 
 export default function ProposalModal({
   isOpen,
   onClose,
   onSubmit,
+  jobRequestId,
   isSubmitting = false,
 }: ProposalModalProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     reset,
   } = useForm<ProposalFormData>({
     resolver: zodResolver(proposalSchema),
-    defaultValues: { price: 0, duration: 0 },
+    defaultValues: {
+      jobRequestId: jobRequestId,
+      description: "",
+    },
   });
 
   const handleClose = () => {
@@ -45,6 +41,7 @@ export default function ProposalModal({
   };
 
   const handleFormSubmit = (data: ProposalFormData) => {
+    console.log("ProposalModal - form submitted with data:", data);
     onSubmit(data);
     reset();
   };
@@ -59,12 +56,12 @@ export default function ProposalModal({
     >
       {/* Modal box */}
       <div
-        className="relative w-full max-w-lg mx-4 bg-white dark:bg-[#1a1f2e] rounded-2xl shadow-2xl p-6 md:p-8"
+        className="relative w-full max-w-lg mx-4 bg-white  rounded-2xl shadow-2xl p-6 md:p-8"
         onClick={(e) => e.stopPropagation()} // prevent close when clicking inside
         dir="rtl"
       >
         {/* Title */}
-        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
+        <h2 className="text-2xl font-bold text-center text-dark  mb-6">
           إرسال عرض
         </h2>
 
@@ -74,17 +71,17 @@ export default function ProposalModal({
         >
           {/* Description */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="text-sm font-medium text-dark ">
               وصف العرض <span className="text-red-500">*</span>
             </label>
             <textarea
               {...register("description")}
               rows={5}
               placeholder="اشرح كيف ستنجز هذا المشروع..."
-              className="w-full resize-none rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-[#252b3b] text-gray-800 dark:text-white p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
+              className="w-full resize-none rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 text-black p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
             />
             {errors.description && (
-              <span className="text-red-500 text-xs">
+              <span className="text-red-500 text-sm">
                 {errors.description.message}
               </span>
             )}
@@ -94,18 +91,19 @@ export default function ProposalModal({
           <div className="flex gap-4">
             {/* Price */}
             <div className="flex flex-col gap-1 flex-1">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="text-sm font-medium text-dark ">
                 السعر المقترح (ريال) <span className="text-red-500">*</span>
               </label>
               <input
-                type="number"
-                {...register("price", { valueAsNumber: true })}
-                defaultValue={0}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-[#252b3b] text-gray-800 dark:text-white p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
+                type="text"
+                inputMode="numeric"
+                {...register("proposedPrice", { valueAsNumber: true })}
+                placeholder="0"
+                className="w-full rounded-lg border border-gray-300 bg-gray-50  text-gray-800  p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
               />
-              {errors.price && (
+              {errors.proposedPrice && (
                 <span className="text-red-500 text-xs">
-                  {errors.price.message}
+                  {errors.proposedPrice.message}
                 </span>
               )}
             </div>
@@ -116,14 +114,15 @@ export default function ProposalModal({
                 المدة المقترحة (يوم) <span className="text-red-500">*</span>
               </label>
               <input
-                type="number"
-                {...register("duration", { valueAsNumber: true })}
-                defaultValue={0}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-[#252b3b] text-gray-800 dark:text-white p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
+                type="text"
+                inputMode="numeric"
+                {...register("proposedDurationInDays", { valueAsNumber: true })}
+                placeholder="0"
+                className="w-full rounded-lg border border-gray-300 bg-gray-50  text-gray-800  p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
               />
-              {errors.duration && (
+              {errors.proposedDurationInDays && (
                 <span className="text-red-500 text-xs">
-                  {errors.duration.message}
+                  {errors.proposedDurationInDays.message}
                 </span>
               )}
             </div>
@@ -133,7 +132,7 @@ export default function ProposalModal({
           <div className="flex gap-3 mt-2">
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isValid}
               className="flex-1 bg-primary text-white py-3 rounded-lg font-bold text-base hover:bg-primary/90 transition-colors disabled:opacity-60"
             >
               {isSubmitting ? "جاري الإرسال..." : "إرسال العرض"}

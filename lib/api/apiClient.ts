@@ -27,7 +27,11 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     // Extract backend error message
-    const backendData = error.response?.data as { message?: string, title?: string, errors?: any } | undefined;
+    const backendData = error.response?.data as
+      | { message?: string; title?: string; errors?: any }
+      | undefined;
+
+    console.log("Raw error response:", error.response?.data);
 
     // Create a standardized error object
     const standardizedError = {
@@ -38,6 +42,7 @@ apiClient.interceptors.response.use(
       isBackendError: !!error.response,
     };
 
+    console.log("Standardized error:", standardizedError);
     return Promise.reject(standardizedError);
   },
 );

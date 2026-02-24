@@ -7,8 +7,8 @@ export default function Navlinks() {
   const links = [
     { label: "الرئيسية", href: "/" },
     { label: "الاعلانات", href: "/announcements" },
-    { label: "الطلبات", href: "/requests" },
     { label: "المشتغلين", href: "/workers" },
+    { label: "الطلبات", href: "/requests" },
     { label: "تواصل معنا", href: "/contact" },
   ];
 

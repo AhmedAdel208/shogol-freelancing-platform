@@ -23,6 +23,7 @@ export interface ProjectSkillsProps {
 // Project Actions Component Props
 export interface ProjectActionsProps {
   projectOwnerId: string;
+  jobRequestId: string;
   onProposalSubmit: () => void;
   onSendMessage: () => void;
   onEditProject: () => void;
