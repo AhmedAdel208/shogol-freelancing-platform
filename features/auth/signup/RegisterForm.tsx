@@ -1,7 +1,7 @@
 import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
 import SucessRegister from "./SucessRegister";
-import { useRegistration } from "@/hooks/useRegistration";
+import { useRegistration } from "@/hooks/auth/useRegistration";
 import type { RegisterFormProps } from "@/types/registerForm";
 
 export default function RegisterForm({

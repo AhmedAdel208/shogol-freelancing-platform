@@ -5,7 +5,7 @@ import { Mail, ArrowRight } from "lucide-react";
 import { FormInput, Button } from "@/container/reusable/form";
 import Link from "next/link";
 import Image from "next/image";
-import { useForgetPassword } from "@/hooks/useForgetPassword";
+import { useForgetPassword } from "@/hooks/auth/useForgetPassword";
 
 export default function ForgotPasswordForm() {
 

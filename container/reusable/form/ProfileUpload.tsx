@@ -1,7 +1,7 @@
 
 import { Camera, X} from "lucide-react";
 import Image from "next/image";
-import { useProfileUpload } from "@/hooks/useProfileUpload";
+import { useProfileUpload } from "@/hooks/auth/useProfileUpload";
 import ImageCropModal from "./ImageCropModal";
 import type { ProfileUploadProps } from "@/types/profileUpload";
 

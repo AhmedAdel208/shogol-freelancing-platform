@@ -80,7 +80,6 @@
   html {
     scroll-behavior: smooth;
     direction: rtl;
-    scrollbar-gutter: stable;
   }
 
   body {
