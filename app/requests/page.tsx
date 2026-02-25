@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
-// const [workers, setWorkers] = useState<any[]>([]);
 export default function PendingPage() {
   const { data, isLoading } = useSWR(
     "https://shogol.runasp.net/api/Offers/my-offers?status=Pending",
     fetcher,
   );
-
+// react query 
   async function fetchData() {
     const resopnse = await fetch(
       "https://shogol.runasp.net/api/Offers/my-offers?status=Pending",

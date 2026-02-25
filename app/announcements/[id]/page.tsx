@@ -1,8 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+
 import Footer from "@/components/landing/footer/Footer";
 import LinksHeader from "@/components/landing/header/LinksHeader";
 import Gradientline from "@/components/ui/header/Gradientline";
@@ -64,8 +63,12 @@ export default function AnnouncementDetailPage() {
 
             {/* Action Buttons */}
             <ProjectActions
+              projectOwnerId={project.clientName}
+              jobRequestId={project.id}
               onProposalSubmit={() => console.log("Submit proposal")}
-              onSaveProject={() => console.log("Save project")}
+              onSendMessage={() => console.log("Send message")}
+              onEditProject={() => console.log("Edit project")}
+              onDeleteProject={() => console.log("Delete project")}
             />
           </div>
         </div>

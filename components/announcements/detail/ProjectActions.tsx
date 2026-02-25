@@ -10,6 +10,7 @@ import ClientActions from "./projectActions/ClientActions";
 
 export default function ProjectActions({
   projectOwnerId,
+  jobRequestId,
   onProposalSubmit,
   onSendMessage,
   onEditProject,
@@ -41,7 +42,12 @@ export default function ProjectActions({
 
   // ✅ Freelancer (مستقل)
   if (isFreelancer) {
-    return <FreelancerActions onSendMessage={onSendMessage} />;
+    return (
+      <FreelancerActions
+        onSendMessage={onSendMessage}
+        jobRequestId={jobRequestId}
+      />
+    );
   }
 
   // ✅ Client (عميل) who does NOT own the project

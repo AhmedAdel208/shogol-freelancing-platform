@@ -1,13 +1,29 @@
 import { useState } from "react";
 import MailIcon from "@/public/icons/MailIcon";
-import ProposalModal from "@/components/ui/modal/ProposalModal";
+import ProposalModal from "@/components/ui/modals/ProposalModal";
+import { useProposal } from "@/hooks/useProposal";
+import { ProposalFormData } from "@/lib/validation/proposalSchema";
 
 interface FreelancerActionsProps {
   onSendMessage: () => void;
+  jobRequestId: number;
 }
 
-export default function FreelancerActions({ onSendMessage }: FreelancerActionsProps) {
+export default function FreelancerActions({
+  onSendMessage,
+  jobRequestId,
+}: FreelancerActionsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const proposalMutation = useProposal();
+
+  const handleProposalSubmit = (data: ProposalFormData) => {
+    proposalMutation.mutate(data, {
+      onSuccess: () => {
+        setIsModalOpen(false);
+        // You could show a success toast here
+      },
+    });
+  };
 
   return (
     <>
@@ -26,14 +42,13 @@ export default function FreelancerActions({ onSendMessage }: FreelancerActionsPr
           إرسال رسالة
         </button>
       </div>
-      
+
       <ProposalModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={(data) => {
-          console.log(data); // send to your API here
-          setIsModalOpen(false);
-        }}
+        onSubmit={handleProposalSubmit}
+        isSubmitting={proposalMutation.isPending}
+        jobRequestId={jobRequestId}
       />
     </>
   );
