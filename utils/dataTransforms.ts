@@ -10,6 +10,7 @@ export const transformJobRequestToProject = (jobRequest: JobRequest): Project =>
   budget: jobRequest.budget.toString(),
   durationInDays: jobRequest.durationInDays,
   proposalsCount: jobRequest.proposalsCount,
+  clientId: jobRequest.clientId?.toString() ?? "",
   clientName: jobRequest.clientName,
   clientAvatar: jobRequest.clientAvatar,
   createdAt: jobRequest.createdAt,

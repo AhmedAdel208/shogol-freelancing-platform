@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -25,6 +26,7 @@ export default function RootLayout({
     <html lang="ar" className={`${cairo.variable} ${elMissiri.variable}`}>
       <body>
         <ReactQueryProvider>{children}</ReactQueryProvider>
+        <Toaster position="top-center" />
       </body>
     </html>
   );

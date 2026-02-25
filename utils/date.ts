@@ -29,7 +29,7 @@ export const formatTimeAgo = (dateStr: string): string => {
  */
 export const mapStatus = (status: string): string => {
   const map: Record<string, string> = {
-    Pending: "مفتوح",
+    Pending: "قيد الانتظار",
     Open: "مفتوح",
     Completed: "مكتمل",
     InProgress: "قيد التنفيذ",

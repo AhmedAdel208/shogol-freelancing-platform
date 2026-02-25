@@ -6,15 +6,15 @@ export default function ProjectSkills({ project }: ProjectSkillsProps) {
   }
 
   return (
-    <div className="mb-8 pb-8 border-b border-border">
-      <h3 className="text-lg font-bold text-gray-dark mb-4">
+    <div className="mb-6">
+      <h3 className="text-lg font-bold text-gray-dark mb-4 text-right">
         المهارات المطلوبة
       </h3>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 justify-end">
         {project.skills.map((skill) => (
           <span
             key={skill.id}
-            className="bg-cyan-50 text-cyan-700 px-3.5 py-1.5 rounded-full text-sm font-bold"
+            className="border border-primary text-primary px-4 py-2 rounded-full text-sm font-bold hover:bg-primary/5 transition-colors cursor-default"
           >
             {skill.nameAr}
           </span>

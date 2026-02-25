@@ -13,6 +13,7 @@ export interface JobRequest {
   status: string;
   createdAt: string;
   deadline: string;
+  clientId: number;
   clientName: string;
   clientAvatar: string;
   skills: Skill[];

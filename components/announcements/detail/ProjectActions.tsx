@@ -6,22 +6,20 @@ import { getCurrentUser } from "@/utils/auth";
 import NotLoggedInActions from "./projectActions/NotLoggedInActions";
 import OwnerActions from "./projectActions/OwnerActions";
 import FreelancerActions from "./projectActions/FreelancerActions";
-import ClientActions from "./projectActions/ClientActions";
+// import ClientActions from "./projectActions/ClientActions";
 
 export default function ProjectActions({
   projectOwnerId,
   jobRequestId,
-  onProposalSubmit,
   onSendMessage,
   onEditProject,
   onDeleteProject,
+  onProposalSuccess, // ✅ was missing here
 }: ProjectActionsProps) {
   const { isAuthenticated, isMounted } = useAuth();
 
-  // Avoid hydration mismatch
   if (!isMounted) return null;
 
-  // ❌ Not logged in
   if (!isAuthenticated) {
     return <NotLoggedInActions />;
   }
@@ -30,7 +28,6 @@ export default function ProjectActions({
   const isOwner = currentUser?.id === projectOwnerId;
   const isFreelancer = currentUser?.isFreelancer;
 
-  // ✅ Owner (عميل who owns this project)
   if (isOwner) {
     return (
       <OwnerActions
@@ -40,16 +37,13 @@ export default function ProjectActions({
     );
   }
 
-  // ✅ Freelancer (مستقل)
   if (isFreelancer) {
     return (
       <FreelancerActions
         onSendMessage={onSendMessage}
         jobRequestId={jobRequestId}
+        onProposalSuccess={onProposalSuccess}
       />
     );
   }
-
-  // ✅ Client (عميل) who does NOT own the project
-  return <ClientActions onSendMessage={onSendMessage} />;
 }

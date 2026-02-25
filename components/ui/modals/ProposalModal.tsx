@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   proposalSchema,
   type ProposalFormData,
+  type ProposalFormInput,
 } from "@/lib/validation/proposalSchema";
 
 interface ProposalModalProps {
@@ -27,10 +28,10 @@ export default function ProposalModal({
     handleSubmit,
     formState: { errors, isValid },
     reset,
-  } = useForm<ProposalFormData>({
-    resolver: zodResolver(proposalSchema),
+  } = useForm<ProposalFormInput>({
+    resolver: zodResolver(proposalSchema) as any,
     defaultValues: {
-      jobRequestId: jobRequestId,
+      jobRequestId: Number(jobRequestId), // ✅ convert to number
       description: "",
     },
   });
@@ -40,9 +41,8 @@ export default function ProposalModal({
     onClose();
   };
 
-  const handleFormSubmit = (data: ProposalFormData) => {
-    console.log("ProposalModal - form submitted with data:", data);
-    onSubmit(data);
+  const handleFormSubmit = (data: unknown) => {
+    onSubmit(data as ProposalFormData);
     reset();
   };
 
@@ -97,7 +97,7 @@ export default function ProposalModal({
               <input
                 type="text"
                 inputMode="numeric"
-                {...register("proposedPrice", { valueAsNumber: true })}
+                {...register("proposedPrice")}
                 placeholder="0"
                 className="w-full rounded-lg border border-gray-300 bg-gray-50  text-gray-800  p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
               />
@@ -116,7 +116,7 @@ export default function ProposalModal({
               <input
                 type="text"
                 inputMode="numeric"
-                {...register("proposedDurationInDays", { valueAsNumber: true })}
+                {...register("proposedDurationInDays")}
                 placeholder="0"
                 className="w-full rounded-lg border border-gray-300 bg-gray-50  text-gray-800  p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
               />

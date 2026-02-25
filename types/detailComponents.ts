@@ -24,7 +24,7 @@ export interface ProjectSkillsProps {
 export interface ProjectActionsProps {
   projectOwnerId: string;
   jobRequestId: string;
-  onProposalSubmit: () => void;
+  onProposalSuccess?: (proposalId: number) => void;
   onSendMessage: () => void;
   onEditProject: () => void;
   onDeleteProject: () => void;

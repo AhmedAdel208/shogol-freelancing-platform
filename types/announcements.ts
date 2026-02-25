@@ -20,7 +20,9 @@ export interface Project {
   status: string;
   budget: string;
   durationInDays: number;
+  deadline?: string;
   proposalsCount: number;
+  clientId: string;
   clientName: string;
   clientAvatar?: string;
   createdAt: string;
