@@ -13,9 +13,11 @@ export default function PasswordInput({
 
   return (
     <div className="text-right">
-      <label className="block text-dark mb-2 text-base">
-        {label} {<span className="text-red-500">*</span>}
-      </label>
+      {label && (
+        <label className="block text-dark mb-2 text-base">
+          {label} {<span className="text-red-500">*</span>}
+        </label>
+      )}
       <div className="relative">
         <input
           type={showPassword ? "text" : "password"}

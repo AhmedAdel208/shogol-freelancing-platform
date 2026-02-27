@@ -11,9 +11,11 @@ export default function SelectInput({
 }: SelectInputProps) {
   return (
     <div className="text-right">
-      <label className="block text-dark font-medium mb-2 text-sm">
-        {label}
-      </label>
+      {label && (
+        <label className="block text-dark font-medium mb-2 text-sm">
+          {label}
+        </label>
+      )}
       <div className="relative">
         <select
           {...registration}

@@ -41,43 +41,38 @@ export const UserButton = () => {
   const isFreelancerRole = currentUser?.isFreelancer;
 
   return (
-    <button className="flex  cursor-pointer items-center gap-3 px-3.5 py-2 rounded-full bg-white border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_4px_6px_-2px_rgba(0,0,0,0.05)] hover:shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] hover:-translate-y-0.5 transition-all duration-300 group active:scale-[0.98]">
-      {/* User Details (RTL optimized) */}
-      <div className="flex flex-col items-end px-1">
-      
-        
-        {/* Role Badge (Modern Solid Pill) */}
-        {isClientRole && (
-          <div className="bg-[#1a3d82] text-[#5cb9ff] px-3 py-2 rounded-full shadow-sm flex items-center justify-center">
-             <span className="text-[11px] font-black font-cairo tracking-wider uppercase leading-[1.2]">عميل</span>
-          </div>
-        )}
-        {isFreelancerRole && (
-          <div className="bg-[#059669] text-emerald-50 px-3 py-2 rounded-full shadow-sm flex items-center justify-center">
-             <span className="text-[11px] font-black font-cairo tracking-wider uppercase leading-[1.2]">مستقل</span>
-          </div>
-        )}
-      </div>
-
+    <button className="group flex cursor-pointer items-center gap-2.5 pl-3.5 pr-2 py-2 rounded-full bg-white/80 backdrop-blur-md border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-500 active:scale-[0.98]">
       {/* Profile Picture / Initials */}
       <div className="relative shrink-0">
-        <div className="w-[42px] h-[42px] rounded-full overflow-hidden transition-all duration-500 group-hover:scale-110 ring-2 ring-white shadow-md bg-linear-to-br from-gray-50 to-white flex items-center justify-center border border-gray-100">
+        <div className="w-[38px] h-[38px] rounded-full overflow-hidden transition-all duration-500 group-hover:scale-110 ring-2 ring-white shadow-sm bg-linear-to-br from-slate-50 to-white flex items-center justify-center border border-gray-100">
           {profile.profilePictureUrl || profile.profilePicture ? (
             <Image
               src={profile.profilePictureUrl || profile.profilePicture}
               alt={userName}
-              width={42}
-              height={42}
+              width={38}
+              height={38}
               className="object-cover w-full h-full"
             />
           ) : (
-            <span className="text-primary font-black text-[15px] font-cairo">
+            <span className="text-primary font-bold text-sm font-cairo tracking-tight">
               {getInitials()}
             </span>
           )}
         </div>
+      </div>
 
-  
+      {/* Role Badge - Calm & Premium */}
+      <div className="flex items-center">
+        {isClientRole && (
+          <div className="bg-primary/10 text-primary px-3.5 py-1.5 rounded-full transition-colors group-hover:bg-primary/15 whitespace-nowrap">
+             <span className="text-[12px] font-bold font-cairo leading-none">عميل</span>
+          </div>
+        )}
+        {isFreelancerRole && (
+          <div className="bg-emerald-50 text-emerald-600 px-3.5 py-1.5 rounded-full transition-colors group-hover:bg-emerald-100 whitespace-nowrap">
+             <span className="text-[12px] font-bold font-cairo leading-none">مستقل</span>
+          </div>
+        )}
       </div>
     </button>
   );

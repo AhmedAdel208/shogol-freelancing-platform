@@ -14,9 +14,11 @@ export default function FormInput({
 
   return (
     <div className={`text-right ${className}`}>
-      <label className="block text-dark mb-2 text-base font-medium">
-        {label} <span className="text-red-500" aria-hidden="true">*</span>
-      </label>
+      {label && (
+        <label className="block text-dark mb-2 text-base font-medium">
+          {label} <span className="text-red-500" aria-hidden="true">*</span>
+        </label>
+      )}
       <div className="relative group">
         <input
           type={type}

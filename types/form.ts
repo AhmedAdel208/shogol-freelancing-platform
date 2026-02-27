@@ -2,7 +2,7 @@ import type { UseFormRegisterReturn } from "react-hook-form";
 import type React from "react";
 
 export interface FormInputProps {
-  label: string;
+  label?: string;
   type: string;
   placeholder?: string;
   required?: boolean;
@@ -13,7 +13,7 @@ export interface FormInputProps {
 }
 
 export interface PasswordInputProps {
-  label: string;
+  label?: string;
   placeholder?: string;
   registration?: UseFormRegisterReturn;
   error?: string;
@@ -21,7 +21,7 @@ export interface PasswordInputProps {
 }
 
 export interface RadioButtonProps {
-  label: string;
+  label?: string;
   name: string;
   value: string;
   registration?: UseFormRegisterReturn;
@@ -31,7 +31,7 @@ export interface RadioButtonProps {
 }
 
 export interface SelectInputProps {
-  label: string;
+  label?: string;
   children: React.ReactNode;
   registration?: UseFormRegisterReturn;
   value?: string;

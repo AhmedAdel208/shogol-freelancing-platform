@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { UserButton } from "./UserButton";
 import { useAuth } from "@/hooks/auth/useAuth";
-import { LogIn, Sparkles } from "lucide-react";
+import { LogIn, Sparkles, Plus } from "lucide-react";
 import { getCurrentUser } from "@/utils/auth";
 
 // Tailwind Class Variables for cleaner JSX
@@ -36,8 +36,12 @@ export default function Navbuttons() {
         <div className="flex items-center gap-4">
           {isClient && (
             <Link href="/projects/create">
-              <button className="bg-primary hover:bg-primary/80 text-white px-6 py-2.5 rounded-xl font-bold font-cairo text-[15px] shadow-sm hover:shadow-md transition-all active:scale-95 cursor-pointer">
-                اطلب عرض سعر
+              <button className={`${PRIMARY_BTN_CLASSES} px-6! py-2!`}>
+                <div className={GRADIENT_BG_CLASSES} />
+                <div className="relative flex items-center gap-2">
+                  <Plus size={18} className="text-white" />
+                  <span className="mb-px">نشر مشروع</span>
+                </div>
               </button>
             </Link>
           )}

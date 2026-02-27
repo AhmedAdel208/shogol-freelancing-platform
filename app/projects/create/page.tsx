@@ -4,8 +4,8 @@ import Footer from "@/components/landing/footer/Footer";
 import Gradientline from "@/components/ui/header/Gradientline";
 
 export const metadata = {
-  title: "طلب عرض سعر | شغل",
-  description: "اطلب عرض سعر لمشروعك الجديد واحصل على أفضل العروض من المستقلين المحترفين",
+  title: "نشر مشروع جديد | شغل",
+  description: "انشر مشروعك الجديد الآن واحصل على أفضل العروض من المستقلين المحترفين في أسرع وقت",
 };
 
 export default function CreateProjectPage() {
