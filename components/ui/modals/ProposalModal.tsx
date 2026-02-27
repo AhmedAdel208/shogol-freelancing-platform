@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   proposalSchema,
   type ProposalFormData,
+  type ProposalFormInput,
 } from "@/lib/validation/proposalSchema";
 
 interface ProposalModalProps {
@@ -27,10 +28,10 @@ export default function ProposalModal({
     handleSubmit,
     formState: { errors, isValid },
     reset,
-  } = useForm<ProposalFormData>({
+  } = useForm<ProposalFormInput>({
     resolver: zodResolver(proposalSchema),
     defaultValues: {
-      jobRequestId: jobRequestId,
+      jobRequestId: Number(jobRequestId), // ✅ convert to number
       description: "",
     },
   });
@@ -40,9 +41,8 @@ export default function ProposalModal({
     onClose();
   };
 
-  const handleFormSubmit = (data: ProposalFormData) => {
-    console.log("ProposalModal - form submitted with data:", data);
-    onSubmit(data);
+  const handleFormSubmit = (data: unknown) => {
+    onSubmit(data as ProposalFormData);
     reset();
   };
 
@@ -78,7 +78,7 @@ export default function ProposalModal({
               {...register("description")}
               rows={5}
               placeholder="اشرح كيف ستنجز هذا المشروع..."
-              className="w-full resize-none rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 text-black p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
+              className="w-full resize-none rounded-lg border border-primary  bg-gray-50 text-black p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition"
             />
             {errors.description && (
               <span className="text-red-500 text-sm">
@@ -97,7 +97,7 @@ export default function ProposalModal({
               <input
                 type="text"
                 inputMode="numeric"
-                {...register("proposedPrice", { valueAsNumber: true })}
+                {...register("proposedPrice")}
                 placeholder="0"
                 className="w-full rounded-lg border border-gray-300 bg-gray-50  text-gray-800  p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
               />
@@ -116,7 +116,7 @@ export default function ProposalModal({
               <input
                 type="text"
                 inputMode="numeric"
-                {...register("proposedDurationInDays", { valueAsNumber: true })}
+                {...register("proposedDurationInDays")}
                 placeholder="0"
                 className="w-full rounded-lg border border-gray-300 bg-gray-50  text-gray-800  p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
               />
@@ -133,14 +133,14 @@ export default function ProposalModal({
             <button
               type="submit"
               disabled={isSubmitting || !isValid}
-              className="flex-1 bg-primary text-white py-3 rounded-lg font-bold text-base hover:bg-primary/90 transition-colors disabled:opacity-60"
+              className="flex-1 bg-primary cursor-pointer text-white py-3 rounded-lg font-bold text-base hover:bg-primary/90 transition-colors disabled:opacity-60"
             >
               {isSubmitting ? "جاري الإرسال..." : "إرسال العرض"}
             </button>
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 border-2 border-primary text-primary py-3 rounded-lg font-bold text-base hover:bg-primary/5 transition-colors"
+              className="flex-1 border-2 cursor-pointer border-primary text-primary py-3 rounded-lg font-bold text-base hover:bg-primary/5 transition-colors"
             >
               إلغاء
             </button>

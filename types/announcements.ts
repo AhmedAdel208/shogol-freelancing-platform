@@ -20,11 +20,14 @@ export interface Project {
   status: string;
   budget: string;
   durationInDays: number;
+  deadline?: string;
   proposalsCount: number;
+  clientId: string;
   clientName: string;
   clientAvatar?: string;
   createdAt: string;
   skills?: Array<{ id: string; nameAr: string }>;
+  proposals?: import("@/lib/validation/proposalSchema").ProposalDisplay[]; // Add proposals array
 }
 
 export interface ProjectCardProps {
@@ -45,7 +48,6 @@ export interface EmptyStateProps {
 // Results Counter Types
 export interface ResultsCounterProps {
   currentCount: number;
-  totalCount: number;
   label?: string;
 }
 

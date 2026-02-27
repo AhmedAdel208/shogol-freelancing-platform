@@ -220,7 +220,7 @@
   animation-delay: 200ms;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -239,11 +239,11 @@
   background: #1a9295;
 }
 
-/* For Firefox */
-* {
+For Firefox 
+  {
   scrollbar-width: thin;
   scrollbar-color: #1eaaad transparent;
-}
+} */
 
 /* Zoom Slider Styles */
 .zoom-slider {

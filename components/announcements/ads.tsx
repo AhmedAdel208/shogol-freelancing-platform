@@ -1,5 +1,4 @@
 "use client";
-
 import { useJobRequests } from "@/hooks/useJobRequests";
 import { useAnnouncementsFilters } from "@/hooks/useAnnouncementsFilters";
 import { transformJobRequestToProject } from "@/utils/dataTransforms";
@@ -7,13 +6,16 @@ import SearchAndFilters from "./SearchAndFilters";
 import ProjectCard from "./ProjectCard";
 import EmptyState from "./EmptyState";
 import ResultsCounter from "./ResultsCounter";
+import Loading from "@/common/Loading";
 
 export default function AdsSection() {
   const { apiParams, filters, updateFilter } = useAnnouncementsFilters();
   const { data, isLoading, error } = useJobRequests(apiParams);
 
-  const projects = data?.jobRequests || [];
-  const totalCount = data?.totalCount || 0;
+  const projects =
+    data?.jobRequests?.filter((project) => project.status === "Pending") || [];
+
+  if (isLoading) return <Loading />;
 
   return (
     <div
@@ -27,9 +29,6 @@ export default function AdsSection() {
             <h1 className="text-3xl font-extrabold text-dark tracking-tight">
               تصفح الإعلانات
             </h1>
-            <span className="bg-primary text-white px-3 py-1 rounded-full  font-bold">
-              {projects.length}
-            </span>
           </div>
           <p className="text-slate-500 font-el-missiri">
             اعثر على المشروع المثالي لمهاراتك
@@ -48,10 +47,7 @@ export default function AdsSection() {
         />
 
         {/* Results Counter */}
-        <ResultsCounter
-          currentCount={projects.length}
-          totalCount={totalCount}
-        />
+        <ResultsCounter currentCount={projects.length} />
 
         {error && (
           <div className="text-center py-12 text-red-500">

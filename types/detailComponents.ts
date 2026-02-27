@@ -8,6 +8,7 @@ export interface ProjectHeaderProps {
 // Client Info Component Props
 export interface ClientInfoProps {
   project: Project;
+  onSendMessage?: () => void;
 }
 
 // Project Details Component Props
@@ -24,15 +25,12 @@ export interface ProjectSkillsProps {
 export interface ProjectActionsProps {
   projectOwnerId: string;
   jobRequestId: string;
-  onProposalSubmit: () => void;
+  projectStatus?: string;
+  hasSubmittedProposal?: boolean;
+  onProposalSuccess?: (proposalId: number) => void;
   onSendMessage: () => void;
   onEditProject: () => void;
   onDeleteProject: () => void;
-}
-
-// Loading State Component Props
-export interface DetailLoadingStateProps {
-  message?: string;
 }
 
 // Error State Component Props

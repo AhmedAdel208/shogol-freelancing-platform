@@ -1,22 +1,29 @@
 "use client";
 
-import { useParams } from "next/navigation";
-
+import { useParams, useRouter } from "next/navigation";
+import { useDeleteProject } from "@/hooks/useDeleteProject";
 import Footer from "@/components/landing/footer/Footer";
 import LinksHeader from "@/components/landing/header/LinksHeader";
 import Gradientline from "@/components/ui/header/Gradientline";
 import { useProjectDetail } from "@/hooks/useProjectDetail";
 import ProjectHeader from "@/components/announcements/detail/ProjectHeader";
-import ClientInfo from "@/components/announcements/detail/ClientInfo";
 import ProjectDetails from "@/components/announcements/detail/ProjectDetails";
 import ProjectSkills from "@/components/announcements/detail/ProjectSkills";
 import ProjectActions from "@/components/announcements/detail/ProjectActions";
-import LoadingState from "@/components/announcements/detail/LoadingState";
+import ProjectProposals from "@/components/proposals/ProjectProposals";
 import ErrorState from "@/components/announcements/detail/ErrorState";
+
+import { getCurrentUser } from "@/utils/auth";
+import ClientInfo from "@/components/announcements/detail/ClientInfo";
+import { useAuth } from "@/hooks/auth/useAuth";
+import Loading from "@/common/Loading";
 
 export default function AnnouncementDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const projectId = params.id as string;
+  const currentUser = getCurrentUser();
+  const {isAuthenticated} = useAuth()
 
   const {
     data: project,
@@ -26,8 +33,23 @@ export default function AnnouncementDetailPage() {
     id: projectId,
   });
 
+  // Check if current user is the owner of this project
+  const isOwner = currentUser?.id === project?.clientId;
+  const isClient = currentUser?.isClient;
+  const isFreelancer = currentUser?.isFreelancer;
+
+  const hasSubmittedProposal = project?.proposals?.some(
+    (proposal) => proposal.freelancerId === currentUser?.id
+  );
+
+  const { deleteProject } = useDeleteProject();
+
+  const handleDeleteProject = () => {
+    deleteProject(projectId);
+  };
+
   if (isLoading) {
-    return <LoadingState />;
+    return <Loading />;
   }
 
   if (error || !project) {
@@ -35,42 +57,66 @@ export default function AnnouncementDetailPage() {
   }
 
   return (
-    <div className="bg-white min-h-screen w-full">
-      <Gradientline />
-      <LinksHeader />
+    <div className="bg-bg  w-full flex flex-col">
+      <header className="bg-white">
+        <Gradientline />
+        <LinksHeader />
+      </header>
 
-      <section className="px-4 md:px-6 lg:px-8 max-w-8xl mx-auto py-8 md:py-12 lg:py-16">
-        {/* Main Card Detail */}
-        <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-border">
-          {/* Content Section */}
-          <div className="p-6 md:p-8 lg:p-10">
-            {/* Project Header */}
+      <section
+        className="px-4 md:px-6 lg:px-8 min-h-[50vh] w-full max-w-8xl mx-auto py-6 md:py-8 flex-1"
+        dir="ltr"
+      >
+        <div className="flex flex-col lg:flex-row gap-8 flex-1">
+          {/* Sidebar - Actions (Left side in RTL) */}
+          <aside className="w-full lg:w-[450px] shrink-0 order-2 lg:order-1 flex flex-col gap-6">
+            {!isOwner && <ClientInfo project={project} onSendMessage={() => console.log("Send message")} />}
+            {isOwner || isFreelancer || !isAuthenticated ? (
+              <div className="bg-[#ffffff] rounded-[24px] shadow-[0_2px_10px_rgb(0,0,0,0.03)] border border-gray-100/80 p-8">
+                <ProjectActions
+                  projectOwnerId={project.clientId}
+                  jobRequestId={project.id}
+                  projectStatus={project.status}
+                  hasSubmittedProposal={hasSubmittedProposal}
+                  onSendMessage={() => console.log("Send message")}
+                  onEditProject={() =>
+                    router.push(`/announcements/edit/${projectId}`)
+                  }
+                  onDeleteProject={handleDeleteProject}
+                />
+              </div>
+            ) : null}
+          </aside>
+
+          {/* Main Content (Right side in RTL) */}
+          <main className="flex-1 order-1 lg:order-2 bg-[#ffffff] p-8 md:p-12 shadow-[0_2px_40px_rgba(0,0,0,0.04)] rounded-[32px] border border-white flex flex-col relative overflow-hidden">
+            {/* Soft decorative background blur */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10 translate-x-1/2 -translate-y-1/2" />
+            
+            {/* Project Header: Title, Status, Meta */}
             <ProjectHeader project={project} />
 
-            {/* Description */}
-            <p className="text-base md:text-lg text-gray-medium mb-8 text-right leading-relaxed">
-              {project.description}
-            </p>
-
-            {/* Client Info */}
-            <ClientInfo project={project} />
-
-            {/* Project Details */}
+            {/* Info Cards: Budget, Duration, Deadline */}
             <ProjectDetails project={project} />
 
-            {/* Skills */}
+            {/* Description Section */}
+            <div className="mb-10 font-cairo" dir="rtl">
+              <h3 className="text-[1.15rem] font-bold text-gray-900 mb-4 text-right">
+                التفاصيل
+              </h3>
+              <p className="text-[16px] text-gray-600 leading-9 text-right bg-slate-50/50 p-6 rounded-[20px] border border-slate-100/60 shadow-inner">
+                {project.description}
+              </p>
+            </div>
+
+            {/* Skills Section */}
             <ProjectSkills project={project} />
 
-            {/* Action Buttons */}
-            <ProjectActions
-              projectOwnerId={project.clientName}
-              jobRequestId={project.id}
-              onProposalSubmit={() => console.log("Submit proposal")}
-              onSendMessage={() => console.log("Send message")}
-              onEditProject={() => console.log("Edit project")}
-              onDeleteProject={() => console.log("Delete project")}
-            />
-          </div>
+          </main>
+        </div>
+
+        <div className="w-full lg:w-[calc(100%-500px)] ml-auto mt-12 mb-16">
+          <ProjectProposals jobRequestId={project.id} />
         </div>
       </section>
 

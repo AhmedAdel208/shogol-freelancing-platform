@@ -1,48 +1,66 @@
-import { Banknote, Clock, User, Timer } from "lucide-react";
+import { Banknote, Clock, CalendarDays } from "lucide-react";
 import { ProjectDetailsProps } from "@/types/detailComponents";
-import { mapStatus } from "@/utils";
 
 export default function ProjectDetails({ project }: ProjectDetailsProps) {
+  // Calculate the deadline date from createdAt + durationInDays
+  const getDeadlineDate = (): string => {
+    if (project.deadline) {
+      const date = new Date(project.deadline);
+      return date.toLocaleDateString("ar-EG", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    }
+
+    const createdDate = new Date(project.createdAt);
+    const deadlineDate = new Date(createdDate);
+    deadlineDate.setDate(deadlineDate.getDate() + project.durationInDays);
+    return deadlineDate.toLocaleDateString("ar-EG", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 pb-8 border-b border-border">
-      <div className="bg-bg rounded-lg p-4 md:p-6">
-        <div className="flex items-center gap-3 mb-2">
-          <Banknote className="w-5 h-5 text-emerald-500" />
-          <span className=" text-gray-medium">الميزانية</span>
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      {/* Budget Card */}
+      <div className="bg-white rounded-xl border border-border p-5 flex items-center gap-3 justify-end hover:shadow-md transition-shadow">
+        <div className="text-right">
+          <span className="text-gray-medium text-sm block mb-1">الميزانية</span>
+          <p className="text-lg font-bold text-primary">
+            {project.budget} ريـال
+          </p>
         </div>
-        <p className="text-lg md:text-xl font-bold text-gray-dark text-right">
-          {project.budget} ريـال
-        </p>
+        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+          <Banknote className="w-5 h-5 text-primary" />
+        </div>
+      </div>
+      {/* Deadline Card */}
+      <div className="bg-white rounded-xl border border-border p-5 flex items-center gap-3 justify-end hover:shadow-md transition-shadow">
+        <div className="text-right">
+          <span className="text-gray-medium text-sm block mb-1">
+            الموعد النهائي
+          </span>
+          <p className="text-lg font-bold text-red-500">{getDeadlineDate()}</p>
+        </div>
+        <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+          <CalendarDays className="w-5 h-5 text-red-500" />
+        </div>
       </div>
 
-      <div className="bg-bg rounded-lg p-4 md:p-6">
-        <div className="flex items-center gap-3 mb-2">
-          <Clock className="w-5 h-5 text-blue-500" />
-          <span className=" text-gray-medium">المدة</span>
+      {/* Duration Card */}
+      <div className="bg-white rounded-xl border border-border p-5 flex items-center gap-3 justify-end hover:shadow-md transition-shadow">
+        <div className="text-right">
+          <span className="text-gray-medium text-sm block mb-1">المدة</span>
+          <p className="text-lg font-bold text-dark">
+            {project.durationInDays} يوم
+          </p>
         </div>
-        <p className="text-lg md:text-xl font-bold text-gray-dark text-right">
-          {project.durationInDays} يوم
-        </p>
-      </div>
-
-      <div className="bg-bg rounded-lg p-4 md:p-6">
-        <div className="flex items-center gap-3 mb-2">
-          <User className="w-5 h-5 text-purple-500" />
-          <span className=" text-gray-medium">عدد العروض</span>
+        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+          <Clock className="w-5 h-5 text-dark" />
         </div>
-        <p className="text-lg md:text-xl font-bold text-gray-dark text-right">
-          {project.proposalsCount} عرض
-        </p>
-      </div>
-
-      <div className="bg-bg rounded-lg p-4 md:p-6">
-        <div className="flex items-center gap-3 mb-2">
-          <Timer className="w-5 h-5 text-primary" />
-          <span className=" text-gray-medium">الحالة</span>
-        </div>
-        <p className="text-lg md:text-xl font-bold text-gray-dark text-right">
-          {mapStatus(project.status)}
-        </p>
       </div>
     </div>
   );
