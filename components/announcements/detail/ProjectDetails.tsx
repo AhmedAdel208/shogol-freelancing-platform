@@ -24,9 +24,9 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
       {/* Budget Card */}
-      <div className="bg-white rounded-xl border border-border p-5 flex items-center gap-3 justify-end hover:shadow-md transition-shadow">
+      <div className="bg-white rounded-xl border border-border p-4 flex items-center gap-3 justify-end hover:shadow-md transition-shadow">
         <div className="text-right">
           <span className="text-gray-medium text-sm block mb-1">الميزانية</span>
           <p className="text-lg font-bold text-primary">
@@ -38,7 +38,7 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
         </div>
       </div>
       {/* Deadline Card */}
-      <div className="bg-white rounded-xl border border-border p-5 flex items-center gap-3 justify-end hover:shadow-md transition-shadow">
+      <div className="bg-white rounded-xl border border-border p-4 flex items-center gap-3 justify-end hover:shadow-md transition-shadow">
         <div className="text-right">
           <span className="text-gray-medium text-sm block mb-1">
             الموعد النهائي

@@ -18,6 +18,7 @@ export default function RadioButton({
         type="radio"
         name={name}
         value={value}
+        defaultChecked = {value === 'male'}
         checked={checked}
         onChange={(e) => onChange?.(e.target.value)}
         {...registration}

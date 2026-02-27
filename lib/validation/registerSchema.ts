@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const PHONE_REGEX = /^(\+201|9665)\d{8,9}$/;
+const PHONE_REGEX = /^(\+201|\+9665|9665)\d{8,9}$/;
 
 export const registerSchema = z.object({
   firstName: z
@@ -22,15 +22,31 @@ export const registerSchema = z.object({
   password: z
     .string()
     .min(1, "كلمة المرور مطلوبة")
-    .min(8, "كلمة المرور يجب أن تكون 8 أحرف على الأقل"),
-  accountType: z.enum(["freelancer", "company"], {
+    .min(8, "يجب أن تكون كلمة المرور 8 أحرف على الأقل")
+    .regex(/[A-Z]/, "يجب أن تحتوي على حرف كبير واحد على الأقل")
+    .regex(/[a-z]/, "يجب أن تحتوي على حرف صغير واحد على الأقل")
+    .regex(/[0-9]/, "يجب أن تحتوي على رقم واحد على الأقل")
+    .regex(/[@$!%*?&#]/, "يجب أن تحتوي على رمز خاص واحد على الأقل"),
+  userRole: z.enum(["freelancer", "client"]),
+  accountType: z.enum(["individual", "company"], {
     message: "اختر نوع الحساب",
   }),
-  gender: z.enum(["male", "female"]).optional(),
+  companyName: z.string().optional(),
+  gender: z.enum(["male", "female"], {
+    message: "يرجى اختيار الجنس",
+  }),
   nationality: z.string().optional(),
   agreed: z.boolean().refine((val) => val === true, {
     message: "يجب الموافقة على الشروط والأحكام",
   }),
+}).superRefine((data, ctx) => {
+  if (data.accountType === "company" && !data.companyName) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "اسم الشركة مطلوب",
+      path: ["companyName"],
+    });
+  }
 });
 
 export type RegisterFormData = z.infer<typeof registerSchema>;

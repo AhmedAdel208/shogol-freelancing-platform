@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { CheckCircle, X } from "lucide-react";
+import { X, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useSuccessRedirect } from "@/hooks/auth/useSuccessRedirect";
@@ -20,6 +20,7 @@ export default function SucessRegister({
     const params = new URLSearchParams();
     if (userData?.email) params.set("email", userData.email);
     if (userData?.phone) params.set("phone", userData.phone);
+    if (userData?.userRole) params.set("type", userData.userRole);
     const queryString = params.toString();
     return `/verify${queryString ? `?${queryString}` : ""}`;
   })();
@@ -31,7 +32,6 @@ export default function SucessRegister({
     userImage,
   });
 
-  // Sync the dialog open/close state with the isOpen prop
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -43,14 +43,12 @@ export default function SucessRegister({
     }
   }, [isOpen]);
 
-  // Handle clicking the backdrop (outside the dialog content)
   const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     if (e.target === dialogRef.current) {
       onClose();
     }
   };
 
-  // Handle native close event (e.g. pressing Escape)
   const handleDialogClose = () => {
     onClose();
   };
@@ -82,32 +80,32 @@ export default function SucessRegister({
 
         {/* Success Icon */}
         <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border-4 border-white shadow-inner">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt="Profile"
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt="Profile"
               width={96}
               height={96}
               className="w-full h-full object-cover"
-            />
-          ) : (
+              />
+            ) : (
             <CheckCircle className="w-12 h-12 text-primary" />
-          )}
-        </div>
-
+            )}
+          </div>
+          
         {/* Title */}
         <h3 className="text-2xl font-bold text-dark mb-4">
           تم إنشاء الحساب بنجاح!
-        </h3>
+          </h3>
 
         {/* Message */}
         <p className="text-gray-600 text-lg leading-relaxed mb-10 px-4">
-          {userData?.email
+            {userData?.email
             ? `تم إرسال رمز التحقق إلى بريدك الإلكتروني`
             : "تم إرسال رمز التحقق لتأكيد حسابك"}
-          <br />
+            <br />
           <span className="text-primary font-bold mt-2 block">{userData?.email}</span>
-        </p>
+          </p>
 
         {/* Actions */}
         <div className="flex flex-col gap-3">

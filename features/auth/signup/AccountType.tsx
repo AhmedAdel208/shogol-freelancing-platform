@@ -14,7 +14,7 @@ export default function AccountType({ onSelectType }: AccountTypeProps) {
     onSelectType(typeId);
   };
   return (
-    <section className="pt-20 lg:py-28 bg-bg grow flex flex-col">
+    <section className="pt-20 lg:py-28  min-h-[90vh] bg-bg grow flex flex-col">
       <div className="max-w-8xl mx-auto grow flex flex-col">
         <div className="text-center mb-16">
           <div className="relative inline-block mb-6">
@@ -42,7 +42,7 @@ export default function AccountType({ onSelectType }: AccountTypeProps) {
             <button
               key={type.id}
               onClick={() => handleSelectType(type.id)}
-              className={`group relative bg-white rounded-3xl p-10 text-center border-2 transition-all duration-500 hover:shadow-2xl hover:scale-105 transform ${
+              className={`group relative cursor-pointer bg-white rounded-3xl p-10 text-center border-2 transition-all duration-500 hover:shadow-2xl hover:scale-105 transform ${
                 selectedType === type.id
                   ? "border-primary shadow-xl scale-105"
                   : "border-border hover:border-primary/50"
@@ -91,12 +91,12 @@ export default function AccountType({ onSelectType }: AccountTypeProps) {
           ))}
         </div>
 
-        {/* Footer Link */}
-        <div className="text-center mt-auto">
-          <span className="text-gray-medium text-lg">لديك حساب بالفعل؟ </span>
+        {/* Footer Link - Centered below the cards */}
+        <div className="text-center mt-8 pb-10">
+          <span className="text-gray-medium text-lg font-cairo">لديك حساب بالفعل؟ </span>
           <Link
             href="/login"
-            className="text-primary font-bold hover:text-accent transition-colors duration-200"
+            className="text-primary font-black font-cairo hover:text-dark transition-colors duration-200"
           >
             تسجيل الدخول
           </Link>

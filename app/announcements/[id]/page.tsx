@@ -64,12 +64,12 @@ export default function AnnouncementDetailPage() {
       </header>
 
       <section
-        className="px-4 md:px-6 lg:px-8 min-h-[50vh] w-full max-w-8xl mx-auto py-6 md:py-8 flex-1"
+        className="px-4 md:px-6 lg:px-8 min-h-[50vh] w-full max-w-8xl mx-auto py-4 md:py-6 flex-1"
         dir="ltr"
       >
         <div className="flex flex-col lg:flex-row gap-8 flex-1">
           {/* Sidebar - Actions (Left side in RTL) */}
-          <aside className="w-full lg:w-[450px] shrink-0 order-2 lg:order-1 flex flex-col gap-6">
+          <aside className="w-full lg:w-[400px] shrink-0 order-2 lg:order-1 flex flex-col gap-6 lg:sticky lg:top-24 h-fit">
             {!isOwner && <ClientInfo project={project} onSendMessage={() => console.log("Send message")} />}
             {isOwner || isFreelancer || !isAuthenticated ? (
               <div className="bg-[#ffffff] rounded-[24px] shadow-[0_2px_10px_rgb(0,0,0,0.03)] border border-gray-100/80 p-8">
@@ -89,7 +89,7 @@ export default function AnnouncementDetailPage() {
           </aside>
 
           {/* Main Content (Right side in RTL) */}
-          <main className="flex-1 order-1 lg:order-2 bg-[#ffffff] p-8 md:p-12 shadow-[0_2px_40px_rgba(0,0,0,0.04)] rounded-[32px] border border-white flex flex-col relative overflow-hidden">
+          <main className="flex-1 order-1 lg:order-2 bg-[#ffffff] p-6 md:p-10 shadow-[0_2px_40px_rgba(0,0,0,0.04)] rounded-[32px] border border-white flex flex-col relative overflow-hidden">
             {/* Soft decorative background blur */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10 translate-x-1/2 -translate-y-1/2" />
             
@@ -100,11 +100,11 @@ export default function AnnouncementDetailPage() {
             <ProjectDetails project={project} />
 
             {/* Description Section */}
-            <div className="mb-10 font-cairo" dir="rtl">
-              <h3 className="text-[1.15rem] font-bold text-gray-900 mb-4 text-right">
+            <div className="mb-6 font-cairo" dir="rtl">
+              <h3 className="text-[1.15rem] font-bold text-gray-900 mb-3 text-right">
                 التفاصيل
               </h3>
-              <p className="text-[16px] text-gray-600 leading-9 text-right bg-slate-50/50 p-6 rounded-[20px] border border-slate-100/60 shadow-inner">
+              <p className="text-[16px] text-gray-600 leading-8 text-right bg-slate-50/50 p-5 rounded-[20px] border border-slate-100/60 shadow-inner">
                 {project.description}
               </p>
             </div>
@@ -115,7 +115,7 @@ export default function AnnouncementDetailPage() {
           </main>
         </div>
 
-        <div className="w-full lg:w-[calc(100%-500px)] ml-auto mt-12 mb-16">
+        <div className="w-full lg:w-[calc(100%-440px)] ml-auto mt-8 mb-16">
           <ProjectProposals jobRequestId={project.id} />
         </div>
       </section>

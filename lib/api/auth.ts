@@ -20,11 +20,11 @@ class AuthService {
     formData.append("Email", userData.email);
     formData.append("PhoneNumber", userData.phone);
     formData.append("Password", userData.password);
-    formData.append("Nationality", userData.nationality || "");
-    formData.append("Gender", userData.gender || "");
-    formData.append("AccountType", userData.accountType);
-    formData.append("UserType", userData.accountType);
-    formData.append("CompanyName", "");
+    if (userData.nationality) formData.append("Nationality", userData.nationality);
+    if (userData.gender) formData.append("Gender", userData.gender);
+    formData.append("AccountType", userData.accountType === "company" ? "Company" : "Individual");
+    formData.append("UserType", userData.userRole === "client" ? "Client" : "Freelancer");
+    formData.append("CompanyName", userData.companyName || "");
 
     if (profilePicture) {
       formData.append("ProfilePicture", profilePicture);

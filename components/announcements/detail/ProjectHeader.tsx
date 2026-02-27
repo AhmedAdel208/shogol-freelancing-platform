@@ -26,7 +26,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
       };
 
   return (
-    <div className="mb-10 relative" dir="ltr">
+    <div className="mb-8 relative" dir="ltr">
       {/* Decorative Blur behind header */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -z-10" />
 
@@ -42,7 +42,7 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
       </div>
 
       {/* Title */}
-      <h1 className="text-[34px] sm:text-[40px] md:text-[40px] lg:text-[42px] font-black font-cairo text-transparent bg-clip-text bg-linear-to-b from-gray-900 via-gray-800 to-gray-600 mb-6 text-right leading-tight tracking-tight -mr-1">
+      <h1 className="text-[30px] sm:text-[34px] md:text-[36px] lg:text-[38px] font-black font-cairo text-transparent bg-clip-text bg-linear-to-b from-gray-900 via-gray-800 to-gray-600 mb-5 text-right leading-tight tracking-tight -mr-1">
         {project.title}
       </h1>
 

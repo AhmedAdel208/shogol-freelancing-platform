@@ -4,8 +4,10 @@ export interface RegisterFormData {
   email: string;
   phone: string;
   password: string;
-  accountType: "freelancer" | "company";
-  gender?: "male" | "female";
+  userRole: "freelancer" | "client";
+  accountType: "individual" | "company";
+  companyName?: string;
+  gender: "male" | "female";
   nationality?: string;
   agreed: boolean;
 }

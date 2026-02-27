@@ -3,6 +3,7 @@ import StepTwo from "./StepTwo";
 import SucessRegister from "./SucessRegister";
 import { useRegistration } from "@/hooks/auth/useRegistration";
 import type { RegisterFormProps } from "@/types/registerForm";
+import Link from "next/link";
 
 export default function RegisterForm({
   initialAccountType,
@@ -20,6 +21,7 @@ export default function RegisterForm({
     step,
     nextStep,
     prevStep,
+    watch,
   } = useRegistration({ initialAccountType });
 
   return (
@@ -59,6 +61,7 @@ export default function RegisterForm({
                 errors={errors}
                 setSelectedImage={setSelectedImage}
                 nextStep={nextStep}
+                watch={watch}
               />
             )}
 
@@ -68,6 +71,7 @@ export default function RegisterForm({
                 errors={errors}
                 isSubmitting={isSubmitting}
                 prevStep={prevStep}
+                watch={watch}
               />
             )}
           </form>
@@ -76,12 +80,12 @@ export default function RegisterForm({
           {!isSubmitting && (
             <div className="text-center mt-6">
               <span className="text-gray-medium">لديك حساب بالفعل؟ </span>
-              <a
-                href="#"
-                className="text-primary font-semibold hover:text-accent transition-colors"
+              <Link
+                href="/login"
+                className="text-primary font-semibold hover:text-dark transition-colors"
               >
                 تسجيل الدخول
-              </a>
+              </Link>
             </div>
           )}
         </div>

@@ -2,7 +2,7 @@ import { Building2, User } from "lucide-react";
 
 export const accountTypes = [
   {
-    id: "company",
+    id: "client",
     icon: Building2,
     title: "حساب عميل",
     description:

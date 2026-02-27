@@ -1,6 +1,6 @@
-import { User, Mail, Phone } from "lucide-react";
+import { User, Mail, Phone, CheckCircle2 } from "lucide-react";
 import { FormInput, PasswordInput, ProfileUpload } from "@/container/reusable/form";
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { UseFormRegister, FieldErrors, UseFormWatch } from "react-hook-form";
 import { RegisterFormData } from "@/lib/validation/registerSchema";
 import { Button } from "@/container/reusable/form";
 
@@ -9,6 +9,7 @@ interface StepOneProps {
   errors: FieldErrors<RegisterFormData>;
   setSelectedImage: (file: File | undefined) => void;
   nextStep: () => void;
+  watch: UseFormWatch<RegisterFormData>;
 }
 
 export default function StepOne({
@@ -16,7 +17,18 @@ export default function StepOne({
   errors,
   setSelectedImage,
   nextStep,
+  watch,
 }: StepOneProps) {
+  const password = watch("password") || "";
+  
+  // Strong password criteria matches registerSchema.ts
+  const isStrong = 
+    password.length >= 8 &&
+    /[A-Z]/.test(password) &&
+    /[a-z]/.test(password) &&
+    /[0-9]/.test(password) &&
+    /[@$!%*?&#]/.test(password);
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-500">
       <ProfileUpload
@@ -56,18 +68,26 @@ export default function StepOne({
       <FormInput
         label="رقم الجوال"
         type="tel"
-        placeholder="966501234567+"
+        placeholder="+201012345678 or +966501234567 "
         icon={<Phone className="w-5 h-5 text-primary" />}
         registration={register("phone")}
         error={errors.phone?.message}
       />
 
-      <PasswordInput
-        label="كلمة المرور"
-        placeholder="أدخل كلمة المرور"
-        registration={register("password")}
-        error={errors.password?.message}
-      />
+      <div className="relative">
+        <PasswordInput
+          label="كلمة المرور"
+          placeholder="أدخل كلمة المرور"
+          registration={register("password")}
+          error={errors.password?.message}
+        />
+        {isStrong && !errors.password && (
+          <div className="flex items-center gap-1.5 mt-2 text-emerald-600 animate-in fade-in slide-in-from-top-1 duration-300">
+            <CheckCircle2 size={14} strokeWidth={3} />
+            <span className="text-[13px] font-bold font-cairo">كلمة مرور قوية</span>
+          </div>
+        )}
+      </div>
 
       <Button type="button" onClick={nextStep}>
         التالي

@@ -34,7 +34,6 @@ export default function Navicons() {
             className="text-[#209fa9] group-hover:rotate-12 transition-transform duration-300" 
             strokeWidth={2.2}
           />
-
         </div>
         
         {/* Subtle Overlay on Hover */}

@@ -71,7 +71,7 @@ export default function ProposalCard({
 
   return (
     <div
-      className="group relative bg-[#ffffff] w-full text-right rounded-[24px] transition-all duration-400 ease-out hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)] shadow-[0_2px_10px_rgb(0,0,0,0.03)] border border-gray-100/80 overflow-hidden mb-6"
+      className="group relative bg-[#ffffff] w-full text-right rounded-[24px] transition-all duration-400 ease-out hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)] shadow-[0_2px_10px_rgb(0,0,0,0.03)] border border-gray-100/80 overflow-hidden mb-4"
       dir="rtl"
     >
       {/* Decorative Top Line Based on Status */}

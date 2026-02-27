@@ -7,10 +7,10 @@ export default function ProjectSkills({ project }: ProjectSkillsProps) {
   }
 
   return (
-    <div className="mb-14 pt-10 relative">
+    <div className=" pt-2 relative">
       <div className="absolute top-0 right-0 left-0 h-px bg-linear-to-l from-transparent via-gray-200 to-transparent" />
       
-      <div className="flex items-center justify-end gap-3 mb-8 text-right font-cairo">
+      <div className="flex items-center justify-end gap-3 mb-6 text-right font-cairo">
         <h3 className="text-[1.3rem] font-black text-gray-900 tracking-tight">
           المهارات والأدوات المطلوبة
         </h3>
@@ -36,10 +36,6 @@ export default function ProjectSkills({ project }: ProjectSkillsProps) {
           </div>
         ))}
 
-        {/* Decorative "More" block for polish */}
-        <div className="relative group cursor-default flex items-center justify-center bg-gray-50 border border-gray-200/50 px-5 py-2.5 rounded-[14px]">
-           <Sparkles size={16} className="text-gray-400 group-hover:text-amber-400 group-hover:animate-spin transition-colors duration-500" strokeWidth={2.5}/>
-        </div>
       </div>
     </div>
   );

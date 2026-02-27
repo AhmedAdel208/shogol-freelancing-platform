@@ -18,6 +18,15 @@ class JobRequestService {
     return response.data;
   }
 
+  async createJobRequest(formData: FormData): Promise<any> {
+    const response = await apiClient.post("/JobRequest", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  }
+
   async deleteJobRequest(id: string): Promise<void> {
     await apiClient.delete(`/JobRequest/${id}`);
   }

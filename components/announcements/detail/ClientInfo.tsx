@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { ClientInfoProps } from "@/types/detailComponents";
-import MailIcon from "@/public/icons/MailIcon";
+import { MessageSquareMore } from "lucide-react";
 
 export default function ClientInfo({
   project,
@@ -45,17 +45,22 @@ export default function ClientInfo({
           </div>
         </div>
 
-        {/* Send Message Button */}
+        {/* Send Message Button (Sophisticated Interactive Style) */}
         <button
           onClick={onSendMessage}
-          className="relative w-full overflow-hidden rounded-[14px] font-bold font-cairo text-base group/btn shadow-md shadow-gray-200"
+          className="group/btn relative w-full overflow-hidden rounded-[16px] font-bold font-cairo text-base transition-all duration-400 active:scale-[0.98] shadow-md shadow-slate-200/50 hover:shadow-lg hover:shadow-primary/20 cursor-pointer"
         >
-          <div className="absolute inset-0 bg-slate-50 border-2 border-slate-200 text-slate-700 transition-all duration-300 group-hover/btn:bg-primary group-hover/btn:border-primary" />
+          {/* Base Layer */}
+          <div className="absolute inset-0 bg-slate-50 border border-slate-200 transition-all duration-500 group-hover/btn:bg-primary group-hover/btn:border-primary" />
           
-          <div className="relative flex items-center justify-center gap-2.5 py-3.5 px-6 transition-colors duration-300 text-slate-600 group-hover/btn:text-white">
-            <MailIcon className="w-[22px] h-[22px]" />
-            <span className="mb-[1px]">التواصل مع العميل</span>
+          {/* Content Layer */}
+          <div className="relative flex items-center justify-center gap-3 py-3.5 px-6 transition-colors duration-500 text-slate-600 group-hover/btn:text-white">
+            <MessageSquareMore size={20} strokeWidth={2.5} className="group-hover/btn:-translate-y-0.5 group-hover/btn:rotate-6 transition-transform duration-300" />
+            <span className="mb-px tracking-tight">التواصل مع العميل</span>
           </div>
+          
+          {/* Subtle Shine Overlay */}
+          <div className="absolute inset-x-0 inset-y-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_2s_infinite] pointer-events-none" />
         </button>
       </div>
     </div>

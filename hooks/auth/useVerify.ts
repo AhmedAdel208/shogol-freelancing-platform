@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "@/lib/api/auth";
 import { useTimer } from "@/hooks/useTimer";
+import { toast } from "sonner";
 import { useOtpInput } from "@/hooks/auth/useOtpInput";
 import { VerifyOtpData } from "@/types/auth";
 
@@ -13,6 +14,7 @@ export function useVerify() {
 
   const phoneNumber = searchParams.get("phone") || "";
   const email = searchParams.get("email") || "";
+  const userRole = searchParams.get("type") || "";
 
   const {
     code,
@@ -44,7 +46,13 @@ export function useVerify() {
         // Dispatch storage event to trigger auth state update
         window.dispatchEvent(new Event("storage"));
       }
-      router.replace("/onboarding/skills");
+
+      if (userRole === "client") {
+        toast.success("تم تفعيل حسابك بنجاح! مرحباً بك في شغل");
+        router.replace("/");
+      } else {
+        router.replace("/onboarding/skills");
+      }
     },
   });
 

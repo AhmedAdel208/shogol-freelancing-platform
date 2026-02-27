@@ -17,9 +17,10 @@ export function useRegistration({ initialAccountType }: UseRegistrationProps = {
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
-      accountType: (initialAccountType as "freelancer" | "company") || "freelancer",
+      userRole: (initialAccountType as "freelancer" | "client") || "freelancer",
+      accountType: "individual",
     },
   });
 
@@ -27,6 +28,7 @@ export function useRegistration({ initialAccountType }: UseRegistrationProps = {
     register,
     handleSubmit,
     trigger,
+    watch,
     setError,
     formState: { errors },
   } = form;
@@ -80,6 +82,7 @@ export function useRegistration({ initialAccountType }: UseRegistrationProps = {
     form,
     register,
     handleSubmit: handleSubmit(onSubmit),
+    watch,
     errors,
     isSubmitting: registerMutation.isPending,
     selectedImage,

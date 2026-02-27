@@ -9,7 +9,7 @@ export default function Button({
   disabled = false,
 }: ButtonProps) {
   const baseClasses =
-    "font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5";
+    "font-bold py-4 cursor-pointer rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5";
   const variantClasses = {
     primary: "bg-primary text-white hover:bg-primary/90",
     secondary: "bg-gray-200 text-dark hover:bg-gray-300",
