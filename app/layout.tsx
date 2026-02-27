@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
-import { Toaster } from "react-hot-toast";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,

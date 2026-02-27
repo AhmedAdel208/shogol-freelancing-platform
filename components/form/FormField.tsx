@@ -56,7 +56,7 @@ export default function FormField({
 
   return (
     <div className="text-right">
-      <label className="block text-primary text-sm mb-2">
+      <label className="block text-white  mb-2">
         {label}
         {required && <span className="text-red-500"> *</span>}
       </label>

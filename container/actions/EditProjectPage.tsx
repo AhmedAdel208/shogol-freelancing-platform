@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "react-hot-toast";
+import { toast } from "@/lib/toast";
 import { useProjectDetail } from "@/hooks/useProjectDetail";
 import {
   editProjectSchema,
@@ -14,7 +14,8 @@ import {
 import { updateProjectService } from "@/lib/api/updateProject";
 import FormField from "@/components/form/FormField";
 import Button from "@/components/form/Button";
-import { Save, X } from "lucide-react";
+import { Save } from "lucide-react";
+import { formatDeadlineForInput } from "@/utils/date";
 
 export default function EditProjectPage() {
   const router = useRouter();
@@ -55,7 +56,7 @@ export default function EditProjectPage() {
         description: project.description || "",
         budget: Number(project.budget) || 0,
         durationInDays: project.durationInDays || 30,
-        deadline: project.deadline || "",
+        deadline: formatDeadlineForInput(project.deadline),
       });
     }
   }, [project, reset]);
@@ -96,7 +97,11 @@ export default function EditProjectPage() {
           <p className="text-gray-400 mb-4">
             حدث خطأ أثناء تحميل بيانات المشروع
           </p>
-          <Button onClick={handleCancel} variant="primary" className="mx-auto">
+          <Button
+            onClick={handleCancel}
+            variant="primary"
+            className="mx-auto cursor-pointer"
+          >
             العودة
           </Button>
         </div>
@@ -107,7 +112,7 @@ export default function EditProjectPage() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="bg-gray-800/50 rounded-2xl p-6 space-y-6"
+      className="bg-[#1f2937] rounded-2xl p-6 space-y-6"
     >
       {/* Title */}
       <FormField
@@ -167,7 +172,7 @@ export default function EditProjectPage() {
       />
 
       {/* Buttons */}
-      <div className="flex gap-4 pt-4">
+      <div className="flex gap-4 pt-4" dir="ltr">
         <Button
           type="submit"
           variant="primary"
@@ -180,7 +185,6 @@ export default function EditProjectPage() {
         <Button
           type="button"
           variant="secondary"
-          icon={X}
           onClick={handleCancel}
           className="flex-1"
         >

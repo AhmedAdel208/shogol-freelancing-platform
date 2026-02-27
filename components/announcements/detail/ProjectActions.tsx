@@ -6,15 +6,17 @@ import { getCurrentUser } from "@/utils/auth";
 import NotLoggedInActions from "./projectActions/NotLoggedInActions";
 import OwnerActions from "./projectActions/OwnerActions";
 import FreelancerActions from "./projectActions/FreelancerActions";
-// import ClientActions from "./projectActions/ClientActions";
+
 
 export default function ProjectActions({
   projectOwnerId,
   jobRequestId,
+  projectStatus,
   onSendMessage,
   onEditProject,
   onDeleteProject,
-  onProposalSuccess, // ✅ was missing here
+  onProposalSuccess,
+  hasSubmittedProposal,
 }: ProjectActionsProps) {
   const { isAuthenticated, isMounted } = useAuth();
 
@@ -33,6 +35,7 @@ export default function ProjectActions({
       <OwnerActions
         onEditProject={onEditProject}
         onDeleteProject={onDeleteProject}
+        projectStatus={projectStatus}
       />
     );
   }
@@ -43,6 +46,7 @@ export default function ProjectActions({
         onSendMessage={onSendMessage}
         jobRequestId={jobRequestId}
         onProposalSuccess={onProposalSuccess}
+        hasSubmittedProposal={hasSubmittedProposal}
       />
     );
   }

@@ -12,18 +12,16 @@ export const useProposal = () => {
       queryClient.invalidateQueries({
         queryKey: ["proposals", variables.jobRequestId],
       });
+      // Also invalidate the project detail query where proposals are usually nested
+      queryClient.invalidateQueries({
+        queryKey: ["project", variables.jobRequestId],
+      });
       // Also invalidate my-proposals to refresh the user's proposals list
       queryClient.invalidateQueries({
         queryKey: ["my-proposals"],
       });
     },
-    onError: (error: any) => {
-      console.error("Proposal submission failed:", error);
-      console.error("Error response:", error?.response);
-      console.error("Error data:", error?.response?.data);
-      console.error("Error status:", error?.response?.status);
-      console.error("Error message:", error?.message);
-    },
+
   });
 };
 

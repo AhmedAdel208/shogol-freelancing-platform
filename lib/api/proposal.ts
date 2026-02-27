@@ -18,9 +18,15 @@ export const proposalApi = {
     return response.data;
   },
 
-  // ✅ new
-  getMyProposals: async (): Promise<ProposalDisplay[]> => {
-    const response = await apiClient.get("/Proposal/my-proposals");
+  // // ✅ new
+  // getMyProposals: async (): Promise<ProposalDisplay[]> => {
+  //   const response = await apiClient.get("/Proposal/my-proposals");
+  //   return response.data;
+  // },
+
+  // ✅ accept proposal
+  acceptProposal: async (proposalId: number): Promise<{ message: string }> => {
+    const response = await apiClient.post(`/Proposal/${proposalId}/accept`);
     return response.data;
   },
 };

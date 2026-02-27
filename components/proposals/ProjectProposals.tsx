@@ -1,27 +1,32 @@
 "use client";
 
 import ProposalsList from "./ProposalsList";
-import { useMyProposals } from "@/hooks/useMyProposals";
+import { useProjectDetail } from "@/hooks/useProjectDetail";
+import { getCurrentUser } from "@/utils/auth";
+import Loading from "@/common/Loading";
 
 interface ProjectProposalsProps {
   proposalId?: number | null;
   jobRequestId?: string;
 }
-
-/**
- * ProjectProposals - Fetches and displays the user's proposals.
- */
 export default function ProjectProposals({
   jobRequestId,
 }: ProjectProposalsProps) {
-  const { data: myProposals, isLoading, error } = useMyProposals();
+  const {
+    data: project,
+    isLoading,
+    error,
+  } = useProjectDetail({
+    id: jobRequestId || "",
+  });
+
+  const currentUser = getCurrentUser();
+  const isProjectOwner = currentUser?.id === project?.clientId;
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return  <Loading />
+      
+
   }
 
   if (error) {
@@ -32,15 +37,23 @@ export default function ProjectProposals({
     );
   }
 
-  // Filter proposals for this specific job request
-  const projectProposals =
-    myProposals?.proposals.filter(
-      (proposal) => proposal.jobRequestId === Number(jobRequestId),
-    ) || [];
+  // Proposals are included in the job details response
+  const projectProposals = project?.proposals || [];
 
   if (!projectProposals || projectProposals.length === 0) {
-    return null;
+    return (
+      <div className="bg-white rounded-xl border border-border p-6 text-center">
+        <p className="text-gray-medium">
+          لا توجد عروض مقدمة لهذا المشروع حتى الآن
+        </p>
+      </div>
+    );
   }
 
-  return <ProposalsList proposals={projectProposals} />;
+  return (
+    <ProposalsList
+      proposals={projectProposals}
+      isProjectOwner={isProjectOwner}
+    />
+  );
 }

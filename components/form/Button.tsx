@@ -24,8 +24,9 @@ export default function Button({
   onClick,
   className = "",
 }: ButtonProps) {
-  const baseClasses = "font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed";
-  
+  const baseClasses =
+    "font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed";
+
   const variantClasses = {
     primary: "bg-primary text-white hover:bg-primary/90",
     secondary: "border-2 border-primary text-primary hover:bg-primary/10",
@@ -38,7 +39,7 @@ export default function Button({
     lg: "px-8 py-4 text-lg",
   };
 
-  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} cursor-pointer ${className}`;
 
   return (
     <button

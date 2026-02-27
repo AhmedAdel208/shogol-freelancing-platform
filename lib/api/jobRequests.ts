@@ -17,6 +17,10 @@ class JobRequestService {
     const response = await apiClient.get(`/JobRequest/${id}`);
     return response.data;
   }
+
+  async deleteJobRequest(id: string): Promise<void> {
+    await apiClient.delete(`/JobRequest/${id}`);
+  }
 }
 
 export const jobRequestService = new JobRequestService();
