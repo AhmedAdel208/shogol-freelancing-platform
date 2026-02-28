@@ -3,17 +3,19 @@ import { SkillCategory } from "@/types/skills";
 
 export const skillsService = {
   getSkills: async () => {
-    const response = await apiClient.get<{ categories: SkillCategory[] }>("/Skill");
-    return response.data;
+    const { data } = await apiClient.get<{ categories: SkillCategory[] }>(
+      "/Skill",
+    );
+    return data;
   },
 
   addSkill: async (skillId: number) => {
-    const response = await apiClient.post("/Skill/add", { skillId });
-    return response.data;
+    const { data } = await apiClient.post("/Skill/add", { skillId });
+    return data;
   },
 
   addMultipleSkills: async (skillIds: number[]) => {
-    const response = await apiClient.post("/Skill/add-multiple", { skillIds });
-    return response.data;
+    const { data } = await apiClient.post("/Skill/add-multiple", { skillIds });
+    return data;
   },
 };

@@ -10,11 +10,11 @@ export function useTimer(initialSeconds: number = 30) {
     setIsActive(true);
   };
 
-  const stopTimer =() => {
+  const stopTimer = () => {
     setIsActive(false);
   };
 
-  const resetTimer =(seconds: number = initialSeconds) => {
+  const resetTimer = (seconds: number = initialSeconds) => {
     setTimer(seconds);
     setIsActive(true);
   };
@@ -22,11 +22,14 @@ export function useTimer(initialSeconds: number = 30) {
   useEffect(() => {
     if (isActive && timer > 0) {
       intervalRef.current = setInterval(() => {
-        setTimer((t) => t - 1);
+        setTimer((t) => {
+          const newTime = t - 1;
+          if (newTime === 0) {
+            setIsActive(false);
+          }
+          return newTime;
+        });
       }, 1000);
-    } else if (timer === 0) {
-      setIsActive(false);
-      if (intervalRef.current) clearInterval(intervalRef.current);
     }
 
     return () => {

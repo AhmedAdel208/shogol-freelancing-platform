@@ -1,17 +1,6 @@
-"use client";
-
 import { X, Check } from "lucide-react";
-import { Skill } from "@/types/skills";
+import { SkillsModalProps } from "@/types/skillsModal";
 import { useEffect, useRef } from "react";
-
-interface SkillsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  availableSkills: Skill[];
-  selectedSkillIds: number[];
-  onToggleSkill: (skill: Skill) => void;
-  onConfirm: () => void;
-}
 
 export default function SkillsModal({
   isOpen,
@@ -38,19 +27,21 @@ export default function SkillsModal({
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
-      <div 
+      <div
         ref={modalRef}
-        className="bg-white rounded-[32px] w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300"
+        className="bg-white rounded-4xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300"
       >
         {/* Header */}
         <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-          <button 
+          <button
             onClick={onClose}
             className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors cursor-pointer text-gray-400"
           >
             <X size={24} />
           </button>
-          <h2 className="text-xl font-black font-cairo text-dark">اختر المهارات</h2>
+          <h2 className="text-xl font-black font-cairo text-dark">
+            اختر المهارات
+          </h2>
           <div className="w-10" /> {/* Spacer */}
         </div>
 
@@ -66,22 +57,32 @@ export default function SkillsModal({
                   onClick={() => onToggleSkill(skill)}
                   className={`
                     flex items-center justify-end gap-3 p-4 rounded-xl border-2 transition-all duration-200 text-right group
-                    ${isSelected 
-                      ? "border-primary bg-primary/5 text-primary shadow-sm" 
-                      : "border-gray-100 hover:border-primary/30 hover:bg-gray-50 text-gray-600"}
+                    ${
+                      isSelected
+                        ? "border-primary bg-primary/5 text-primary shadow-sm"
+                        : "border-gray-100 hover:border-primary/30 hover:bg-gray-50 text-gray-600"
+                    }
                   `}
                 >
-                  <span className={`text-sm font-bold font-cairo line-clamp-1 ${isSelected ? "text-primary" : "text-gray-600"}`}>
+                  <span
+                    className={`text-sm font-bold font-cairo line-clamp-1 ${isSelected ? "text-primary" : "text-gray-600"}`}
+                  >
                     {skill.nameAr}
                   </span>
-                  
-                  <div className={`
+
+                  <div
+                    className={`
                     w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all shrink-0
-                    ${isSelected 
-                      ? "bg-primary border-primary" 
-                      : "border-gray-300 bg-white group-hover:border-primary/50"}
-                  `}>
-                    {isSelected && <Check size={12} className="text-white" strokeWidth={4} />}
+                    ${
+                      isSelected
+                        ? "bg-primary border-primary"
+                        : "border-gray-300 bg-white group-hover:border-primary/50"
+                    }
+                  `}
+                  >
+                    {isSelected && (
+                      <Check size={12} className="text-white" strokeWidth={4} />
+                    )}
                   </div>
                 </button>
               );

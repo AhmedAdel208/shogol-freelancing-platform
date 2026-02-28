@@ -1,8 +1,8 @@
 "use client";
 
 import ProposalsList from "./ProposalsList";
-import { useProjectDetail } from "@/hooks/useProjectDetail";
-import { getCurrentUser } from "@/utils/auth";
+import { useProjectDetail } from "@/hooks/project/useProjectDetail";
+import { useAuth } from "@/hooks/auth/useAuth";
 import Loading from "@/common/Loading";
 
 interface ProjectProposalsProps {
@@ -20,13 +20,11 @@ export default function ProjectProposals({
     id: jobRequestId || "",
   });
 
-  const currentUser = getCurrentUser();
-  const isProjectOwner = currentUser?.id === project?.clientId;
+  const { user } = useAuth();
+  const isProjectOwner = user?.id === project?.clientId;
 
   if (isLoading) {
-    return  <Loading />
-      
-
+    return <Loading />;
   }
 
   if (error) {

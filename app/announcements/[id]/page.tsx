@@ -1,19 +1,17 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useDeleteProject } from "@/hooks/useDeleteProject";
+import { useDeleteProject } from "@/hooks/project/useDeleteProject";
 import Footer from "@/components/landing/footer/Footer";
 import LinksHeader from "@/components/landing/header/LinksHeader";
 import Gradientline from "@/components/ui/header/Gradientline";
-import { useProjectDetail } from "@/hooks/useProjectDetail";
+import { useProjectDetail } from "@/hooks/project/useProjectDetail";
 import ProjectHeader from "@/components/announcements/detail/ProjectHeader";
 import ProjectDetails from "@/components/announcements/detail/ProjectDetails";
 import ProjectSkills from "@/components/announcements/detail/ProjectSkills";
 import ProjectActions from "@/components/announcements/detail/ProjectActions";
 import ProjectProposals from "@/components/proposals/ProjectProposals";
 import ErrorState from "@/components/announcements/detail/ErrorState";
-
-import { getCurrentUser } from "@/utils/auth";
 import ClientInfo from "@/components/announcements/detail/ClientInfo";
 import { useAuth } from "@/hooks/auth/useAuth";
 import Loading from "@/common/Loading";
@@ -22,8 +20,7 @@ export default function AnnouncementDetailPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.id as string;
-  const currentUser = getCurrentUser();
-  const {isAuthenticated} = useAuth()
+  const { isAuthenticated, user } = useAuth();
 
   const {
     data: project,
@@ -34,12 +31,12 @@ export default function AnnouncementDetailPage() {
   });
 
   // Check if current user is the owner of this project
-  const isOwner = currentUser?.id === project?.clientId;
-  const isClient = currentUser?.isClient;
-  const isFreelancer = currentUser?.isFreelancer;
+  const isOwner = user?.id === project?.clientId;
+  const isClient = user?.isClient;
+  const isFreelancer = user?.isFreelancer;
 
   const hasSubmittedProposal = project?.proposals?.some(
-    (proposal) => proposal.freelancerId === currentUser?.id
+    (proposal) => proposal.freelancerId === user?.id,
   );
 
   const { deleteProject } = useDeleteProject();
@@ -64,15 +61,20 @@ export default function AnnouncementDetailPage() {
       </header>
 
       <section
-        className="px-4 md:px-6 lg:px-8 min-h-[50vh] w-full max-w-8xl mx-auto py-4 md:py-6 flex-1"
+        className="px-4 md:px-6 lg:px-8 min-h-[90vh] w-full max-w-8xl mx-auto py-4 md:py-6 flex-1"
         dir="ltr"
       >
         <div className="flex flex-col lg:flex-row gap-8 flex-1">
           {/* Sidebar - Actions (Left side in RTL) */}
-          <aside className="w-full lg:w-[400px] shrink-0 order-2 lg:order-1 flex flex-col gap-6 lg:sticky lg:top-24 h-fit">
-            {!isOwner && <ClientInfo project={project} onSendMessage={() => console.log("Send message")} />}
+          <aside className="w-full lg:w-100 shrink-0 order-2 lg:order-1 flex flex-col gap-6 lg:sticky lg:top-24 h-fit">
+            {!isOwner && (
+              <ClientInfo
+                project={project}
+                onSendMessage={() => console.log("Send message")}
+              />
+            )}
             {isOwner || isFreelancer || !isAuthenticated ? (
-              <div className="bg-[#ffffff] rounded-[24px] shadow-[0_2px_10px_rgb(0,0,0,0.03)] border border-gray-100/80 p-8">
+              <div className="bg-[#ffffff] rounded-3xl shadow-[0_2px_10px_rgb(0,0,0,0.03)] border border-gray-100/80 p-8">
                 <ProjectActions
                   projectOwnerId={project.clientId}
                   jobRequestId={project.id}
@@ -89,10 +91,10 @@ export default function AnnouncementDetailPage() {
           </aside>
 
           {/* Main Content (Right side in RTL) */}
-          <main className="flex-1 order-1 lg:order-2 bg-[#ffffff] p-6 md:p-10 shadow-[0_2px_40px_rgba(0,0,0,0.04)] rounded-[32px] border border-white flex flex-col relative overflow-hidden">
+          <main className="flex-1 order-1 lg:order-2 bg-[#ffffff] p-6 md:p-10 shadow-[0_2px_40px_rgba(0,0,0,0.04)] rounded-4xl border border-white flex flex-col relative overflow-hidden">
             {/* Soft decorative background blur */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10 translate-x-1/2 -translate-y-1/2" />
-            
+            <div className="absolute top-0 right-0 w-125 h-125 bg-primary/5 rounded-full blur-[100px] -z-10 translate-x-1/2 -translate-y-1/2" />
+
             {/* Project Header: Title, Status, Meta */}
             <ProjectHeader project={project} />
 
@@ -111,7 +113,6 @@ export default function AnnouncementDetailPage() {
 
             {/* Skills Section */}
             <ProjectSkills project={project} />
-
           </main>
         </div>
 

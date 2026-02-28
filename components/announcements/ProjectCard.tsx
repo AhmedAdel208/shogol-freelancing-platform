@@ -1,5 +1,11 @@
 import Image from "next/image";
-import { Banknote, Clock, User, CalendarDays, ArrowUpLeft, BriefcaseBusiness } from "lucide-react";
+import {
+  Banknote,
+  Clock,
+  CalendarDays,
+  ArrowUpLeft,
+  BriefcaseBusiness,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatTimeAgo, mapStatus } from "@/utils";
 import { ProjectCardProps } from "@/types/announcements";
@@ -12,11 +18,11 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   };
 
   const isPending = project.status === "Pending";
-  const statusColor = isPending 
+  const statusColor = isPending
     ? "bg-amber-100 text-amber-700 border-amber-200"
     : project.status === "Accepted"
-    ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-    : "bg-sky-100 text-sky-700 border-sky-200";
+      ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+      : "bg-sky-100 text-sky-700 border-sky-200";
 
   return (
     <div
@@ -32,14 +38,16 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           <h2 className="text-2xl md:text-3xl font-black font-cairo text-primary leading-[1.3] line-clamp-2">
             {project.title}
           </h2>
-          
+
           <div className="flex shrink-0 gap-3 items-center">
-             {/* Go To Project Icon */}
-             <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center transition-all duration-300 hover:scale-110">
+            {/* Go To Project Icon */}
+            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center transition-all duration-300 hover:scale-110">
               <ArrowUpLeft size={20} strokeWidth={3} />
             </div>
 
-            <span className={`px-5 py-2 rounded-full text-[14px] font-black font-cairo shadow-sm border ${statusColor}`}>
+            <span
+              className={`px-5 py-2 rounded-full text-[14px] font-black font-cairo shadow-sm border ${statusColor}`}
+            >
               {mapStatus(project.status)}
             </span>
           </div>
@@ -52,7 +60,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
         {/* Tags */}
         <div className="flex flex-wrap items-center justify-end gap-2 mb-8">
-           {project.skills && project.skills.length > 4 && (
+          {project.skills && project.skills.length > 4 && (
             <span className="bg-slate-50 border border-slate-100 text-slate-400 px-3 py-1.5 rounded-xl text-[12px] font-bold shadow-xs order-last">
               +{project.skills.length - 4}
             </span>
@@ -68,21 +76,26 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         {/* Stats Row - Premium Metric Pills */}
-        <div className="flex flex-wrap items-center justify-end gap-4 mb-8 mt-auto" dir="rtl">
+        <div
+          className="flex flex-wrap items-center justify-end gap-4 mb-8 mt-auto"
+          dir="rtl"
+        >
           {/* Budget */}
           <div className="flex items-center gap-3 bg-emerald-50/40 border border-emerald-100/30 px-5 py-3 rounded-2xl group/metric hover:bg-emerald-50 transition-colors">
             <span className="text-emerald-600 font-extrabold font-cairo text-lg">
-              {project.budget} <span className="text-[12px] opacity-70">ريال</span>
+              {project.budget}{" "}
+              <span className="text-[12px] opacity-70">ريال</span>
             </span>
             <div className="w-8 h-8 rounded-lg bg-emerald-100/50 flex items-center justify-center text-emerald-600 shadow-xs">
               <Banknote size={18} strokeWidth={2.5} />
             </div>
           </div>
-          
+
           {/* Duration */}
           <div className="flex items-center gap-3 bg-sky-50/40 border border-sky-100/30 px-5 py-3 rounded-2xl group/metric hover:bg-sky-50 transition-colors">
             <span className="text-sky-600 font-extrabold font-cairo text-lg">
-              {project.durationInDays} <span className="text-[12px] opacity-70">يوم</span>
+              {project.durationInDays}{" "}
+              <span className="text-[12px] opacity-70">يوم</span>
             </span>
             <div className="w-8 h-8 rounded-lg bg-sky-100/50 flex items-center justify-center text-sky-600 shadow-xs">
               <Clock size={18} strokeWidth={2.5} />
@@ -92,7 +105,8 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           {/* Proposals Count */}
           <div className="flex items-center gap-3 bg-purple-50/40 border border-purple-100/30 px-5 py-3 rounded-2xl group/metric hover:bg-purple-50 transition-colors">
             <span className="text-purple-600 font-extrabold font-cairo text-lg">
-              {project.proposalsCount} <span className="text-[12px] opacity-70">عرض</span>
+              {project.proposalsCount}{" "}
+              <span className="text-[12px] opacity-70">عرض</span>
             </span>
             <div className="w-8 h-8 rounded-lg bg-purple-100/50 flex items-center justify-center text-purple-600 shadow-xs">
               <BriefcaseBusiness size={18} strokeWidth={2.5} />
@@ -101,10 +115,13 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         {/* Footer Divider */}
-        <div className="border-t border-dashed border-slate-200 mt-2 pt-6 flex items-center justify-between w-full" dir="rtl">
+        <div
+          className="border-t border-dashed border-slate-200 mt-2 pt-6 flex items-center justify-between w-full"
+          dir="rtl"
+        >
           {/* Client Info (Right in RTL) */}
           <div className="flex items-center gap-3">
-             <div className="relative w-11 h-11 rounded-2xl overflow-hidden bg-slate-50 ring-4 ring-white shadow-md flex items-center justify-center shrink-0">
+            <div className="relative w-11 h-11 rounded-full overflow-hidden bg-slate-50 ring-4 ring-white shadow-md flex items-center justify-center shrink-0">
               {project.clientAvatar ? (
                 <Image
                   src={project.clientAvatar}

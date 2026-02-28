@@ -1,7 +1,6 @@
 import { Worker } from "@/types/workers";
 import { SkillCategory } from "@/types/skills";
 import { Calendar, MapPin } from "lucide-react";
-import image from "@/public/images/male-face.jpg";
 
 export default function ProfileCard({ user }: { user: Worker }) {
   return (
@@ -9,11 +8,6 @@ export default function ProfileCard({ user }: { user: Worker }) {
       {/* Avatar */}
       <div className="flex flex-col items-center">
         <div className="relative">
-          <img
-            src={user.coverImageUrl || image.src}
-            className="w-24 h-24 rounded-full border-4 border-cyan-500"
-            alt="avatar"
-          />
           {user.lastOnlineAt && (
             <span className="absolute bottom-1 left-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></span>
           )}

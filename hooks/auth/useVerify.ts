@@ -7,6 +7,7 @@ import { useTimer } from "@/hooks/useTimer";
 import { toast } from "sonner";
 import { useOtpInput } from "@/hooks/auth/useOtpInput";
 import { VerifyOtpData } from "@/types/auth";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export function useVerify() {
   const router = useRouter();
@@ -43,8 +44,8 @@ export function useVerify() {
       const token = response.token;
       if (token) {
         localStorage.setItem("token", token);
-        // Dispatch storage event to trigger auth state update
-        window.dispatchEvent(new Event("storage"));
+        // Sync with reactive store
+        useAuthStore.getState().setToken(token);
       }
 
       if (userRole === "client") {

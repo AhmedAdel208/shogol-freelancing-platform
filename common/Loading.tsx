@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
+    <div className="min-h-[90vh] flex flex-col items-center justify-center px-4">
       {/* Premium Loader */}
       <div className="relative w-20 h-20 mb-10">
         {/* Outer Ring */}

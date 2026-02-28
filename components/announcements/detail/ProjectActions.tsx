@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/hooks/auth/useAuth";
 import { ProjectActionsProps } from "@/types/detailComponents";
-import { getCurrentUser } from "@/utils/auth";
 import NotLoggedInActions from "./projectActions/NotLoggedInActions";
 import OwnerActions from "./projectActions/OwnerActions";
 import FreelancerActions from "./projectActions/FreelancerActions";
@@ -18,7 +17,7 @@ export default function ProjectActions({
   onProposalSuccess,
   hasSubmittedProposal,
 }: ProjectActionsProps) {
-  const { isAuthenticated, isMounted } = useAuth();
+  const { isAuthenticated, isMounted, user } = useAuth();
 
   if (!isMounted) return null;
 
@@ -26,9 +25,8 @@ export default function ProjectActions({
     return <NotLoggedInActions />;
   }
 
-  const currentUser = getCurrentUser();
-  const isOwner = currentUser?.id === projectOwnerId;
-  const isFreelancer = currentUser?.isFreelancer;
+  const isOwner = user?.id === projectOwnerId;
+  const isFreelancer = user?.isFreelancer;
 
   if (isOwner) {
     return (

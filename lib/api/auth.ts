@@ -20,10 +20,17 @@ class AuthService {
     formData.append("Email", userData.email);
     formData.append("PhoneNumber", userData.phone);
     formData.append("Password", userData.password);
-    if (userData.nationality) formData.append("Nationality", userData.nationality);
+    if (userData.nationality)
+      formData.append("Nationality", userData.nationality);
     if (userData.gender) formData.append("Gender", userData.gender);
-    formData.append("AccountType", userData.accountType === "company" ? "Company" : "Individual");
-    formData.append("UserType", userData.userRole === "client" ? "Client" : "Freelancer");
+    formData.append(
+      "AccountType",
+      userData.accountType === "company" ? "Company" : "Individual",
+    );
+    formData.append(
+      "UserType",
+      userData.userRole === "client" ? "Client" : "Freelancer",
+    );
     formData.append("CompanyName", userData.companyName || "");
 
     if (profilePicture) {
@@ -50,10 +57,7 @@ class AuthService {
     return data;
   }
 
-  async resendOtp(payload: {
-    phoneNumber?: string;
-    email?: string;
-  }): Promise<{ message: string }> {
+  async resendOtp(payload: { phoneNumber?: string; email?: string }) {
     const { data } = await apiClient.post("/Auth/resend-otp", payload);
     return data;
   }

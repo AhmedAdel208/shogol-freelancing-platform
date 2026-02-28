@@ -1,20 +1,19 @@
-// features/announcements/edit/EditProjectPage.tsx
 "use client";
 
 import { useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "@/lib/toast";
-import { useProjectDetail } from "@/hooks/useProjectDetail";
+import { useProjectDetail } from "@/hooks/project/useProjectDetail";
 import {
   editProjectSchema,
   EditProjectFormData,
 } from "@/lib/validation/editProjectSchema";
-import { updateProjectService } from "@/lib/api/updateProject";
+import { useUpdateProject } from "@/hooks/project/useUpdateProject";
 import FormField from "@/components/form/FormField";
 import Button from "@/components/form/Button";
 import { Save, X } from "lucide-react";
+import Spinner from "@/common/Spinner";
 
 export default function EditProjectPage() {
   const router = useRouter();
@@ -34,7 +33,7 @@ export default function EditProjectPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
   } = useForm<EditProjectFormData>({
     resolver: zodResolver(editProjectSchema),
@@ -60,20 +59,10 @@ export default function EditProjectPage() {
     }
   }, [project, reset]);
 
-  const onSubmit = async (data: EditProjectFormData) => {
-    try {
-      const result = await updateProjectService.updateProject(projectId, data);
+  const updateMutation = useUpdateProject();
 
-      if (result.success) {
-        toast.success(result.message);
-        router.push(`/announcements/${projectId}`);
-      } else {
-        toast.error(result.message);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("حدث خطأ غير متوقع");
-    }
+  const onSubmit = (data: EditProjectFormData) => {
+    updateMutation.mutate({ id: projectId, data });
   };
 
   const handleCancel = () => {
@@ -81,11 +70,7 @@ export default function EditProjectPage() {
   };
 
   if (isLoading) {
-    return (
-      <main className="min-h-screen bg-dark flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-      </main>
-    );
+    return <Spinner />;
   }
 
   if (error || !project) {
@@ -187,7 +172,7 @@ export default function EditProjectPage() {
             <Button
               type="submit"
               variant="primary"
-              loading={isSubmitting}
+              loading={updateMutation.isPending}
               icon={Save}
               className="flex-1"
             >

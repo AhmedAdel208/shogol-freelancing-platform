@@ -84,3 +84,9 @@ export interface ResetPasswordResponse {
   success: boolean;
   message?: string;
 }
+
+export interface AuthUser {
+  id: string;
+  isClient: boolean;
+  isFreelancer: boolean;
+}

@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { authService } from "@/lib/api/auth";
 import { loginSchema, type LoginFormData } from "@/lib/validation/loginSchema";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export function useLogin() {
   const router = useRouter();
@@ -22,13 +23,10 @@ export function useLogin() {
   const { mutate, isPending } = useMutation({
     mutationFn: (data: LoginFormData) => authService.login(data),
     onSuccess: (data) => {
-      // Assuming the API returns a token and we might want to store it
       if (data.token) {
         localStorage.setItem("token", data.token);
-        // Dispatch storage event to trigger auth state update
-        window.dispatchEvent(new Event("storage"));
+        useAuthStore.getState().setToken(data.token);
       }
-
       router.push("/");
     },
     onError: (error) => {

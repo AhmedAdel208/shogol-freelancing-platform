@@ -1,79 +1,138 @@
-"use client";
-
-import { Loader2 } from "lucide-react";
-import { useProfile } from "@/hooks/auth/useProfile";
+import { useState, useRef, useEffect } from "react";
+import { User, LayoutGrid, LogOut, ChevronLeft } from "lucide-react";
+import { useProfile } from "@/hooks/profile/useProfile";
 import Image from "next/image";
-import { getCurrentUser } from "@/utils/auth";
+import { useAuth } from "@/hooks/auth/useAuth";
+import MenuLink from "@/components/ui/MenuLink";
+import { getUserName, getUserInitials } from "@/utils";
+import Spinner from "@/common/Spinner";
 
 export const UserButton = () => {
   const { data: profile, isLoading, error } = useProfile();
+  const { user, logout } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 rounded-xl cursor-default transition-colors text-right" dir="rtl">
-        <Loader2 className="w-5 h-5 animate-spin text-primary/60" />
+      <div className="w-11 h-11 flex items-center justify-center bg-slate-50 rounded-full border border-slate-100">
+        <Spinner size={5} className="text-primary/40" inline />
       </div>
     );
   }
 
-  if (error || !profile) {
-    return (
-      <div className="flex items-center gap-2 px-3 py-1.5 border border-red-200 bg-red-50 rounded-lg">
-        <span className="text-red-500 text-sm">حدث خطأ</span>
-      </div>
-    );
-  }
+  if (error || !profile) return null;
 
-  const userName =
-    profile.firstName && profile.lastName
-      ? `${profile.firstName} ${profile.lastName}`
-      : profile.firstName || profile.email?.split("@")[0] || "مستخدم";
-
-  const getInitials = () => {
-    if (profile.firstName && profile.lastName) {
-      return `${profile.firstName.charAt(0)}${profile.lastName.charAt(0)}`.toUpperCase();
-    }
-    return userName.charAt(0).toUpperCase();
-  };
-
-  const currentUser = getCurrentUser();
-  const isClientRole = currentUser?.isClient;
-  const isFreelancerRole = currentUser?.isFreelancer;
+  const isClientRole = user?.isClient;
+  const userName = getUserName(profile);
+  const getInitials = () => getUserInitials(profile);
 
   return (
-    <button className="group flex cursor-pointer items-center gap-2.5 pl-3.5 pr-2 py-2 rounded-full bg-white/80 backdrop-blur-md border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-500 active:scale-[0.98]">
-      {/* Profile Picture / Initials */}
-      <div className="relative shrink-0">
-        <div className="w-[38px] h-[38px] rounded-full overflow-hidden transition-all duration-500 group-hover:scale-110 ring-2 ring-white shadow-sm bg-linear-to-br from-slate-50 to-white flex items-center justify-center border border-gray-100">
+    <div className="relative" ref={dropdownRef} dir="rtl">
+      {/* Profile Toggle Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`relative cursor-pointer transition-all duration-500 active:scale-90 group ${
+          isOpen ? "scale-110" : ""
+        }`}
+      >
+        <div
+          className={`w-12 h-12 rounded-full overflow-hidden border  transition-all duration-500 flex  items-center justify-center 
+            ${isClientRole ? "border-[#1CB2B9] bg-[#1CB2B9]/5" : "border-emerald-500 bg-emerald-50"}
+           `}
+        >
           {profile.profilePictureUrl || profile.profilePicture ? (
             <Image
               src={profile.profilePictureUrl || profile.profilePicture}
               alt={userName}
-              width={38}
-              height={38}
-              className="object-cover w-full h-full"
+              width={50}
+              height={50}
+              className="object-cover w-full h-full rounded-full"
             />
           ) : (
-            <span className="text-primary font-bold text-sm font-cairo tracking-tight">
+            <span
+              className={`font-black text-sm font-cairo ${isClientRole ? "text-[#1CB2B9]" : "text-emerald-600"}`}
+            >
               {getInitials()}
             </span>
           )}
         </div>
-      </div>
+      </button>
 
-      {/* Role Badge - Calm & Premium */}
-      <div className="flex items-center">
-        {isClientRole && (
-          <div className="bg-primary/10 text-primary px-3.5 py-1.5 rounded-full transition-colors group-hover:bg-primary/15 whitespace-nowrap">
-             <span className="text-[12px] font-bold font-cairo leading-none">عميل</span>
+      {/* Modern Calm Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute top-16 left-0 w-72 bg-[#1C252E] rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/5 p-3 z-50 animate-in fade-in zoom-in-95 slide-in-from-top-4 duration-300">
+          {/* Header Area (Information Box) */}
+          <div className="bg-white/3 p-5 rounded-3xl mb-3 flex flex-col items-center gap-3">
+            <div className="space-y-1 text-center">
+              <p className="text-white font-black font-cairo text-lg leading-tight tracking-tight">
+                {userName}
+              </p>
+              <div
+                className={`inline-flex px-4 py-1 rounded-full text-[12px] font-black font-cairo 
+                  ${isClientRole ? "bg-[#1CB2B9]/20 text-[#1CB2B9]" : "bg-emerald-500/20 text-emerald-400"}`}
+              >
+                {isClientRole ? "عـميل" : "مستقـل"}
+              </div>
+            </div>
           </div>
-        )}
-        {isFreelancerRole && (
-          <div className="bg-emerald-50 text-emerald-600 px-3.5 py-1.5 rounded-full transition-colors group-hover:bg-emerald-100 whitespace-nowrap">
-             <span className="text-[12px] font-bold font-cairo leading-none">مستقل</span>
+
+          {/* Menu Items */}
+          <div className="space-y-1">
+            <MenuLink
+              href="/profile"
+              icon={<User size={18} />}
+              label="الملف الشخصي"
+              onClick={() => setIsOpen(false)}
+            />
+            <MenuLink
+              href="/requests"
+              icon={<LayoutGrid size={18} />}
+              label="طلباتي"
+              onClick={() => setIsOpen(false)}
+            />
           </div>
-        )}
-      </div>
-    </button>
+
+          {/* Divider */}
+          <div className="h-px bg-white/5 my-3 mx-2" />
+
+          {/* Logout Button */}
+          <button
+            onClick={() => {
+              logout();
+              setIsOpen(false);
+            }}
+            className="w-full flex items-center justify-between p-4 rounded-2xl text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all duration-300 cursor-pointer group/logout"
+          >
+            <div className="flex items-center gap-3">
+              <span className="p-2 bg-rose-500/10 rounded-xl group-hover/logout:bg-rose-500/20 transition-colors">
+                <LogOut size={18} />
+              </span>
+              <span className="font-black font-cairo text-[15px]">
+                تسجيل الخروج
+              </span>
+            </div>
+            <ChevronLeft
+              size={16}
+              className="opacity-30 group-hover/logout:opacity-100 transition-opacity"
+            />
+          </button>
+        </div>
+      )}
+    </div>
   );
 };

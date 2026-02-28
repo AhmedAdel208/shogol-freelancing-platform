@@ -4,8 +4,6 @@ import Link from "next/link";
 import { UserButton } from "./UserButton";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { LogIn, Sparkles, Plus } from "lucide-react";
-import { getCurrentUser } from "@/utils/auth";
-
 // Tailwind Class Variables for cleaner JSX
 const CONTAINER_CLASSES = "flex gap-4 items-center";
 
@@ -22,9 +20,8 @@ const SECONDARY_BTN_CLASSES =
   "hover:bg-primary/5 transition-all duration-300 border border-transparent hover:border-primary/10";
 
 export default function Navbuttons() {
-  const { isAuthenticated, isMounted } = useAuth();
-  const currentUser = getCurrentUser();
-  const isClient = currentUser?.isClient;
+  const { isAuthenticated, isMounted, user } = useAuth();
+  const isClient = user?.isClient;
 
   if (!isMounted) {
     return null; // Avoid hydration mismatch
