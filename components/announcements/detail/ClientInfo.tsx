@@ -19,23 +19,36 @@ export default function ClientInfo({
         {/* Avatar + Name centered */}
         <div className="flex flex-col items-center gap-4 mb-8">
           {/* Avatar with Elite Styling */}
-          <div className="w-[100px] h-[100px] relative bg-slate-50 rounded-full flex items-center justify-center shrink-0 ring-[6px] ring-white shadow-xl shadow-slate-200/50 group-hover:shadow-primary/20 transition-shadow duration-500 z-10">
-            {project.clientAvatar ? (
-              <Image
-                src={project.clientAvatar}
-                alt={project.clientName}
-                width={100}
-                height={100}
-                className="w-full h-full rounded-full object-cover"
-              />
-            ) : (
-              <span className="text-slate-400 font-black text-4xl font-cairo">
-                {project.clientName?.charAt(0).toUpperCase()}
-              </span>
-            )}
+          <div className="relative group/avatar">
+            {/* Outer Decorative Rings */}
+            <div className="absolute -inset-2 bg-linear-to-tr from-primary/20 via-primary/5 to-transparent rounded-full animate-pulse blur-sm" />
             
-            {/* Online Indicator */}
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 border-[3px] border-white rounded-full shadow-sm z-20" />
+            <div className="w-[102px] h-[102px] relative bg-white rounded-full flex items-center justify-center shrink-0 ring-[5px] ring-primary/10 shadow-2xl shadow-primary/10 group-hover/avatar:shadow-primary/30 transition-all duration-500 z-10 overflow-hidden">
+               <div className="absolute inset-0 border-[3px] border-white rounded-full z-20 pointer-events-none" />
+               <div className="absolute inset-0 border border-primary/20 rounded-full z-20 pointer-events-none" />
+               
+               {project.clientAvatar ? (
+                 <Image
+                   src={project.clientAvatar}
+                   alt={project.clientName}
+                   width={100}
+                   height={100}
+                   className="w-full h-full rounded-full object-cover transition-transform duration-700 group-hover/avatar:scale-110"
+                 />
+               ) : (
+                 <div className="w-full h-full bg-slate-50 flex items-center justify-center">
+                   <span className="text-primary/40 font-black text-4xl font-cairo">
+                     {project.clientName?.charAt(0).toUpperCase()}
+                   </span>
+                 </div>
+               )}
+            </div>
+            
+            {/* Online Indicator with Pulse */}
+            <div className="absolute bottom-1 right-1 w-6 h-6 z-30">
+               <div className="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-20" />
+               <div className="relative w-full h-full bg-emerald-500 border-[3px] border-white rounded-full shadow-sm" />
+            </div>
           </div>
 
           <div className="text-center mt-2">

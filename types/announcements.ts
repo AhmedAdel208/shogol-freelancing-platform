@@ -27,7 +27,8 @@ export interface Project {
   clientAvatar?: string;
   createdAt: string;
   skills?: Array<{ id: string; nameAr: string }>;
-  proposals?: import("@/lib/validation/proposalSchema").ProposalDisplay[]; // Add proposals array
+  proposals?: import("@/lib/validation/proposalSchema").ProposalDisplay[];
+  attachments?: Array<{ id: string; url: string; fileName: string; type: string }>; // Add attachments
 }
 
 export interface ProjectCardProps {

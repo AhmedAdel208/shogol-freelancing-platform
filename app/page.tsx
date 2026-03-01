@@ -1,8 +1,7 @@
 import ContactSection from "@/components/landing/contact-section/ContactSection";
 import Footer from "@/components/landing/footer/Footer";
 import LinksHeader from "@/components/landing/header/LinksHeader";
-import SearchHeader from "@/components/landing/header/SearchHeader";
-import HeroImage from "@/components/landing/heroImg/HeroImage";
+import NewHero from "@/components/landing/heroImg/NewHero";
 import PriceRequestSection from "@/components/landing/price-request/PriceRequestSection";
 import WhatShouldDo from "@/components/landing/price-request/WhatShouldDo";
 import ServicesSection from "@/components/landing/services-section/ServicesSection";
@@ -13,8 +12,7 @@ export default function page() {
     <div className="bg-white">
       <Gradientline />
       <LinksHeader />
-      <SearchHeader />
-      <HeroImage />
+      <NewHero />
       <PriceRequestSection />
       <WhatShouldDo />
       <ServicesSection />

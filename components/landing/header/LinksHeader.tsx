@@ -10,13 +10,24 @@ export default function LinksHeader() {
   const { isAuthenticated, isMounted } = useAuth();
 
   return (
-    <header className="border-b-[0.5px] border-[#707070]/25">
-      <div className="flex items-center  justify-between max-w-8xl mx-auto  py-4">
-        <div className="flex items-center gap-10 ">
-          <Logo />
-          <Navlinks />
-        </div>
+    <header
+      className={`sticky top-0 z-50 w-full transition-all duration-300 
+       
+          bg-white backdrop-blur-xl shadow-sm shadow-slate-200/50 border-b border-slate-100
+          
+      `}
+    >
+      <div className="flex items-center justify-between max-w-8xl mx-auto px-6 md:px-8 py-3.5">
+        {/* Left: Logo + Nav */}
         <div className="flex items-center gap-10">
+          <Logo />
+          <nav className="hidden md:block">
+            <Navlinks />
+          </nav>
+        </div>
+
+        {/* Right: Icons + Buttons */}
+        <div className="flex items-center gap-6">
           {isMounted && isAuthenticated && <Navicons />}
           <Navbuttons />
         </div>
