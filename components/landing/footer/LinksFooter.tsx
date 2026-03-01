@@ -4,38 +4,20 @@ import Link from "next/link";
 
 export default function LinksFooter() {
   return (
-    <div className="lg:col-span-1 text-right">
+    <div className="lg:col-span-1 text-right mt-5">
       <Link href="/">
         <Image
           src={logoFooter}
           alt="شغل"
-          width={150}
+          width={130}
           height={50}
           className="object-contain -mt-8 mb-4 "
         />
       </Link>
 
-      <div className="space-y-3  text-right">
-        <h4 className=" font-bold text-light-white text-lg mb-3">
-          معلومات عن شغل
-        </h4>
-        <ul className="space-y-2 text-gray-300 text-sm">
-          <Link href="/common-questions">
-            <li className="hover:text-primary font-bold text-light-white text-lg transition-colors">
-              الأسئلة الشائعة
-            </li>
-          </Link>
-
-          <li className=" font-bold text-light-white text-lg transition-colors">
-            ضمان حقوقك
-          </li>
-          <Link href="/terms">
-            <li className="hover:text-primary font-bold text-light-white text-lg transition-colors">
-              شروط الاستخدام
-            </li>
-          </Link>
-        </ul>
-      </div>
+      <p className="text-gray-300 text-base font-bold font-cairo leading-relaxed max-w-[200px]">
+        منصة احترافية للعمل الحر تربط بين أصحاب المشاريع والمستقلين المحترفين في الوطن العربي.
+      </p>
     </div>
   );
 }

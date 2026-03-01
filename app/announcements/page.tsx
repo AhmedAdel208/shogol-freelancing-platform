@@ -1,4 +1,4 @@
-import AdsSection from "@/components/announcements/ads";
+import AdsSection from "@/container/announcements/ads";
 
 import Footer from "@/components/landing/footer/Footer";
 import LinksHeader from "@/components/landing/header/LinksHeader";

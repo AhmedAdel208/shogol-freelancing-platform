@@ -26,11 +26,12 @@ export default function AdsSection() {
         {/* Header Section */}
         <div className="space-y-3 text-center">
           <div className="flex items-center justify-center gap-3">
-            <h1 className="text-3xl font-extrabold text-dark tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-black font-cairo text-dark tracking-tight mb-2">
               تصفح الإعلانات
             </h1>
           </div>
-          <p className="text-slate-500 font-el-missiri">
+
+          <p className="text-lg font-bold font-cairo text-slate-400 max-w-2xl mx-auto leading-relaxed">
             اعثر على المشروع المثالي لمهاراتك
           </p>
         </div>

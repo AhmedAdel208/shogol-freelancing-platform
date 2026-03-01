@@ -6,15 +6,15 @@ import Footer from "@/components/landing/footer/Footer";
 import LinksHeader from "@/components/landing/header/LinksHeader";
 import Gradientline from "@/components/ui/header/Gradientline";
 import { useProjectDetail } from "@/hooks/project/useProjectDetail";
-import ProjectHeader from "@/components/announcements/detail/ProjectHeader";
-import ProjectDetails from "@/components/announcements/detail/ProjectDetails";
-import ProjectSkills from "@/components/announcements/detail/ProjectSkills";
-import ProjectAttachments from "@/components/announcements/detail/ProjectAttachments";
-import ProjectActions from "@/components/announcements/detail/ProjectActions";
+import ProjectHeader from "@/container/announcements/detail/ProjectHeader";
+import ProjectDetails from "@/container/announcements/detail/ProjectDetails";
+import ProjectSkills from "@/container/announcements/detail/ProjectSkills";
+import ProjectAttachments from "@/container/announcements/detail/ProjectAttachments";
+import ProjectActions from "@/container/announcements/detail/ProjectActions";
 import ProjectProposals from "@/components/proposals/ProjectProposals";
 import CreateProposalForm from "@/components/proposals/CreateProposalForm";
-import ErrorState from "@/components/announcements/detail/ErrorState";
-import ClientInfo from "@/components/announcements/detail/ClientInfo";
+import ErrorState from "@/container/announcements/detail/ErrorState";
+import ClientInfo from "@/container/announcements/detail/ClientInfo";
 import { useAuth } from "@/hooks/auth/useAuth";
 import Loading from "@/common/Loading";
 
@@ -31,7 +31,7 @@ export default function AnnouncementDetailPage() {
   } = useProjectDetail({
     id: projectId,
   });
-  console.log(project)
+  console.log(project);
 
   // Check if current user is the owner of this project
   const isOwner = user?.id === project?.clientId;
@@ -123,9 +123,7 @@ export default function AnnouncementDetailPage() {
             {/* Proposal Submission (Inline) */}
             {isFreelancer && !isOwner && !hasSubmittedProposal && (
               <div className="mt-12 mb-8">
-                <CreateProposalForm 
-                  jobRequestId={projectId} 
-                />
+                <CreateProposalForm jobRequestId={projectId} />
               </div>
             )}
           </main>
