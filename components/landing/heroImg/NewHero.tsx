@@ -46,7 +46,7 @@ export default function NewHero() {
                 <span className="text-white block">منصة شغل</span>
               </h1>
               <p className="text-white mx-auto text-xl font-bold leading-relaxed mt-6 max-w-xl">
-                منصة شُغل تجمع بين نخبة المستقلين وأصحاب المشاريع الطموحة في
+                منصة شغل تجمع بين نخبة المستقلين وأصحاب المشاريع الطموحة في
                 بيئة عمل ذكية، آمنة، ومحفزة للنجاح.
               </p>
             </div>

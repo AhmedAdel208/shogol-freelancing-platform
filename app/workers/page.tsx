@@ -1,6 +1,6 @@
 "use client";
 
-import WorkersContainer from "@/container/workers/WorkersContainer";
+import WorkersContainer from "@/container/workers/workersList/WorkersContainer";
 import Gradientline from "@/components/ui/header/Gradientline";
 import LinksHeader from "@/components/landing/header/LinksHeader";
 import Footer from "@/components/landing/footer/Footer";

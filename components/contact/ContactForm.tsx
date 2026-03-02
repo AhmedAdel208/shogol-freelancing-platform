@@ -2,6 +2,8 @@
 
 import { Button } from "@/container/reusable/form";
 import { useState } from "react";
+import { toast } from "@/lib/toast";
+import { User, Mail, MessageSquare, Send } from "lucide-react";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -25,10 +27,9 @@ export default function ContactForm() {
     setIsSubmitting(true);
     
     // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
-    console.log("Form submitted:", formData);
-    alert("تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.");
+    toast.success("تم إرسال رسالتك بنجاح! سنتواصل معك في أقرب وقت ممكن.");
     
     setFormData({
       name: "",
@@ -40,80 +41,112 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-8 m-4 sm:m-6 md:m-8 lg:m-12 border border-gray-200 rounded-lg p-4 shadow-sm ">
-      <h2 className="text-2xl font-bold text-dark mb-6">أرسل رسالة</h2>
+    <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-8 md:p-12 transition-all duration-500 hover:shadow-[0_40px_80px_rgba(0,0,0,0.06)] h-full">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+          <MessageSquare size={24} />
+        </div>
+        <div>
+          <h2 className="text-2xl font-black text-slate-900 font-cairo">أرسل لنا رسالة</h2>
+          <p className="text-slate-500 font-bold text-sm font-cairo">نسعد دائماً بالاستماع إليكم والإجابة على استفساراتكم</p>
+        </div>
+      </div>
       
-      <form onSubmit={handleSubmit} className="space-y-6  m-4 sm:m-6 md:m-8 lg:m-12 ">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-            الاسم الكامل
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            className="w-full hover:shadow-sm hover:border-primary hover:shadow-primary/20  transition-shadow px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-            placeholder="أدخل اسمك الكامل"
-          />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label htmlFor="name" className="flex items-center gap-2 text-sm font-black text-slate-700 font-cairo mr-1">
+              <User size={14} className="text-slate-400" />
+              الاسم الكامل
+            </label>
+            <div className="relative group">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 font-bold font-cairo text-slate-900 outline-none transition-all focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 hover:border-slate-300"
+                placeholder="مثال: أحمد محمد"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="email" className="flex items-center gap-2 text-sm font-black text-slate-700 font-cairo mr-1">
+              <Mail size={14} className="text-slate-400" />
+              البريد الإلكتروني
+            </label>
+            <div className="relative group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 font-bold font-cairo text-slate-900 outline-none transition-all focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 hover:border-slate-300"
+                placeholder="example@mail.com"
+              />
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-            البريد الإلكتروني
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full hover:shadow-sm hover:border-primary hover:shadow-primary/20  transition-shadow px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-            placeholder="أدخل بريدك الإلكتروني"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="space-y-2">
+          <label htmlFor="subject" className="flex items-center gap-2 text-sm font-black text-slate-700 font-cairo mr-1">
+             <MessageSquare size={14} className="text-slate-400" />
             الموضوع
           </label>
-          <input
-            type="text"
-            id="subject"
-            name="subject"
-            value={formData.subject}
-            onChange={handleChange}
-            required
-            className="w-full hover:shadow-sm hover:border-primary hover:shadow-primary/20  transition-shadow px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-            placeholder="أدخل موضوع الرسالة"
-          />
+          <div className="relative group">
+            <input
+              type="text"
+              id="subject"
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+              required
+              className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 font-bold font-cairo text-slate-900 outline-none transition-all focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 hover:border-slate-300"
+              placeholder="عما تريد الاستفسار؟"
+            />
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="space-y-2">
+          <label htmlFor="message" className="flex items-center gap-2 text-sm font-black text-slate-700 font-cairo mr-1">
+            <MessageSquare size={14} className="text-slate-400" />
             الرسالة
           </label>
-          <textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-            rows={6}
-            className="w-full hover:shadow-sm hover:border-primary hover:shadow-primary/20  transition-shadow px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition resize-none"
-            placeholder="اكتب رسالتك هنا..."
-          />
+          <div className="relative group">
+            <textarea
+              id="message"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              required
+              rows={5}
+              className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl px-5 py-4 font-bold font-cairo text-slate-900 outline-none transition-all focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 hover:border-slate-300 resize-none"
+              placeholder="اكتب تفاصيل رسالتك هنا..."
+            />
+          </div>
         </div>
 
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-linear-to-r from-primary to-primary/90 via-primary/100 hover:shadow-sm hover:border-primary cursor-pointer transition-shadow bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary/90 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-14 bg-primary text-white rounded-2xl font-black font-cairo flex items-center justify-center gap-3 transition-all active:scale-[0.98] disabled:opacity-70 cursor-pointer group"
         >
-          {isSubmitting ? "جاري الإرسال..." : "إرسال الرسالة"}
+          {isSubmitting ? (
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span>جاري الإرسال...</span>
+            </div>
+          ) : (
+            <>
+              <Send size={20} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+              <span>إرسال الرسالة</span>
+            </>
+          )}
         </Button>
       </form>
     </div>

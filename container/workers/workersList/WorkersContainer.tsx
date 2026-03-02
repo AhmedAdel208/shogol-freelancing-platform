@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import RequestsToolbar from "@/components/workers/RequestsToolbar";
+import RequestsToolbar from "@/container/workers/workersList/RequestsToolbar";
 import { LocationIcon, StarIcon, WorkIcon, ArrowIcon } from "@/public/icons";
 import { WorkersContainerProps } from "@/types/workersContainer";
 import PremiumSkeletonGrid from "@/common/PremiumSkeletonGrid";

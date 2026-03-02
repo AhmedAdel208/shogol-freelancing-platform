@@ -1,11 +1,9 @@
 import { Worker } from "@/types/workers";
-import { SkillCategory } from "@/types/skills";
-import { Calendar, MapPin, Star, MessageCircle, Link, Clock, CheckCircle2, Award } from "lucide-react";
+import { Calendar, MapPin, Star, MessageCircle, Link, Clock, Award } from "lucide-react";
 import Image from "next/image";
+import { formatJoinDate, formatLastSeen } from "@/utils/date";
 
 export default function ProfileCard({ user }: { user: Worker }) {
-  const isOnline = !!user.lastOnlineAt;
-  
   return (
     <div className="bg-white rounded-[40px] shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 p-8 space-y-8 animate-in fade-in slide-in-from-right-8 duration-700">
       
@@ -37,7 +35,7 @@ export default function ProfileCard({ user }: { user: Worker }) {
           {/* Online Indicator */}
           <div className="absolute bottom-2 left-2 w-7 h-7 z-30 ring-4 ring-white rounded-full">
              <div className="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-20" />
-             <div className="relative w-full h-full bg-emerald-500 rounded-full shadow-sm" />
+             <div className="relative w-full h-full bg-emerald-500 rounded-full " />
           </div>
         </div>
 
@@ -46,11 +44,7 @@ export default function ProfileCard({ user }: { user: Worker }) {
             <h2 className="text-2xl font-black text-slate-900 font-cairo tracking-tight">
               {user.fullName}
             </h2>
-            {user.averageRating >= 4.9 && (
-              <div className="bg-emerald-500 text-white p-0.5 rounded-full shadow-lg shadow-emerald-200 ring-2 ring-emerald-100 group-hover:scale-110 transition-transform">
-                <CheckCircle2 size={16} strokeWidth={3} />
-              </div>
-            )}
+      
           </div>
           <p className="text-primary font-black font-cairo text-sm bg-primary/5 px-4 py-1 rounded-full">
             {user.skillCategories?.[0]?.nameEn || "مستقل"}
@@ -61,7 +55,7 @@ export default function ProfileCard({ user }: { user: Worker }) {
            <div className="flex items-center gap-1.5 text-amber-400">
              {[1, 2, 3, 4, 5].map((s) => (
                <Star key={s} size={18} fill={s <= Math.round(user.averageRating || 0) ? "currentColor" : "none"} className={s > Math.round(user.averageRating || 0) ? "text-slate-200" : ""} />
-             ))}
+             ))} <span className="text-slate-400 font-bold font-cairo text-sm">({user.reviews.length})</span>
            </div>
            <p className="text-slate-400 font-bold font-cairo text-sm">
              ({user.averageRating?.toFixed(1) || "5.0"}) تقييمات العملاء
@@ -83,7 +77,7 @@ export default function ProfileCard({ user }: { user: Worker }) {
 
       {/* Primary Actions */}
       <div className="space-y-3">
-         <button className="w-full bg-primary text-white py-4.5 rounded-[20px] font-black font-cairo text-base shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 group/btn cursor-pointer">
+         <button className="w-full bg-primary text-white py-4.5 rounded-[20px] font-black font-cairo text-base hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 group/btn cursor-pointer">
             <MessageCircle size={20} className="group-hover/btn:rotate-12 transition-transform" />
             تواصل معي
          </button>
@@ -97,9 +91,9 @@ export default function ProfileCard({ user }: { user: Worker }) {
       {/* Metadata Attributes */}
       <div className="space-y-5 pt-4">
         {[
-          { icon: <MapPin size={18} />, label: "الموقع", value: user.address || "مصر" },
-          { icon: <Calendar size={18} />, label: "انضم منذ", value: "فبراير 2026" },
-          { icon: <Clock size={18} />, label: "أخر ظهور", value: "قبل قليل" },
+          { icon: <MapPin size={18} />, label: "الموقع", value: user.address || user.nationality || "مصر" },
+          { icon: <Calendar size={18} />, label: "انضم منذ", value: formatJoinDate(user.createdAt) },
+          { icon: <Clock size={18} />, label: "أخر ظهور", value: formatLastSeen(user.lastOnlineAt) },
         ].map((item, i) => (
           <div key={i} className="flex items-center justify-between text-slate-500 group">
              <div className="flex items-center gap-2.5">
@@ -115,7 +109,7 @@ export default function ProfileCard({ user }: { user: Worker }) {
 
       {/* Expert Skills Section */}
       <div className="pt-6 space-y-4">
-        <label className="flex items-center gap-2 text-slate-800 font-black font-cairo text-sm">
+        <label className="flex items-center gap-2 text-slate-800 font-black font-cairo ">
            <Award size={18} className="text-primary/60" />
            المهارات
         </label>
@@ -129,7 +123,7 @@ export default function ProfileCard({ user }: { user: Worker }) {
             </span>
           ))}
           {!user.skillCategories?.length && (
-            <span className="text-slate-400 text-xs font-bold font-cairo">لم يتم تحديد مهارات بعد.</span>
+            <span className="text-slate-400 text-sm font-bold font-cairo">لم يتم تحديد مهارات بعد.</span>
           )}
         </div>
       </div>

@@ -1,41 +1,38 @@
 import { toast as sonnerToast } from "sonner";
-import { Check, X, Sparkles, ShieldAlert } from "lucide-react";
+import { Check, X, Bell, ShieldAlert, BadgeCheck } from "lucide-react";
 
 export const toast = {
   success: (message: string) => {
     sonnerToast.custom((t) => (
       <div 
         dir="rtl"
-        className="group relative flex w-[380px] overflow-hidden rounded-2xl border border-white/60 bg-white/70 backdrop-blur-2xl p-4 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] transition-all hover:shadow-[0_20px_50px_-12px_rgba(20,184,166,0.3)]"
+        className="group relative flex min-w-[320px] max-w-[420px] overflow-hidden rounded-[20px] bg-emerald-500 p-1 shadow-[0_20px_40px_-12px_rgba(16,185,129,0.3)] transition-all animate-in fade-in slide-in-from-top-4 duration-500"
       >
-        {/* Animated Background Glow */}
-        <div className="absolute -inset-2 bg-linear-to-r from-teal-400 to-emerald-500 opacity-10 blur-xl transition-opacity duration-500 group-hover:opacity-30 pointer-events-none" />
-        
-        {/* Content Container */}
-        <div className="relative flex w-full items-start gap-4 pointer-events-auto">
-          
-          {/* Stunning Animated Icon Box */}
-          <div className="relative flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[1rem] bg-linear-to-br from-[#2dd4bf] to-[#10b981] shadow-inner mb-auto mt-auto">
-             <div className="absolute inset-0 rounded-[1rem] bg-white opacity-20 animate-pulse" />
-             <Check className="h-7 w-7 text-white drop-shadow-md relative z-10" strokeWidth={3.5} />
-             <Sparkles className="absolute -right-2 -top-2 h-5 w-5 text-yellow-300 animate-[bounce_2s_infinite]" />
+        <div className="flex w-full items-center gap-4 bg-emerald-500 px-5 py-4 rounded-[19px]">
+          {/* Icon Section */}
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/20 backdrop-blur-md shadow-inner">
+             <Check className="h-6 w-6 text-white" strokeWidth={3} />
           </div>
 
-          {/* Text Area */}
-          <div className="flex flex-1 flex-col pt-1.5 pb-1">
-            <h3 className="font-cairo text-lg font-extrabold tracking-tight text-gray-900 leading-none mb-1.5 pr-1">
-              عملية ناجحة
-            </h3>
-            <p className="font-cairo text-[15px] font-semibold leading-snug text-gray-600 pr-1">
+          {/* Content Section */}
+          <div className="flex flex-1 flex-col justify-center">
+            <div className="flex items-center gap-2 mb-0.5">
+              <BadgeCheck size={16} className="text-emerald-100" />
+              <h3 className="font-cairo text-[17px] font-black text-white leading-tight">
+                تمت العملية بنجاح
+              </h3>
+            </div>
+            <p className="font-cairo text-[14px] font-bold text-emerald-50 text-opacity-90 leading-relaxed">
               {message}
             </p>
           </div>
 
+          {/* Close Button */}
           <button
             onClick={() => sonnerToast.dismiss(t)}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-500/5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 mt-1 cursor-pointer"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-white/20 cursor-pointer"
           >
-            <X className="h-[18px] w-[18px]" strokeWidth={2.5} />
+            <X className="h-4 w-4" strokeWidth={3} />
           </button>
         </div>
       </div>
@@ -46,31 +43,30 @@ export const toast = {
     sonnerToast.custom((t) => (
       <div 
         dir="rtl"
-        className="group relative flex w-[380px] overflow-hidden rounded-2xl border border-white/60 bg-white/70 backdrop-blur-2xl p-4 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] transition-all hover:shadow-[0_20px_50px_-12px_rgba(244,63,94,0.3)]"
+        className="group relative flex min-w-[320px] max-w-[420px] overflow-hidden rounded-[20px] bg-rose-500 p-1 shadow-[0_20px_40px_-12px_rgba(244,63,94,0.3)] transition-all animate-in fade-in slide-in-from-top-4 duration-500"
       >
-        <div className="absolute -inset-2 bg-linear-to-r from-rose-400 to-red-500 opacity-10 blur-xl transition-opacity duration-500 group-hover:opacity-30 pointer-events-none" />
-        
-        <div className="relative flex w-full items-start gap-4 pointer-events-auto">
-          
-          <div className="relative flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[1rem] bg-linear-to-br from-[#fb7185] to-[#ef4444] shadow-inner mb-auto mt-auto">
-             <div className="absolute inset-0 rounded-[1rem] bg-white opacity-20 animate-pulse" />
-             <ShieldAlert className="h-6 w-6 text-white drop-shadow-md relative z-10 animate-[bounce_1.5s_infinite]" strokeWidth={2.5} />
+        <div className="flex w-full items-center gap-4 bg-rose-500 px-5 py-4 rounded-[19px]">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/20 backdrop-blur-md shadow-inner">
+             <ShieldAlert className="h-6 w-6 text-white" strokeWidth={3} />
           </div>
 
-          <div className="flex flex-1 flex-col pt-1.5 pb-1">
-            <h3 className="font-cairo text-lg font-extrabold tracking-tight text-gray-900 leading-none mb-1.5 pr-1">
-              تنبيه هام!
-            </h3>
-            <p className="font-cairo text-[15px] font-semibold leading-snug text-gray-600 pr-1">
+          <div className="flex flex-1 flex-col justify-center">
+            <div className="flex items-center gap-2 mb-0.5">
+              <Bell size={16} className="text-rose-100" />
+              <h3 className="font-cairo text-[17px] font-black text-white leading-tight">
+                حدث خطأ ما
+              </h3>
+            </div>
+            <p className="font-cairo text-[14px] font-bold text-rose-50 text-opacity-90 leading-relaxed">
               {message}
             </p>
           </div>
 
           <button
             onClick={() => sonnerToast.dismiss(t)}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-500/5 text-gray-400 transition-colors hover:bg-rose-50 hover:text-rose-500 mt-1 cursor-pointer"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-white/20 cursor-pointer"
           >
-            <X className="h-[18px] w-[18px]" strokeWidth={2.5} />
+            <X className="h-4 w-4" strokeWidth={3} />
           </button>
         </div>
       </div>

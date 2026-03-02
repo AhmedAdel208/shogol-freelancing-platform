@@ -1,12 +1,5 @@
-/**
- * Date utility functions
- */
 
-/**
- * Formats a date string in Arabic relative time
- * @param dateStr - The date string to format
- * @returns Arabic relative time string
- */
+
 export const formatTimeAgo = (dateStr: string): string => {
   const date = new Date(dateStr);
   const now = new Date();
@@ -22,11 +15,6 @@ export const formatTimeAgo = (dateStr: string): string => {
   return "الآن";
 };
 
-/**
- * Maps status values to Arabic labels
- * @param status - The status string to map
- * @returns Arabic status label
- */
 export const mapStatus = (status: string): string => {
   const map: Record<string, string> = {
     Pending: "قيد الانتظار",
@@ -38,17 +26,12 @@ export const mapStatus = (status: string): string => {
   return map[status] || status;
 };
 
-/**
- * Formats a deadline string for HTML date input (YYYY-MM-DD)
- * @param deadline - The deadline string to format
- * @returns Formatted date string for HTML input or empty string if invalid
- */
+
 export const formatDeadlineForInput = (
   deadline: string | undefined,
 ): string => {
   if (!deadline) return "";
 
-  // Try to parse different date formats
   try {
     // If it's already in YYYY-MM-DD format, return as is
     if (/^\d{4}-\d{2}-\d{2}$/.test(deadline)) {
@@ -65,4 +48,33 @@ export const formatDeadlineForInput = (
   }
 
   return "";
+};
+
+
+export const formatJoinDate = (dateString?: string): string => {
+  return dateString 
+    ? new Intl.DateTimeFormat('ar-EG', { month: 'long', year: 'numeric' }).format(new Date(dateString))
+    : "فبراير 2026";
+};
+
+
+export const formatLastSeen = (dateString?: string): string => {
+  if (!dateString) return "قبل قليل";
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+  if (diffInSeconds < 60) return "الآن";
+  
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `منذ ${diffInMinutes} دقيقة`;
+  
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `منذ ${diffInHours} ساعة`;
+  
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays === 1) return "بالأمس";
+  if (diffInDays < 7) return `منذ ${diffInDays} أيام`;
+  
+  return new Intl.DateTimeFormat('ar-EG', { day: 'numeric', month: 'short' }).format(date);
 };
