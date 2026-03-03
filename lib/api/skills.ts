@@ -1,5 +1,5 @@
 import { apiClient } from "./apiClient";
-import { SkillCategory } from "@/types/skills";
+import { SkillCategory, Skill } from "@/types/skills";
 
 export const skillsService = {
   getSkills: async () => {
@@ -16,6 +16,11 @@ export const skillsService = {
 
   addMultipleSkills: async (skillIds: number[]) => {
     const { data } = await apiClient.post("/Skill/add-multiple", { skillIds });
+    return data;
+  },
+
+  getUserSkills: async () => {
+    const { data } = await apiClient.get<Skill[]>("/Skill/user-skills");
     return data;
   },
 };

@@ -1,10 +1,9 @@
 "use client";
 
-import shogol from "@/public/images/shogol.png";
 import { Mail, LogIn, ArrowRight, Loader2 } from "lucide-react";
 import { FormInput, PasswordInput } from "@/container/reusable/form";
 import Link from "next/link";
-import Image from "next/image";
+
 import { useLogin } from "@/hooks/auth/useLogin";
 
 export default function LoginForm() {
@@ -17,25 +16,7 @@ export default function LoginForm() {
       <div className="absolute bottom-20 -right-20 w-96 h-96 bg-teal-400/5 rounded-full blur-[100px] animate-pulse delay-700" />
 
       <div className="w-full max-w-120 relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-        {/* Logo Section */}
-        <div className="flex flex-col items-center mb-10">
-          <div className="relative group mb-6">
-            <div className="w-24 h-24 rounded-full  p-1.5 shadow-2xl shadow-primary/10 rotate-3 group-hover:rotate-0 transition-transform duration-500 animate-bounce">
-              <Image
-                src={shogol}
-                alt="logo"
-                className="rounded-full w-full h-full object-cover"
-              />
-            </div>
-          </div>
-
-          <h1 className="text-4xl font-black font-cairo text-gray-900 tracking-tight">
-            مرحباً <span className="text-primary">بعودتك!</span>
-          </h1>
-          <p className="text-slate-500 font-medium font-cairo mt-2 text-lg">
-            سجل دخولك لمتابعة أعمالك
-          </p>
-        </div>
+  
 
         {/* Form Card */}
         <div className="bg-white/95 backdrop-blur-xl rounded-[40px] shadow-[0_25px_80px_-20px_rgba(0,0,0,0.08)] border border-white/60 p-8 lg:p-12 relative overflow-hidden group hover:shadow-[0_45px_100px_-30px_rgba(0,0,0,0.1)] transition-all duration-700">

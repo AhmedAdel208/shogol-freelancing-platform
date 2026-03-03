@@ -1,7 +1,9 @@
+
 import { Worker } from "@/types/workers";
-import { Calendar, MapPin, Star, MessageCircle, Link, Clock, Award } from "lucide-react";
+import { Calendar, MapPin, Star, Clock, Award } from "lucide-react";
 import Image from "next/image";
 import { formatJoinDate, formatLastSeen } from "@/utils/date";
+import ProfileActions from "./ProfileActions";
 
 export default function ProfileCard({ user }: { user: Worker }) {
   return (
@@ -76,17 +78,7 @@ export default function ProfileCard({ user }: { user: Worker }) {
       </div>
 
       {/* Primary Actions */}
-      <div className="space-y-3">
-         <button className="w-full bg-primary text-white py-4.5 rounded-[20px] font-black font-cairo text-base hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 group/btn cursor-pointer">
-            <MessageCircle size={20} className="group-hover/btn:rotate-12 transition-transform" />
-            تواصل معي
-         </button>
-         
-         <button className="w-full bg-white border-2 border-slate-100 text-slate-600 py-4.5 rounded-[20px] font-black font-cairo text-base hover:bg-slate-50 hover:border-slate-200 transition-all active:scale-[0.98] flex items-center justify-center gap-3 cursor-pointer group/copy">
-            <Link size={18} className="group-hover/copy:rotate-45 transition-transform" />
-            نسخ الرابط
-         </button>
-      </div>
+      <ProfileActions user={user} />
 
       {/* Metadata Attributes */}
       <div className="space-y-5 pt-4">

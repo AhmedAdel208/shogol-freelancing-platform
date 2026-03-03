@@ -1,4 +1,4 @@
-import ContactSection from "@/components/contact/ContactSection";
+import ContactSection from "@/components/landing/contact/ContactSection";
 import Footer from "@/components/landing/footer/Footer";
 import LinksHeader from "@/components/landing/header/LinksHeader";
 import Gradientline from "@/components/ui/header/Gradientline";
