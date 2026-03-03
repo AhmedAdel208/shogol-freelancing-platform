@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
-import { Toaster } from "sonner";
+import { Toaster } from "sonner"; 
 
 export default function RootLayout({
   children,

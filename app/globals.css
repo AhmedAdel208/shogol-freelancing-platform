@@ -109,6 +109,9 @@
   h3 {
     @apply text-2xl xl:text-3xl;
   }
+  button {
+    @apply cursor-pointer;
+  }
 }
 
 @layer components {
@@ -340,3 +343,4 @@
 .animate-bounce-slow {
   animation: bounce-slow 3s infinite;
 }
+
