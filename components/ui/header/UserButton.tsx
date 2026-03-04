@@ -77,7 +77,7 @@ export const UserButton = () => {
       {isOpen && (
         <div className="absolute top-18 md:top-20 left-0 w-80 bg-slate-900/95 backdrop-blur-2xl rounded-[36px] shadow-[0_40px_100px_-12px_rgba(0,0,0,0.4)] border border-white/10 p-4 z-50 animate-in fade-in zoom-in-95 slide-in-from-top-6 duration-500 overflow-hidden">
           {/* Decorative Background Elements */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[40px] -z-10 -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -z-10 -translate-y-1/2 translate-x-1/2" />
 
           {/* Header Profile Area (Information Box) */}
           <div className="relative bg-white/5 backdrop-blur-md p-6 rounded-[30px] mb-4 flex flex-col items-center gap-4 border border-white/5 group/profile overflow-hidden">
@@ -127,7 +127,7 @@ export const UserButton = () => {
           {/* Menu Items with Elite Spacing */}
           <div className="space-y-1 px-1">
             <MenuLink
-              href="/profile"
+              href={isClientRole ? "/profile/edit" : "/profile"}
               icon={
                 <User
                   size={19}

@@ -5,7 +5,7 @@ import { proposalApi } from "@/lib/api/proposal";
 import { apiClient } from "@/lib/api/apiClient";
 import { RequestResponse } from "@/types/requests";
 import { ProposalResponse } from "@/types/proposal";
-import { toast } from "@/lib/toast";
+import { toast } from "@/common/toast";
 import { getCurrentUser } from "@/utils/auth";
 
 export function useRequestsData() {

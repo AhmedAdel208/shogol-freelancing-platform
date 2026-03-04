@@ -1,7 +1,10 @@
+
 "use client";
 
+import { useEffect } from "react";
 import { useProfile } from "@/hooks/profile/useProfile";
-import { useUserSkills } from "@/hooks/profile/useUserSkills";
+import { useRouter } from "next/navigation";
+
 import Loading from "@/common/Loading";
 import Gradientline from "@/components/ui/header/Gradientline";
 import LinksHeader from "@/components/landing/header/LinksHeader";
@@ -14,39 +17,44 @@ import ProfileBioSection from "@/components/profile/ProfileBioSection";
 import ProfilePortfolioSection from "@/components/profile/ProfilePortfolioSection";
 
 export default function ProfileSettingsPage() {
-  const { data: safeProfile, isLoading, error } = useProfile();
-  const { data: userSkills, isLoading: skillsLoading } = useUserSkills();
-  console.log(userSkills)
-  console.log(safeProfile)
-  const { user } = useAuth(); // Auth user
+  const router = useRouter();
+  const { data: safeProfile, isLoading } = useProfile();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user && user.isClient) {
+      router.push("/profile/edit");
+    }
+  }, [user, router]);
 
   if (isLoading) return <Loading />;
 
 
   return (
-    <div className="bg-slate-50/50 min-h-screen w-full font-cairo" dir="rtl">
+    <div className="bg-slate-50/50 min-h-screen w-full font-cairo flex flex-col" dir="rtl">
       <Gradientline />
       <LinksHeader />
 
-      <main className="container mx-auto px-4 py-12 max-w-4xl space-y-8">
+      <main className="container mx-auto px-4 py-12 max-w-4xl space-y-8 flex-1">
         
         {/* Profile Identity Card Component */}
         <ProfileIdentityCard profile={safeProfile} />
 
-        {/* Cover Image Section Component */}
-        <ProfileCoverSection coverImageUrl={safeProfile.coverImageUrl} />
+        {user?.isFreelancer && (
+          <>
+            {/* Cover Image Section Component */}
+            <ProfileCoverSection profileId={safeProfile?.id} />
 
-        {/* Skills Section */}
-        <ProfileSkillsSection 
-          skills={userSkills || []} 
-          isLoading={skillsLoading} 
-        />
+            {/* Skills Section */}
+            <ProfileSkillsSection />
 
-        {/* Bio Section */}
+            {/* Portfolio Section */}
+            <ProfilePortfolioSection />
+          </>
+        )}
+
+        {/* Bio Section - shown for both */}
         <ProfileBioSection bio={safeProfile.bio} />
-
-        {/* Portfolio Section */}
-        <ProfilePortfolioSection portfolios={safeProfile.portfolios || []} />
 
       </main>
 

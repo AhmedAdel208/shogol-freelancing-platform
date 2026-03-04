@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { jobRequestService } from "@/lib/api/jobRequests";
-import { skillsService } from "@/lib/api/skills";
+import { useAllSkills } from "@/hooks/profile/useSkills";
 import {
   createProjectSchema,
   type CreateProjectFormData,
@@ -23,10 +23,7 @@ export function useCreateProject() {
   const [step, setStep] = useState(1);
 
   // Fetch Skills
-  const { data: skillsData, isLoading: isSkillsLoading } = useQuery({
-    queryKey: ["skills"],
-    queryFn: skillsService.getSkills,
-  });
+  const { data: skillsData, isLoading: isSkillsLoading } = useAllSkills();
 
   const availableSkills =
     skillsData?.categories.flatMap((cat) => cat.skills) || [];

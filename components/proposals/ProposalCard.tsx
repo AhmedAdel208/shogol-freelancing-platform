@@ -5,7 +5,7 @@ import Image from "next/image";
 import { proposalApi } from "@/lib/api/proposal";
 import { useState } from "react";
 import { Star, Clock, Wallet, CheckCircle2, Briefcase, XCircle, Loader2 } from "lucide-react";
-import { toast } from "@/lib/toast";
+import { toast } from "@/common/toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface ProposalCardProps {

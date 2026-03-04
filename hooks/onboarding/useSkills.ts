@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { skillsService } from "@/lib/api/skills";
+import { useAllSkills, useAddSkills } from "@/hooks/profile/useSkills";
 import { SkillCategory } from "@/types/skills";
 
 export function useSkills() {
@@ -13,21 +12,11 @@ export function useSkills() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // React Query Fetching
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["skills"],
-    queryFn: skillsService.getSkills,
-  });
+  const { data, isLoading, error } = useAllSkills();
 
   // Saving Mutation
-  const saveSkillsMutation = useMutation({
-    mutationFn: (ids: number[]) => skillsService.addMultipleSkills(ids),
-    onSuccess: () => {
-      router.push("/onboarding/bio");
-    },
-    onError: (err: any) => {
-      console.error("Error saving skills:", err);
-      alert(err.message || "فشل حفظ المهارات، يرجى المحاولة مرة أخرى");
-    }
+  const saveSkillsMutation = useAddSkills(() => {
+    router.push("/onboarding/bio");
   });
 
   // Extract and filter categories
