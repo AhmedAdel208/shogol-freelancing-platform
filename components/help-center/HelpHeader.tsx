@@ -8,7 +8,7 @@ export default function HelpHeader() {
   const [query, setQuery] = useState("");
 
   return (
-    <div className="">
+    <div className="relative overflow-hidden">
 
       {/* Animated Blobs */}
       <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-purple-500 opacity-30 rounded-full blur-3xl animate-pulse"></div>
