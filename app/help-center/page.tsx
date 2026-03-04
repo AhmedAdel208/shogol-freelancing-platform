@@ -16,7 +16,7 @@ export default function HelpCenterPage() {
 
   return (
     <HelpCenterLayout>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-900 text-white">
         {/* Header Section */}
         <HelpHeader />
 

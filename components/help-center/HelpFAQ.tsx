@@ -48,6 +48,19 @@ export default function HelpFAQ({ selectedCategory }: HelpFAQProps) {
 
   return (
     <div className="max-w-4xl mx-auto py-24 px-6">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-12"
+      >
+        <h2 className="text-3xl font-bold text-white mb-4">
+          الأسئلة الشائعة
+        </h2>
+        <p className="text-gray-400">
+          إجابات سريعة للأسئلة الأكثر شيوعاً
+        </p>
+      </motion.div>
 
       <div className="space-y-6">
         {filtered.map((faq, index) => {
@@ -59,7 +72,7 @@ export default function HelpFAQ({ selectedCategory }: HelpFAQProps) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl transition"
+              className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl border border-gray-700 shadow-sm hover:shadow-xl transition"
             >
               <button
                 onClick={() =>
@@ -67,12 +80,13 @@ export default function HelpFAQ({ selectedCategory }: HelpFAQProps) {
                 }
                 className="w-full flex items-center justify-between px-6 py-6 text-right"
               >
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-white">
                   {faq.question}
                 </h3>
 
                 <motion.div
                   animate={{ rotate: isOpen ? 180 : 0 }}
+                  className="text-gray-400"
                 >
                   <ChevronDown />
                 </motion.div>
@@ -85,9 +99,9 @@ export default function HelpFAQ({ selectedCategory }: HelpFAQProps) {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="overflow-hidden border-t border-gray-100"
+                    className="overflow-hidden border-t border-gray-700"
                   >
-                    <div className="px-6 py-6 text-gray-700 bg-gray-50">
+                    <div className="px-6 py-6 text-gray-300 bg-gray-800/50">
                       {faq.answer}
                     </div>
                   </motion.div>
