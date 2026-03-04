@@ -27,8 +27,8 @@ export default function Footer() {
             <h4 className="text-white font-black text-xl font-cairo mb-6">روابط</h4>
             <ul className="space-y-4 text-gray-300 text-lg font-bold font-cairo">
               <li><Link href="/contact" className="hover:text-primary transition-colors">تواصل معنا</Link></li>
-              <li><Link href="/help" className="hover:text-primary transition-colors">مركز المساعدة</Link></li>
-              <li><Link href="/terms" className="hover:text-primary transition-colors">شروط الاستخدام</Link></li>
+              <li><Link href="/help-center" className="hover:text-primary transition-colors">مركز المساعدة</Link></li>
+              <li><Link href="/terms-of-use" className="hover:text-primary transition-colors">شروط الاستخدام</Link></li>
               <li><Link href="/guarantee" className="hover:text-primary transition-colors">ضمان حقوقك</Link></li>
             </ul>
           </div>
