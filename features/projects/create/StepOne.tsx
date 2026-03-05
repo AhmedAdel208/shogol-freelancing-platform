@@ -13,7 +13,7 @@ export default function StepOne({
     <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
       {/* Project Title */}
       <div className="space-y-3 text-right">
-        <label className="flex items-center justify-end gap-2 text-dark font-black font-cairo  mr-1">
+        <label className="flex items-center justify-start gap-2 text-dark font-black font-cairo  mr-1">
           عنوان الطلب <span className="text-primary">*</span>
         </label>
         <FormInput
@@ -27,7 +27,7 @@ export default function StepOne({
 
       {/* Project Details */}
       <div className="space-y-3 text-right">
-        <label className="flex items-center justify-end gap-2 text-dark font-black font-cairo mr-1">
+        <label className="flex items-center justify-start gap-2 text-dark font-black font-cairo mr-1">
           اكتب تفاصيل إعلانك <span className="text-primary">*</span>
         </label>
         <textarea
@@ -45,7 +45,7 @@ export default function StepOne({
 
       {/* Skills Selection */}
       <div className="space-y-3 text-right">
-        <label className="flex items-center justify-end gap-2 text-dark font-black font-cairo mr-1">
+        <label className="flex items-center justify-start gap-2 text-dark font-black font-cairo mr-1">
           المهارات <span className="text-primary">*</span>
         </label>
         <div className="border-2 border-dashed border-gray-300 rounded-3xl p-8 bg-gray-50/20 flex flex-col items-center">

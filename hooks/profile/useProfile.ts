@@ -1,9 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userService } from "@/lib/api/user";
 import { toast } from "@/common/toast";
+import { UpdateProfilePayload, UserProfile } from "@/types/user";
 
 export function useProfile() {
-  return useQuery({
+  return useQuery<UserProfile>({
     queryKey: ["profile"],
     queryFn: () => userService.getProfile(),
     staleTime: 1000 * 60 * 5, 
@@ -29,7 +30,7 @@ export function useUpdateProfile(onSuccessCb?: () => void) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: any) => userService.updateProfile(data),
+    mutationFn: (data: UpdateProfilePayload) => userService.updateProfile(data),
     onSuccess: () => {
       toast.success("تم تحديث الملف الشخصي بنجاح");
       queryClient.invalidateQueries({ queryKey: ["profile"] });

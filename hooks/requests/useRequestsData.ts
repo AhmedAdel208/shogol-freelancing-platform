@@ -1,136 +1,113 @@
-import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { requestsService } from "@/lib/api/requests";
 import { userService } from "@/lib/api/user";
 import { proposalApi } from "@/lib/api/proposal";
-import { apiClient } from "@/lib/api/apiClient";
-import { RequestResponse } from "@/types/requests";
-import { ProposalResponse } from "@/types/proposal";
 import { toast } from "@/common/toast";
-import { getCurrentUser } from "@/utils/auth";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useEffect } from "react";
+
+export const REQUESTS_QUERY_KEYS = {
+  all: ["requests"] as const,
+  myRequests: () => [...REQUESTS_QUERY_KEYS.all, "my-requests"] as const,
+  myProposals: () => [...REQUESTS_QUERY_KEYS.all, "my-proposals"] as const,
+  userProfile: () => ["user-profile"] as const,
+};
 
 export function useRequestsData() {
-  const [data, setData] = useState<RequestResponse | null>(null);
-  const [proposals, setProposals] = useState<ProposalResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [isAuthChecking, setIsAuthChecking] = useState(true);
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { user: currentUser, isAuthenticated } = useAuthStore();
 
-  async function fetchRequests() {
-    try {
-      setIsLoading(true);
-      const response = await requestsService.fetchMyRequests();
-      console.log(response);
-      setData(response.data);
-    } catch (error: any) {
-      console.error("Error fetching requests:", error);
-      console.error("Error details:", {
-        message: error.message,
-        status: error.status,
-        response: error.response,
-        isBackendError: error.isBackendError,
-        errors: error.errors
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }
 
-  async function fetchMyProposals() {
-    try {
-      const response = await proposalApi.getMyProposals();
-      console.log(response);
-      setProposals(response);
-    } catch (error) {
-      console.error("Error fetching my proposals:", error);
-    }
-  }
-
-  async function fetchUserProfile() {
-    try {
-      const user = getCurrentUser();
-      if (user) {
-        setCurrentUser(user);
-        const profile = await userService.getProfile();
-        setUserProfile(profile);
+  useEffect(() => {
+ 
+    const checkAuth = () => {
+      const token = localStorage.getItem("auth-storage"); // check zustand persist
+      if (!isAuthenticated && !token) {
+        router.push("/login");
       }
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
+    };
+    checkAuth();
+  }, [isAuthenticated, router]);
+
+  // Queries
+  const { data: requestsData, isLoading: isLoadingRequests } = useQuery({
+    queryKey: REQUESTS_QUERY_KEYS.myRequests(),
+    queryFn: () => requestsService.fetchMyRequests(),
+    enabled: isAuthenticated,
+    select: (response) => response.data,
+  });
+
+  const { data: proposalsData, isLoading: isLoadingProposals } = useQuery({
+    queryKey: REQUESTS_QUERY_KEYS.myProposals(),
+    queryFn: () => proposalApi.getMyProposals(),
+    enabled: isAuthenticated,
+  });
+
+ 
+  // Mutations
+  const deleteProposalMutation = useMutation({
+    mutationFn: (proposalId: number) => proposalApi.deleteProposal(proposalId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: REQUESTS_QUERY_KEYS.all });
+      toast.success("تم حذف العرض بنجاح");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "حدث خطأ أثناء حذف العرض");
     }
-  }
+  });
 
-  async function handleDeleteProposal(proposalId: number) {
-    try {
-      await proposalApi.deleteProposal(proposalId);
-      // Refresh the proposals list after deletion
-      fetchMyProposals();
-    } catch (error) {
-      console.error("Error deleting proposal:", error);
+  const deleteJobRequestMutation = useMutation({
+    mutationFn: (jobRequestId: number) => proposalApi.deleteJobRequest(jobRequestId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: REQUESTS_QUERY_KEYS.all });
+      toast.success("تم حذف الطلب بنجاح");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "حدث خطأ أثناء حذف الطلب");
     }
-  }
+  });
 
-  async function handleDeleteJobRequest(jobRequestId: number) {
-    try {
-      await proposalApi.deleteJobRequest(jobRequestId);
-      // Refresh the requests list after deletion
-      fetchRequests();
-    } catch (error) {
-      console.error("Error deleting job request:", error);
-    }
-  }
-
-  async function handleEditJobRequest(jobRequestId: number) {
-    // Navigate to edit page for the job request
-    window.location.href = `/announcements/edit/${jobRequestId}`;
-  }
-
-  async function handleEvaluateFreelancer(jobRequestId: number, freelancerId: string) {
-    try {
-      // Show loading toast
-      // const loadingToast = toast.loading("جاري إرسال التقييم...");
-      
-      // Call evaluation API
-      await proposalApi.evaluateFreelancer(jobRequestId, freelancerId, 5, "تم التقييم بنجاح");
-      
-      // Dismiss loading toast first
-      // toast.dismiss(loadingToast);  
-      
-      // Then show success toast
+  const evaluateFreelancerMutation = useMutation({
+    mutationFn: ({ jobRequestId, freelancerId, rating, comment }: { jobRequestId: number; freelancerId: string; rating: number; comment: string }) => 
+      proposalApi.evaluateFreelancer(jobRequestId, freelancerId, rating, comment),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: REQUESTS_QUERY_KEYS.all });
       toast.success("تم تقييم المستقل بنجاح");
-    } catch (error) {
-      console.error("Error evaluating freelancer:", error);
-      toast.error((error as Error)?.message || "حدث خطأ أثناء تقييم المستقل");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "حدث خطأ أثناء تقييم المستقل");
     }
-  }
+  });
 
-  useEffect(() => {
-    // Check if user is authenticated
-    const user = getCurrentUser();
-    if (!user) {
-      window.location.href = "/login";
-      return;
+  const deliverRequestMutation = useMutation({
+    mutationFn: (jobRequestId: number) => proposalApi.deliverRequest(jobRequestId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: REQUESTS_QUERY_KEYS.all });
+      toast.success("تم تسليم الطلب بنجاح");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "حدث خطأ أثناء تسليم الطلب");
     }
+  });
 
-    // User is authenticated, fetch data and set auth checking to false
-    fetchRequests();
-    fetchUserProfile();
-    setIsAuthChecking(false);
-  }, []);
-
-  useEffect(() => {
-    fetchMyProposals();
-  }, []);
+  const handleEditJobRequest = (jobRequestId: number) => {
+    router.push(`/announcements/edit/${jobRequestId}`);
+  };
 
   return {
-    data,
-    proposals,
-    isLoading,
-    userProfile,
+    data: requestsData || null,
+    proposals: proposalsData || null,
+    isLoading: isLoadingRequests || isLoadingProposals ,
     currentUser,
-    isAuthChecking,
-    handleDeleteProposal,
-    handleDeleteJobRequest,
+    isAuthChecking: !isAuthenticated,
+    handleDeleteProposal: (id: number) => deleteProposalMutation.mutate(id),
+    handleDeleteJobRequest: (id: number) => deleteJobRequestMutation.mutate(id),
+    handleDeliverRequest: (id: number) => deliverRequestMutation.mutate(id),
     handleEditJobRequest,
-    handleEvaluateFreelancer
+    isEvaluating: evaluateFreelancerMutation.isPending,
+    handleEvaluateFreelancer: (jobRequestId: number, freelancerId: string, rating: number, comment: string) => 
+      evaluateFreelancerMutation.mutate({ jobRequestId, freelancerId, rating, comment })
   };
 }

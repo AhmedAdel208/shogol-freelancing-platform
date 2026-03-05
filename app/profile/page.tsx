@@ -10,11 +10,11 @@ import Gradientline from "@/components/ui/header/Gradientline";
 import LinksHeader from "@/components/landing/header/LinksHeader";
 import Footer from "@/components/landing/footer/Footer";
 import { useAuth } from "@/hooks/auth/useAuth";
-import ProfileIdentityCard from "@/components/profile/ProfileIdentityCard";
-import ProfileCoverSection from "@/components/profile/ProfileCoverSection";
-import ProfileSkillsSection from "@/components/profile/ProfileSkillsSection";
-import ProfileBioSection from "@/components/profile/ProfileBioSection";
-import ProfilePortfolioSection from "@/components/profile/ProfilePortfolioSection";
+import ProfileIdentityCard from "@/features/profile/ProfileIdentityCard";
+import ProfileCoverSection from "@/features/profile/ProfileCoverSection";
+import ProfileSkillsSection from "@/features/profile/ProfileSkillsSection";
+import ProfileBioSection from "@/features/profile/ProfileBioSection";
+import ProfilePortfolioSection from "@/features/profile/ProfilePortfolioSection";
 
 export default function ProfileSettingsPage() {
   const router = useRouter();

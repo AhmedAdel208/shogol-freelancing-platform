@@ -33,8 +33,6 @@ export function useCreateProject() {
     defaultValues: {
       title: "",
       description: "",
-      budget: 0,
-      duration: 0,
       deadline: "",
       skillIds: [],
     },

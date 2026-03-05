@@ -1,10 +1,7 @@
 import Image from "next/image";
 import {
-  Banknote,
-  Clock,
   CalendarDays,
-  ArrowUpLeft,
-  BriefcaseBusiness,
+ 
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatTimeAgo, mapStatus } from "@/utils";
@@ -29,24 +26,27 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       onClick={handleClick}
       className="group relative bg-white w-full rounded-[40px] transition-all duration-500 ease-out hover:shadow-[0_40px_80px_-15px_rgba(30,170,173,0.15)] shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 overflow-hidden cursor-pointer flex flex-col h-full"
     >
-      {/* Premium Top Accent */}
-      <div className="absolute top-0 left-0 right-0 h-[6px] bg-primary/90" />
+      {/* Subtle Premium Accent */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-primary/20 group-hover:bg-primary transition-colors duration-500" />
 
-      <div className="p-8 sm:p-10 flex flex-col h-full">
-        {/* Card Header */}
-        <div className="flex justify-between items-start mb-6 gap-6" dir="rtl">
-          <h2 className="text-2xl md:text-3xl font-black font-cairo text-primary leading-[1.3] line-clamp-2">
-            {project.title}
-          </h2>
-
-          <div className="flex shrink-0 gap-3 items-center">
-            {/* Go To Project Icon */}
-            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center transition-all duration-300 hover:scale-110">
-              <ArrowUpLeft size={20} strokeWidth={3} />
+      <div className="p-6 sm:p-7 flex flex-col h-full">
+        {/* Card Header & Status */}
+        <div className="flex justify-between items-start mb-4 gap-4" dir="rtl">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl md:text-2xl font-black font-cairo text-gray-800 leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-300">
+              {project.title}
+            </h2>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-[11px] font-bold text-gray-400 font-cairo flex items-center gap-1">
+                <CalendarDays size={12} />
+                منذ {formatTimeAgo(project.createdAt)}
+              </span>
             </div>
+          </div>
 
+          <div className="flex flex-col items-end gap-2 shrink-0">
             <span
-              className={`px-5 py-2 rounded-full text-[14px] font-black font-cairo shadow-sm border ${statusColor}`}
+              className={`px-3 py-1 rounded-full text-[12px] font-bold font-cairo border ${statusColor} shadow-sm`}
             >
               {mapStatus(project.status)}
             </span>
@@ -54,99 +54,75 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         {/* Description */}
-        <p className="text-slate-500 text-lg leading-relaxed mb-8 line-clamp-2 font-cairo text-right">
+        <p className="text-gray-500  leading-relaxed mb-6 line-clamp-2 font-cairo text-right">
           {project.description}
         </p>
 
-        {/* Tags */}
-        <div className="flex flex-wrap items-center justify-end gap-2 mb-8">
-          {project.skills && project.skills.length > 4 && (
-            <span className="bg-slate-50 border border-slate-100 text-slate-400 px-3 py-1.5 rounded-xl text-[12px] font-bold shadow-xs order-last">
-              +{project.skills.length - 4}
-            </span>
-          )}
-          {project.skills?.slice(0, 4).map((skill) => (
+        {/* Tags - More compact */}
+        <div className="flex flex-wrap items-center justify-end gap-1.5 mb-6">
+          {project.skills?.slice(0, 3).map((skill) => (
             <span
               key={skill.id}
-              className="bg-slate-50 border border-slate-100/50 text-slate-500 px-4 py-1.5 rounded-xl text-[13px] font-bold transition-all hover:bg-white hover:border-primary/20 hover:text-primary"
+              className="bg-gray-50 border border-gray-100 text-gray-500 px-3 py-1 rounded-lg text-[11px] font-bold transition-all hover:border-primary/30 hover:text-primary"
             >
               {skill.nameAr}
             </span>
           ))}
+          {project.skills && project.skills.length > 3 && (
+            <span className="text-gray-400 text-[11px] font-bold px-1">
+              +{project.skills.length - 3}
+            </span>
+          )}
         </div>
 
-        {/* Stats Row - Premium Metric Pills */}
-        <div
-          className="flex flex-wrap items-center justify-end gap-4 mb-8 mt-auto"
-          dir="rtl"
-        >
-          {/* Budget */}
-          <div className="flex items-center gap-3 bg-emerald-50/40 border border-emerald-100/30 px-5 py-3 rounded-2xl group/metric hover:bg-emerald-50 transition-colors">
-            <span className="text-emerald-600 font-extrabold font-cairo text-lg">
-              {project.budget}{" "}
-              <span className="text-[12px] opacity-70">ريال</span>
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-100/50 flex items-center justify-center text-emerald-600 shadow-xs">
-              <Banknote size={18} strokeWidth={2.5} />
+        {/* Stats Grid - Cleaner and more professional */}
+        {/* <div className="grid grid-cols-3 gap-2 mt-auto pt-6 border-t border-gray-50" dir="rtl">
+          <div className="flex flex-col items-center p-2 rounded-2xl bg-gray-50/50 border border-gray-100/50 hover:bg-white hover:shadow-sm transition-all group/stat">
+            <div className="p-1.5 rounded-lg bg-emerald-100/50 text-emerald-600 mb-1 group-hover/stat:bg-emerald-100">
+              <Banknote size={14} />
             </div>
-          </div>
-
-          {/* Duration */}
-          <div className="flex items-center gap-3 bg-sky-50/40 border border-sky-100/30 px-5 py-3 rounded-2xl group/metric hover:bg-sky-50 transition-colors">
-            <span className="text-sky-600 font-extrabold font-cairo text-lg">
-              {project.durationInDays}{" "}
-              <span className="text-[12px] opacity-70">يوم</span>
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-sky-100/50 flex items-center justify-center text-sky-600 shadow-xs">
-              <Clock size={18} strokeWidth={2.5} />
-            </div>
-          </div>
-
-          {/* Proposals Count */}
-          <div className="flex items-center gap-3 bg-purple-50/40 border border-purple-100/30 px-5 py-3 rounded-2xl group/metric hover:bg-purple-50 transition-colors">
-            <span className="text-purple-600 font-extrabold font-cairo text-lg">
-              {project.proposalsCount}{" "}
-              <span className="text-[12px] opacity-70">عرض</span>
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-purple-100/50 flex items-center justify-center text-purple-600 shadow-xs">
-              <BriefcaseBusiness size={18} strokeWidth={2.5} />
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Divider */}
-        <div
-          className="border-t border-dashed border-slate-200 mt-2 pt-6 flex items-center justify-between w-full"
-          dir="rtl"
-        >
-          {/* Client Info (Right in RTL) */}
-          <div className="flex items-center gap-3">
-            <div className="relative w-11 h-11 rounded-full overflow-hidden bg-slate-50 ring-4 ring-white shadow-md flex items-center justify-center shrink-0">
-              {project.clientAvatar ? (
-                <Image
-                  src={project.clientAvatar}
-                  alt={project.clientName}
-                  width={44}
-                  height={44}
-                  className="object-cover w-full h-full"
-                />
-              ) : (
-                <span className="text-slate-400 font-black font-cairo text-xl">
-                  {project.clientName?.charAt(0).toUpperCase()}
-                </span>
-              )}
-            </div>
-            <span className="text-lg font-black text-slate-700 font-cairo group-hover:text-primary transition-colors">
-              {project.clientName}
+            <span className="text-xs font-black text-gray-800 font-cairo tracking-tight">
+              {project.budget} <span className="text-[9px] text-gray-400">ريال</span>
             </span>
           </div>
 
-          {/* Date (Left in RTL) */}
-          <div className="flex items-center gap-2 text-slate-400 bg-slate-50 px-4 py-2 rounded-xl shrink-0">
-            <CalendarDays size={16} strokeWidth={2.5} />
-            <span className="text-[13px] font-black font-cairo">
-              منذ {formatTimeAgo(project.createdAt)}
+          <div className="flex flex-col items-center p-2 rounded-2xl bg-gray-50/50 border border-gray-100/50 hover:bg-white hover:shadow-sm transition-all group/stat">
+            <div className="p-1.5 rounded-lg bg-sky-100/50 text-sky-600 mb-1 group-hover/stat:bg-sky-100">
+              <Clock size={14} />
+            </div>
+            <span className="text-xs font-black text-gray-800 font-cairo tracking-tight">
+              {project.durationInDays} <span className="text-[9px] text-gray-400">يوم</span>
             </span>
+          </div>
+
+          <div className="flex flex-col items-center p-2 rounded-2xl bg-gray-50/50 border border-gray-100/50 hover:bg-white hover:shadow-sm transition-all group/stat">
+            <div className="p-1.5 rounded-lg bg-purple-100/50 text-purple-600 mb-1 group-hover/stat:bg-purple-100">
+              <BriefcaseBusiness size={14} />
+            </div>
+            <span className="text-xs font-black text-gray-800 font-cairo tracking-tight">
+              {project.proposalsCount} <span className="text-[9px] text-gray-400">عروض</span>
+            </span>
+          </div>
+        </div> */}
+
+        {/* Bottom Bar: Client Info simplified */}
+        <div className="flex items-center justify-end gap-2 " dir="ltr">
+          <span className="text-[12px] font-bold text-gray-600 font-cairo group-hover:text-primary transition-colors">
+            {project.clientName}
+          </span>
+          <div className="relative w-10 h-10 rounded-full overflow-hidden bg-white border border-gray-200">
+            {project.clientAvatar ? (
+              <Image
+                src={project.clientAvatar}
+                alt={project.clientName}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-[10px] font-black bg-gray-50 text-gray-400">
+                {project.clientName?.charAt(0).toUpperCase()}
+              </div>
+            )}
           </div>
         </div>
       </div>

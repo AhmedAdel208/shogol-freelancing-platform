@@ -15,9 +15,9 @@ import Loading from "@/common/Loading";
 import { profileUpdateSchema, type ProfileUpdateFormData } from "@/lib/validation/profileUpdateSchema";
 
 // Sub-components
-import EditCoverSection from "@/components/profile/edit/EditCoverSection";
-import EditProfileImageSection from "@/components/profile/edit/EditProfileImageSection";
-import EditProfileFormFields from "@/components/profile/edit/EditProfileFormFields";
+import EditCoverSection from "@/features/profile/edit/EditCoverSection";
+import EditProfileImageSection from "@/features/profile/edit/EditProfileImageSection";
+import EditProfileFormFields from "@/features/profile/edit/EditProfileFormFields";
 
 export default function EditProfilePage() {
   const router = useRouter();

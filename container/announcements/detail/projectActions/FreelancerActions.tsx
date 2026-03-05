@@ -4,29 +4,18 @@ interface FreelancerActionsProps {
   onSendMessage: () => void;
   jobRequestId: string;
   hasSubmittedProposal?: boolean;
+  onShowForm?: () => void;
+  onProposalSuccess?: (proposalId: number) => void;
 }
 
 export default function FreelancerActions({
   jobRequestId,
   hasSubmittedProposal,
+  onShowForm,
 }: FreelancerActionsProps) {
-  const scrollToForm = () => {
-    const section = document.getElementById("proposal-form-section");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth", block: "center" });
-      // Add a brief glow effect to highlight the form
-      section.classList.add(
-        "ring-8",
-        "ring-primary/10",
-        "shadow-[0_0_80px_rgba(28,178,185,0.2)]",
-      );
-      setTimeout(() => {
-        section.classList.remove(
-          "ring-8",
-          "ring-primary/10",
-          "shadow-[0_0_80px_rgba(28,178,185,0.2)]",
-        );
-      }, 2000);
+  const handleClick = () => {
+    if (onShowForm) {
+      onShowForm();
     }
   };
 
@@ -42,11 +31,11 @@ export default function FreelancerActions({
         </button>
       ) : (
         <button
-          onClick={scrollToForm}
+          onClick={handleClick}
           className="relative w-full cursor-pointer overflow-hidden rounded-2xl font-bold font-cairo text-base group/submit shadow-xl shadow-primary/20 transition-all duration-300 hover:shadow-primary/30 active:scale-[0.98]"
         >
-          {/* Animated Gradient Background */}
-          <div className="absolute inset-0 bg-linear-to-r from-primary via-teal-400 to-primary bg-size-[200%_auto] animate-[gradient_3s_linear_infinite] group-hover/submit:bg-size-[100%_auto] transition-all duration-500" />
+          {/* Calmer Gradient Background */}
+          <div className="absolute inset-0 bg-primary group-hover/submit:bg-[#168a8d] transition-colors duration-500" />
 
           <div className="relative flex items-center justify-center gap-2.5 py-4 px-6 text-white bg-black/5">
             <Send

@@ -1,4 +1,5 @@
 import { apiClient } from "./apiClient";
+import { UpdateProfilePayload } from "@/types/user";
 
 class UserService {
   async getProfile() {
@@ -11,14 +12,7 @@ class UserService {
     return data;
   }
 
-  async updateProfile(profileData: {
-    firstName: string;
-    lastName: string;
-    bio: string;
-    gender: string;
-    nationality: string;
-    companyName?: string | null;
-  }) {
+  async updateProfile(profileData: UpdateProfilePayload) {
     const { data } = await apiClient.put("/User/profile", profileData);
     return data;
   }

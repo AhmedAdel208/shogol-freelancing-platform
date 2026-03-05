@@ -8,8 +8,7 @@ import StatsCards from "@/components/requests/StatsCards";
 import ProposalList from "@/components/requests/ProposalList";
 import { useRequestsData } from "@/hooks/requests/useRequestsData";
 import LoadingPage from "../loading";
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { useProfile } from "@/hooks/profile/useProfile";
 
 export default function PendingPage() {
   const [activeSection, setActiveSection] = useState("pending");
@@ -17,18 +16,20 @@ export default function PendingPage() {
     data,
     proposals,
     isLoading,
-    userProfile,
-    currentUser,
     isAuthChecking,
     handleDeleteProposal,
     handleDeleteJobRequest,
     handleEditJobRequest,
-    handleEvaluateFreelancer
+    handleEvaluateFreelancer,
+    handleDeliverRequest,
+    isEvaluating
   } = useRequestsData();
 
+  const {data: profile ,isPending: isProfilePending} = useProfile()
 
-  // Show loading screen while checking authentication
-  if (isAuthChecking) {
+
+  // Show loading screen while checking authentication or fetching profile
+  if (isAuthChecking || isProfilePending) {
     return (
       <RequestsLayout>
         <LoadingPage />
@@ -44,129 +45,127 @@ export default function PendingPage() {
 
 
   const getSectionContent = () => {
-    const isClient = currentUser?.isClient;
+    const isClient = profile?.isClient;
     
     switch (activeSection) {
-
       case "pending":
         if (isClient) {
           return {
-            title: "بانتظار الموافقة",
+            title: "بانتظار العروض",
             subtitle: "طلبات العمل التي تنتظر موافقتك",
-            data: data?.jobRequests?.filter((r: any) => r.status === 'Pending') || []
+            data: data?.jobRequests?.filter((r: any) => r.status?.toLowerCase() === 'pending') || []
           };
         }
         return {
           title: "بانتظار الموافقة",
           subtitle: "العروض التي قدمتها وانتظر موافقة العملاء",
-          data: proposals?.proposals?.filter((p: any) => p.status === 'Pending') || []
+          data: proposals?.proposals?.filter((p: any) => p.status?.toLowerCase() === 'pending') || []
         };
       case "in-progress":
         if (isClient) {
           return {
             title: "قيد التنفيذ",
             subtitle: "المشاريع التي تم قبولها وقيد التنفيذ",
-            data: data?.jobRequests?.filter((p: any) => p.status === "InProgress") || []
+            data: data?.jobRequests?.filter((p: any) => p.status?.toLowerCase() === "inprogress") || []
           };
         }
         return {
           title: "قيد التنفيذ",
           subtitle: "المشاريع التي تم قبولها وقيد التنفيذ",
-          data: proposals?.proposals?.filter((p: any) => p.status === "Accepted") || []
+          data: proposals?.proposals?.filter((p: any) => p.status?.toLowerCase() === "accepted" || p.status?.toLowerCase() === "inprogress") || []
         };
       case "completed":
         if (isClient) {
           return {
             title: "المكتملة",
             subtitle: "المشاريع التي تم إنجازها بنجاح",
-            data: data?.jobRequests?.filter((p: any) => p.status === 'Completed') || []
+            data: data?.jobRequests?.filter((p: any) => p.status?.toLowerCase() === 'completed') || []
           };
         }
         return {
           title: "المكتملة",
           subtitle: "المشاريع التي تم إنجازها بنجاح",
-          data: proposals?.proposals?.filter((p: any) => p.status === 'Completed') || []
-        };
-      case "profile":
-        return {
-          title: "الحساب الشخصي",
-          subtitle: "معلوماتك الشخصية والاحترافية",
-          data: []
-        };
-      case "notifications":
-        return {
-          title: "الإشعارات",
-          subtitle: "آخر الإشعارات والتحديثات",
-          data: []
-        };
-      case "messages":
-        return {
-          title: "الرسائل",
-          subtitle: "محادثاتك مع العملاء",
-          data: []
+          data: proposals?.proposals?.filter((p: any) => p.status?.toLowerCase() === 'completed') || []
         };
       default:
-        if (isClient) {
-          return {
-            title: "بانتظار الموافقة",
-            subtitle: "طلبات العمل التي تنتظر موافقتك",
-            data: data?.jobRequests?.filter((r: any) => r.status === 'Pending') || []
-          };
-        }
         return {
-          title: "بانتظار الموافقة",
-          subtitle: "العروض التي قدمتها وانتظر موافقة العملاء",
-          data: proposals?.proposals?.filter((p: any) => p.status === 'Pending') || []
+          title: isClient ? "بانتظار العروض" : "بانتظار الموافقة",
+          subtitle: "طلبات العمل التي تنتظر موافقتك",
+          data: isClient 
+            ? data?.jobRequests?.filter((r: any) => r.status?.toLowerCase() === 'pending') || []
+            : proposals?.proposals?.filter((p: any) => p.status?.toLowerCase() === 'pending') || []
         };
     }
   };
 
   const sectionContent = getSectionContent();
 
+  const isClient = profile?.isClient;
+
+  // Robust count calculation matches section filtering
+  const sidebarCounts = {
+    pending: isClient 
+      ? data?.jobRequests?.filter((r: any) => r.status?.toLowerCase() === 'pending').length || 0
+      : proposals?.proposals?.filter((p: any) => p.status?.toLowerCase() === 'pending').length || 0,
+    inProgress: isClient
+      ? data?.jobRequests?.filter((r: any) => r.status?.toLowerCase() === 'inprogress').length || 0
+      : proposals?.proposals?.filter((p: any) => p.status?.toLowerCase() === 'accepted' || p.status?.toLowerCase() === 'inprogress').length || 0,
+    completed: isClient
+      ? data?.jobRequests?.filter((r: any) => r.status?.toLowerCase() === 'completed').length || 0
+      : proposals?.proposals?.filter((p: any) => p.status?.toLowerCase() === 'completed').length || 0,
+  };
+
   return (
     <RequestsLayout>
-      <div className="bg-linear-to-br from-primary to-primary-100">
-        {/* Modern Header with User Profile */}
+      <div className="bg-gray-50 min-h-screen">
+        {/* Header Section */}
         <UserProfileHeader
-          userProfile={userProfile}
-          currentUser={currentUser}
+          userProfile={profile}
+         
         />
 
-        {/* Stats Cards */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <StatsCards 
-              proposals={proposals} 
-              data={data} 
-              isClient={currentUser?.isClient} 
-            />
-
-          {/* Main Content */}
-          <div className="flex gap-6">
-            {/* Sidebar */}
-            <div className="">
-              <RequestSidebar
+        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-4 -mt-8 relative z-10">
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            {/* Right Column: Sidebar (on the Right in RTL, now moving to Left) */}
+            <aside className=" shrink-0 transition-all duration-500 w-full lg:w-auto">
+               <RequestSidebar
                 activeItem={activeSection}
                 onItemClick={handleSidebarClick}
+                counts={sidebarCounts}
+                isClient={isClient}
               />
-            </div>
+            </aside>
 
-            {/* Main Content */}
-            <div className="flex-1 rounded-2xl p-5 shadow-lg shadow-gray-200 bg-white border border-gray-100 overflow-hidden">
-              <RequestContent
-                title={sectionContent.title}
-                subtitle={sectionContent.subtitle}
-                isLoading={isLoading}
-              >
-                <ProposalList
-                  sectionContent={sectionContent}
-                  onDeleteProposal={handleDeleteProposal}
-                  isClient={currentUser?.isClient}
-                  onDeleteJobRequest={handleDeleteJobRequest}
-                  onEditJobRequest={handleEditJobRequest}
-                  onEvaluateFreelancer={handleEvaluateFreelancer}
-                />
-              </RequestContent>
-            </div>
+             {/* Left Column: Main Content (on the Left in RTL, now moving to Right) */}
+             <main className="flex-1 min-w-0 transition-all duration-500 w-full">
+               <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden min-h-[450px]">
+                 {/* Inner Section Header (Inside Content Card) */}
+                 <div className="px-8 pt-8 pb-4 flex items-center justify-end">
+                    <h2 className="text-xl font-black text-gray-800 tracking-tight">{sectionContent.title}</h2>
+                 </div>
+
+                 <div className="p-8 pt-0">
+                   {isLoading ? (
+                     <div className="space-y-6">
+                       {[1, 2, 3].map((i) => (
+                         <div key={i} className="h-48 bg-gray-50 rounded-3xl animate-pulse" />
+                       ))}
+                     </div>
+                   ) : (
+                     <ProposalList
+                      sectionContent={sectionContent}
+                      onDeleteProposal={handleDeleteProposal}
+                      isClient={profile?.isClient}
+                      onDeleteJobRequest={handleDeleteJobRequest}
+                      onEditJobRequest={handleEditJobRequest}
+                      onEvaluateFreelancer={handleEvaluateFreelancer}
+                      onDeliverRequest={handleDeliverRequest}
+                      isEvaluating={isEvaluating}
+                    />
+                   )}
+                 </div>
+               </div>
+            </main>
           </div>
         </div>
       </div>

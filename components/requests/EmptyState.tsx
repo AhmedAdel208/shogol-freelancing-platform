@@ -1,5 +1,4 @@
-import { FileX, Search } from "lucide-react";
-import { Button } from "@/container/reusable/form";
+import { Briefcase } from "lucide-react";
 import Link from "next/link";
 
 interface EmptyStateProps {
@@ -15,32 +14,31 @@ export default function EmptyState({
   description = "لم يتم العثور على عروض مطابقة للمعايير المحددة",
   buttonText = "تصفح المشاريع",
   onButtonClick,
-  icon: Icon = FileX
+  icon: Icon = Briefcase
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-4">
-      <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-        <Icon className="w-12 h-12 text-gray-400" />
+    <div className="flex flex-col items-center justify-center py-24 px-6 bg-white/50 backdrop-blur-sm rounded-[3rem] border border-white/50 shadow-xs">
+      <div className="w-28 h-28 bg-gray-100 rounded-3xl flex items-center justify-center mb-10 shadow-inner">
+        <Icon className="w-14 h-14 text-gray-300" />
       </div>
       
-      <h3 className="text-xl font-semibold text-gray-900 mb-2 text-center">
+      <h3 className="text-2xl font-black text-gray-900 mb-4 text-center tracking-tight">
         {title}
       </h3>
       
-      <p className="text-gray-600 text-center mb-8 max-w-md">
-        {description}
-      </p>
-      
-      {onButtonClick && (
-        <Link
-          href="/announcements"
-          onClick={onButtonClick}
-          className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2 space-x-reverse"
-        >
-          <Search className="w-5 h-5" />
-          تصفح المشاريع
-        </Link>
+      {description && (
+        <p className="text-gray-500 text-center mb-12 max-w-sm font-medium leading-relaxed">
+          {description}
+        </p>
       )}
+      
+      <Link
+        href="/announcements"
+        onClick={onButtonClick}
+        className="bg-[#00b5bc] hover:bg-[#00a3a9] text-white px-12 py-4 rounded-2xl font-black text-lg transition-all duration-300 shadow-xl shadow-[#00b5bc]/20 hover:scale-105 active:scale-95"
+      >
+        {buttonText}
+      </Link>
     </div>
   );
 }

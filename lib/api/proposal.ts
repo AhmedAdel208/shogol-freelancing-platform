@@ -52,4 +52,10 @@ export const proposalApi = {
     });
     return response.data;
   },
+
+  // ✅ deliver request
+  deliverRequest: async (jobRequestId: number): Promise<{ message: string }> => {
+    const response = await apiClient.post(`/JobRequest/${jobRequestId}/freelancer-completed`);
+    return response.data;
+  },
 };
