@@ -1,4 +1,4 @@
-
+"use client";
 
 import { useEffect } from "react";
 import Link from "next/link";
@@ -20,6 +20,7 @@ export default function Navicons() {
     staleTime: 0,
   });
 
+  // Listen for real-time events to update badge globally
   useEffect(() => {
     if (!isAuthenticated) return;
     
@@ -27,10 +28,13 @@ export default function Navicons() {
     
     startChatHub().then(() => {
       cleanups.push(onReceiveMessage(() => {
-        queryClient.invalidateQueries({ queryKey: ["chat-conversations"] });
+        // Small delay to let useChat's markAsRead complete first if user is viewing the chat
+        setTimeout(() => {
+          queryClient.refetchQueries({ queryKey: ["chat-conversations"] });
+        }, 1500);
       }));
       cleanups.push(onMessageRead(() => {
-        queryClient.invalidateQueries({ queryKey: ["chat-conversations"] });
+        queryClient.refetchQueries({ queryKey: ["chat-conversations"] });
       }));
     }).catch(console.error);
 
@@ -39,11 +43,11 @@ export default function Navicons() {
     };
   }, [isAuthenticated, queryClient]);
 
-  const totalUnread = conversations.reduce((acc, c) => acc + (c.unreadCount || 0), 0);
+  const totalUnread = conversations.reduce((acc: number, c: any) => acc + (c.unreadCount || 0), 0);
 
   return (
     <div className="flex items-center gap-10">
-      {/* Chat Icon - Sophisticated Rounded Style */}
+      {/* Chat Icon */}
       <Link 
         href="/messages" 
         className="group relative w-12 h-12 flex items-center justify-center rounded-[18px] bg-slate-100 hover:bg-primary transition-all duration-400 active:scale-95 shadow-[0_4px_10px_rgb(0,0,0,0.03)]"
@@ -60,11 +64,10 @@ export default function Navicons() {
           </div>
         )}
 
-        {/* Hover Shine Layer */}
         <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-[18px] pointer-events-none" />
       </Link>
 
-      {/* Notifications Icon - Match Screenshot with Light Gray Rounded Block */}
+      {/* Notifications Icon */}
       <Link 
         href="/notifications" 
         className="group relative w-12 h-12 flex items-center justify-center rounded-[18px] bg-slate-100 hover:bg-[#ebf5f6] transition-all duration-400 active:scale-95 shadow-[0_4px_10px_rgb(0,0,0,0.03)]"
@@ -77,7 +80,6 @@ export default function Navicons() {
           />
         </div>
         
-        {/* Subtle Overlay on Hover */}
         <div className="absolute inset-0 bg-slate-900/2 opacity-0 group-hover:opacity-100 transition-opacity rounded-[18px] pointer-events-none" />
       </Link>
     </div>
