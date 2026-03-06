@@ -1,4 +1,7 @@
-import { Briefcase, Calendar, Eye, Trash, Edit, Users, Star } from "lucide-react";
+import { Eye, Trash, Edit, Clock, Banknote, Calendar, Briefcase, Star } from "lucide-react";
+import React, { useState } from "react";
+import EvaluationModal from "./EvaluationModal";
+import { formatTimeAgo } from "@/utils/date";
 
 interface ProposalCardProps {
   offer: any;
@@ -6,144 +9,208 @@ interface ProposalCardProps {
   isClient?: boolean;
   onDeleteJobRequest?: (jobRequestId: number) => void;
   onEditJobRequest?: (jobRequestId: number) => void;
-  onEvaluateFreelancer?: (jobRequestId: number, freelancerId: string) => void;
+  onEvaluateFreelancer?: (jobRequestId: number, freelancerId: string, rating: number, comment: string) => void;
+  onDeliverRequest?: (jobRequestId: number) => void;
+  isEvaluating?: boolean;
 }
 
-export default function ProposalCard({ offer, onDeleteProposal, isClient = false, onDeleteJobRequest, onEditJobRequest, onEvaluateFreelancer }: ProposalCardProps) {
+export default function ProposalCard({ 
+  offer, 
+  onDeleteProposal, 
+  isClient = false, 
+  onDeleteJobRequest, 
+  onEditJobRequest, 
+  onDeliverRequest,
+  onEvaluateFreelancer,
+  isEvaluating = false
+}: ProposalCardProps) {
+  const [isEvalModalOpen, setIsEvalModalOpen] = useState(false);
+
   const handleViewDetails = () => {
     if (isClient) {
-      // For clients: navigate to job request page
       window.location.href = `/announcements/${offer.id}`;
     } else {
-      // For freelancers: navigate to job request page (viewing the request they applied to)
       window.location.href = `/announcements/${offer.jobRequestId}`;
     }
   };
 
-  return (
-    <div className="bg-gradient-to-r from-white rounded-2xl to-gray-50 border border-gray-200 p-6 hover:shadow-lg transition-all duration-400 hover:scale-[1.02]">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center space-x-3 space-x-reverse mb-3">
-            <div className="bg-blue-100 p-2 rounded-lg">
-              <Briefcase className="w-5 h-5 text-blue-600" />
-            </div>
-            <h3 className="font-bold text-lg text-gray-900">
-              {isClient ? offer.title || "طلب عمل" : "عرضك علي الطلب"}
-            </h3>
-          </div>
+  const statusMap = {
+    'Accepted': { label: 'مقبول', color: 'bg-[#ccdcda] text-[#00b5bc] border-[#ccdcda]' },
+    'Rejected': { label: 'مرفوض', color: 'bg-red-50 text-red-500 border-red-100' },
+    'Pending': { label: 'قيد الانتظار', color: 'bg-amber-50 text-amber-500 border-amber-100' },
+    'InProgress': { label: 'قيد التنفيذ', color: 'bg-blue-50 text-blue-500 border-blue-100' },
+    'Completed': { label: 'مكتمل', color: 'bg-emerald-50 text-emerald-500 border-emerald-100' },
+  };
 
-          <p className="text-gray-600 mb-4 leading-relaxed">
-            {isClient ? offer.description : offer.description}
+  const currentStatus = statusMap[offer.status as keyof typeof statusMap] || statusMap['Pending'];
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isClient) {
+      onDeleteJobRequest?.(offer.id);
+    } else {
+      onDeleteProposal(offer.id);
+    }
+  };
+
+  const handleDeliver = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isClient && (offer.status === 'Accepted' || offer.status === 'InProgress' || offer.status === 'Pending')) {
+      const idToDeliver = offer.jobRequestId || offer.id;
+      onDeliverRequest?.(idToDeliver);
+    }
+  };
+
+  const handleOpenEval = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEvalModalOpen(true);
+  };
+
+  const handleEvalSubmit = (rating: number, comment: string) => {
+    onEvaluateFreelancer?.(offer.id, offer.freelancerId || "", rating, comment);
+    // Modal will be closed by state in parent often, but we can close it here if mutation is handled
+    setIsEvalModalOpen(false);
+  };
+
+  return (
+    <>
+      <div className="group bg-white rounded-3xl border border-gray-200 p-8 hover:shadow-xl transition-all duration-300 relative text-right flex flex-col gap-6" dir="rtl">
+        {/* Status Badge Top Right */}
+        <div className="flex justify-start">
+          <span className={`px-5 py-2 rounded-full text-[10px] font-black border ${currentStatus.color}`}>
+            {currentStatus.label}
+          </span>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="flex flex-col gap-4">
+          <h3 className="text-xl font-black text-gray-800">
+            {offer.title || offer.jobRequestTitle || "طلب عمل"}
+          </h3>
+          
+          <p className="text-gray-400 text-sm leading-relaxed max-w-full overflow-hidden text-ellipsis opacity-80">
+            {offer.description || "لا يوجد وصف متاح"}
           </p>
 
-          {/* Enhanced details */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-            <div className="flex items-center space-x-2 space-x-reverse bg-blue-50 rounded-lg px-3 py-2">
-              <span className="text-sm font-medium text-blue-900">
-                {isClient 
-                  ? `الميزانية: $${offer.budget || "غير محدد"}`
-                  : `قيمه العرض :  ${offer.proposedPrice || "غير محدد"}`
-                }
+          {/* Info Row - Aligned Right in RTL */}
+          <div className="flex flex-wrap items-center justify-start gap-x-6 gap-y-4 mt-2" dir="rtl">
+            {/* Price */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 rounded-lg" dir="ltr">
+              <Banknote className="w-4 h-4 text-emerald-500" />
+              <span className="text-gray-700 font-black text-sm">{isClient ? (offer.budget ?? 0) : (offer.proposedPrice ?? 0)}</span>
+              <span className="text-gray-500 text-xs font-bold">ريال</span>
+            </div>
+
+            {/* Duration */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 rounded-lg" dir="ltr">
+              <Clock className="w-4 h-4 text-blue-500" />
+              <span className="text-gray-700 font-black text-sm">{offer.durationInDays || offer.proposedDurationInDays || offer.duration || 0}</span>
+              <span className="text-gray-500 text-xs font-bold">يوم</span>
+            </div>
+
+            {/* Time */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 rounded-lg" dir="ltr">
+              <Calendar className="w-4 h-4 text-gray-400" />
+              <span className="text-gray-500 text-xs font-bold">
+                {offer.timeAgo || (offer.createdAt ? formatTimeAgo(offer.createdAt) : "غير محدد")}
               </span>
             </div>
 
-            <div className="flex items-center space-x-2 space-x-reverse bg-purple-50 rounded-lg px-3 py-2">
-              <Calendar className="w-4 h-4 text-purple-600" />
-              <span className="text-sm font-medium text-purple-900">
-                {isClient 
-                  ? `تاريخ النشر: ${offer.createdAt ? new Date(offer.createdAt).toLocaleDateString('ar-SA') : 'غير محدد'}`
-                  : `مدة التنفيذ: ${offer.proposedDurationInDays + "يوم" || 'غير محدد'}`
-                }
-              </span>
-            </div>
-
-            <div className="flex items-center space-x-2 space-x-reverse">
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${offer.status === 'Accepted'
-                ? 'bg-green-100 text-green-800'
-                : offer.status === 'Rejected'
-                  ? 'bg-red-100 text-red-800'
-                  : 'bg-yellow-100 text-yellow-800'
-                }`}>
-                <span className={`w-2 h-2 rounded-full mr-2 ${offer.status === 'Accepted'
-                  ? 'bg-green-400'
-                  : offer.status === 'Rejected'
-                    ? 'bg-red-400'
-                    : 'bg-yellow-400'
-                  }`}></span>
-                {offer.status === 'Accepted' ? 'مقبول' : offer.status === 'Rejected' ? 'مرفوض' : 'قيد الانتظار'}
-              </span>
-            </div>
+            {/* Proposals Count (Client only) */}
+            {isClient && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 rounded-lg" dir="ltr">
+                <Briefcase className="w-4 h-4 text-primary" />
+                <span className="text-gray-700 font-black text-sm">{offer.proposalsCount ?? 0}</span>
+                <span className="text-gray-500 text-xs font-bold">عرض</span>
+              </div>
+            )}
           </div>
 
-          {/* Skills section for clients */}
-          {isClient && offer.skills && offer.skills.length > 0 && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center space-x-2 space-x-reverse mb-3">
-                <Users className="w-5 h-5 text-gray-600" />
-                <h4 className="text-lg font-semibold text-gray-900">المهارات المطلوبة</h4>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {offer.skills.map((skill: any, index: number) => (
-                  <span key={index} className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mr-2 mb-2">
-                    {typeof skill === 'string' ? skill : skill.nameAr || skill.nameEn || skill}
-                  </span>
-                ))}
-              </div>
+          {/* Category Tag */}
+          {(offer.category || offer.skills?.length > 0) && (
+            <div className="flex flex-wrap justify-end gap-2 mt-2">
+              {offer.skills?.map((skill: any) => (
+                <span key={skill.id} className="bg-gray-100 text-gray-500 px-3 py-1 rounded-xl text-[10px] font-black">
+                  {skill.nameAr}
+                </span>
+              )) || (
+                <span className="bg-gray-100 text-gray-500 px-4 py-1.5 rounded-2xl text-[11px] font-black tracking-wide">
+                  {offer.category || "هوية بصرية"}
+                </span>
+              )}
             </div>
           )}
         </div>
 
-        {/* Enhanced Action buttons */}
-        <div className="flex flex-col space-y-2 mr-4">
-          <button 
-            onClick={handleViewDetails}
-            className="bg-blue-600 gap-2 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 flex items-center justify-center"
-          >
-            عرض التفاصيل الطلب
-            <Eye className="w-4 h-4 ml-2" />
-          </button>
-          
-          {isClient && (offer.status === 'Pending' || offer.status === 'Accepted') && (
-            <>
-              <button 
-                onClick={() => onEditJobRequest?.(offer.id)}
-                className="bg-green-600 gap-2 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 flex items-center justify-center"
-              >
-                تعديل
-                <Edit className="w-4 h-4 ml-2" />
-              </button>
-              <button 
-                onClick={() => onDeleteJobRequest?.(offer.id)}
-                className="bg-red-600 gap-2 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 flex items-center justify-center"
-              >
-                حذف
-                <Trash className="w-4 h-4 ml-2" />
-              </button>
-            </>
-          )}
-          
-          {isClient && (offer.status === 'Completed') && (
+        {/* Divider */}
+        <div className="h-px bg-gray-100 w-full" />
+
+        {/* Action Buttons Area */}
+        <div className="flex flex-row items-center justify-between gap-4">
+          {/* Icons Area */}
+          <div className="flex gap-2">
+            {offer.status === 'Pending' && (
+              <>
+                <button 
+                  onClick={handleDelete}
+                  className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-red-500 transition-all hover:bg-red-50"
+                  title="حذف"
+                >
+                  <Trash className="w-5 h-5" />
+                </button>
+                
+                {isClient && (
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); onEditJobRequest?.(offer.id); }}
+                    className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-primary transition-all hover:bg-primary/5"
+                    title="تعديل"
+                  >
+                    <Edit className="w-5 h-5" />
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+
+          {/* Main Buttons */}
+          <div className="flex gap-4">
             <button 
-              onClick={() => onEvaluateFreelancer?.(offer.id, offer.freelancerId)}
-              className="bg-yellow-600 gap-2 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 flex items-center justify-center"
+              onClick={handleViewDetails}
+              className="flex items-center gap-2 border-2 border-primary text-primary px-8 py-3 rounded-xl font-black text-sm hover:bg-primary/5 transition-all active:scale-95"
             >
-              تقييم المستقل
-              <Star className="w-4 h-4 ml-2" />
+              <Eye className="w-4 h-4" />
+              عرض التفاصيل
             </button>
-          )}
-          
-          {!isClient && offer.status !== 'Completed' && (
-            <button 
-              onClick={() => onDeleteProposal(offer.id)}
-              className="bg-gray-100 gap-2 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 flex items-center justify-center"
-            >
-              سحب العرض
-              <Trash className="w-4 h-4 ml-2" />
-            </button>
-          )}
+
+            {isClient && offer.status === 'Completed' && (
+              <button 
+                onClick={handleOpenEval}
+                disabled={isEvaluating}
+                className="flex items-center gap-2 bg-yellow-500 text-white px-8 py-3 rounded-xl font-black text-sm hover:bg-yellow-600 transition-all  active:scale-95"
+              >
+                <Star className="w-4 h-4 fill-white" />
+                تقييم المستقل
+              </button>
+            )}
+
+            {!isClient && (offer.status === 'InProgress' || offer.status === 'Accepted' || offer.status === 'Pending') && (
+              <button 
+                onClick={handleDeliver}
+                className="flex items-center gap-2 bg-primary text-white px-10 py-3 rounded-xl font-black text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 active:scale-95"
+              >
+                تسليم الطلب
+              </button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+
+      <EvaluationModal
+        isOpen={isEvalModalOpen}
+        onClose={() => setIsEvalModalOpen(false)}
+        onSubmit={handleEvalSubmit}
+        isSubmitting={isEvaluating}
+      />
+    </>
   );
 }

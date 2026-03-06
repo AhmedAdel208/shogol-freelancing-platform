@@ -31,6 +31,7 @@ export interface ProjectActionsProps {
   onSendMessage: () => void;
   onEditProject: () => void;
   onDeleteProject: () => void;
+  onShowProposalForm?: () => void;
 }
 
 // Error State Component Props

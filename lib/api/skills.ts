@@ -1,5 +1,5 @@
 import { apiClient } from "./apiClient";
-import { SkillCategory, Skill } from "@/types/skills";
+import { SkillCategory, UserSkillsResponse } from "@/types/skills";
 
 export const skillsService = {
   getSkills: async () => {
@@ -20,7 +20,12 @@ export const skillsService = {
   },
 
   getUserSkills: async () => {
-    const { data } = await apiClient.get<Skill[]>("/Skill/user-skills");
+    const { data } = await apiClient.get<UserSkillsResponse>("/Skill/user-skills");
+    return data;
+  },
+
+  deleteSkill: async (userSkillId: number) => {
+    const { data } = await apiClient.delete(`/Skill/${userSkillId}`);
     return data;
   },
 };

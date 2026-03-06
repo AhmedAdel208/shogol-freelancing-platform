@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { toast } from "@/lib/toast";
+import { toast } from "@/common/toast";
 import { User, Mail, MessageSquare, Send } from "lucide-react";
 import { submitContactForm } from "./contactAction";
 

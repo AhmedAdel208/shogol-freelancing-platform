@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { MessageCircle, Link } from "lucide-react";
 import { useAuth } from "@/hooks/auth/useAuth";
-import { toast } from "@/lib/toast";
+import { toast } from "@/common/toast";
 import { Worker } from "@/types/workers";
 
 interface ProfileActionsProps {

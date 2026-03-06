@@ -1,4 +1,7 @@
-import { User, Briefcase, Star } from "lucide-react";
+"use client";
+
+import { User, Briefcase, Star, MessageSquare } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Worker } from "@/types/workers";
 import ProfileCard from "@/container/workers/worke-details/ProfileCard";
 import PortfolioSection from "@/container/workers/worke-details/PortofolieSection";
@@ -10,82 +13,159 @@ interface FreelancerProfileDetailProps {
 }
 
 export default function FreelancerProfileDetail({ data }: FreelancerProfileDetailProps) {
+  const [activeTab, setActiveTab] = useState("bio");
+  const bioRef = useRef<HTMLDivElement>(null);
+  const portfolioRef = useRef<HTMLDivElement>(null);
+  const reviewsRef = useRef<HTMLDivElement>(null);
+
+  const tabs = [
+    { id: "bio", label: "نبذة عني", icon: <User size={18} />, ref: bioRef },
+    { id: "portfolio", label: "معرض الأعمال", icon: <Briefcase size={18} />, ref: portfolioRef },
+    { id: "reviews", label: "التقييمات", icon: <Star size={18} />, ref: reviewsRef },
+  ];
+
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>, id: string) => {
+    if (ref.current) {
+      const topOffset = ref.current.getBoundingClientRect().top + window.scrollY - 100;
+      window.scrollTo({ top: topOffset, behavior: "smooth" });
+      setActiveTab(id);
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + 120;
+      
+      if (reviewsRef.current && scrollPos >= reviewsRef.current.offsetTop) {
+        setActiveTab("reviews");
+      } else if (portfolioRef.current && scrollPos >= portfolioRef.current.offsetTop) {
+        setActiveTab("portfolio");
+      } else {
+        setActiveTab("bio");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-slate-50/40 flex flex-col selection:bg-primary/10">
-      {/* Modern Elite Banner */}
-      <div className="h-56 md:h-72 bg-linear-to-br from-transparent via-dark/10 to-primary/30 w-full relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50/40 flex flex-col selection:bg-primary/10 font-cairo" dir="rtl">
+      {/* Modern Elite Banner with Premium Transition */}
+      <div className="h-64 md:h-80 w-full relative overflow-hidden">
         {data.coverImageUrl ? (
-          <Image
-            src={data.coverImageUrl}
-            alt="Cover"
-            fill
-            className="object-cover"
-            priority
-          />
-        ) : (
           <>
-            {/* Abstract Glassmorphic Patterns */}
+            <Image
+              src={data.coverImageUrl}
+              alt="Cover"
+              fill
+              className="object-cover"
+              priority
+            />
+            {/* Smooth transition from cover to content */}
+            <div className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-slate-50/40" />
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-slate-50/40 to-transparent" />
+          </>
+        ) : (
+          <div className="absolute inset-0 bg-linear-to-br from-indigo-950 via-slate-900 to-primary/40">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_30%,rgba(28,178,185,0.15),transparent_50%)]" />
             <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 animate-pulse" />
-            <div className="absolute bottom-10 left-10 w-32 h-32 bg-teal-400/20 rounded-full blur-2xl" />
-          </>
+          </div>
         )}
       </div>
 
-      {/* Content Container - Reversing Grid Order (Sidebar Right, Content Left) */}
-      <div className="max-w-8xl mx-auto px-6 lg:px-10 w-full -mt-24 md:-mt-32 pb-24 relative z-10" dir="rtl">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      {/* Content Container */}
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-10 w-full -mt-20 md:-mt-24 pb-24 relative z-10" dir="rtl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Profile Sidebar (Right Column in RTL) */}
-          <div className="lg:col-span-4 order-1 lg:sticky lg:top-24 space-y-6 animate-in slide-in-from-right-8 duration-700">
+          <div className="lg:col-span-4 order-1 lg:sticky lg:top-8 space-y-6 animate-in slide-in-from-right-8 duration-700">
             <ProfileCard user={data} />
           </div>
 
           {/* Main Content (Left Column in RTL) */}
-          <div className="lg:col-span-8 space-y-10 order-2">
+          <div className="lg:col-span-8 space-y-8 order-2">
             
-            {/* Bio Section - Refined Card */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-[40px] p-8 md:p-10 shadow-[0_4px_40px_rgba(0,0,0,0.03)] border border-primary/20 ring-1 ring-slate-100/50 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shadow-inner">
-                    <User size={26} strokeWidth={2.5} />
-                  </div>
-                  <h3 className="text-2xl font-black text-slate-900 font-cairo tracking-tight">نبذة عني</h3>
+            {/* Sticky Navigation Tabs */}
+            <div className="sticky top-4 z-40 bg-white/70 backdrop-blur-xl rounded-[28px] p-2 shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-white/40 mb-6 flex items-center justify-between sm:justify-start gap-1 sm:gap-3 transition-all duration-500 hover:shadow-xl">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => scrollToSection(tab.ref, tab.id)}
+                  className={`flex items-center gap-2 px-4 sm:px-6 py-3 rounded-[22px] font-black font-cairo text-sm transition-all duration-300 relative group truncate ${
+                    activeTab === tab.id 
+                    ? "bg-primary text-white shadow-lg  scale-[1.02]" 
+                    : "text-slate-500 hover:bg-white hover:text-slate-800"
+                  }`}
+                >
+                  <span className={`transition-transform duration-300 ${activeTab === tab.id ? "scale-110" : "group-hover:scale-110"}`}>
+                    {tab.icon}
+                  </span>
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  {activeTab === tab.id && (
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-white/40 rounded-full" />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Bio Section */}
+            <div 
+              id="bio" 
+              ref={bioRef}
+              className="group bg-white rounded-[40px] p-8 md:p-10 shadow-[0_4px_40px_rgba(0,0,0,0.02)] border border-slate-100 ring-1 ring-slate-100/50 transition-all duration-500 hover:shadow-xl hover:shadow-slate-200/20"
+            >
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 bg-primary/5 text-primary rounded-2xl flex items-center justify-center border border-primary/10 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                  <User size={24} strokeWidth={2.5} />
                 </div>
+                <h3 className="text-2xl font-black text-slate-900 font-cairo tracking-tight"> نبذة عني</h3>
               </div>
               
-              <div className="relative group">
-                <div className="absolute -inset-1 bg-linear-to-r from-primary/5 to-transparent rounded-3xl blur opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative text-slate-600 font-bold font-cairo leading-[1.8] text-[16px] md:text-[17px] bg-slate-50/50 rounded-[30px]  p-2 group-hover:bg-white transition-colors duration-500">
+              <div className="relative leading-relaxed">
+                <p className="text-slate-600 font-bold font-cairo text-base md:text-[17px] bg-slate-50/50 rounded-[30px] p-8 group-hover:bg-white border border-transparent group-hover:border-slate-100 transition-all duration-500 shadow-inner group-hover:shadow-none whitespace-pre-line">
                   {data.bio || "هذا المستقل يفضل العمل في صمت.. لم يتم إضافة نبذة تعريفية بعد."}
+                </p>
+                <div className="absolute -right-2 -top-2 w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                   <div className="w-full h-full border-r-4 border-t-4 border-primary/10 rounded-tr-xl" />
+                </div>
+                <div className="absolute -left-2 -bottom-2 w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                   <div className="w-full h-full border-l-4 border-b-4 border-primary/10 rounded-bl-xl" />
                 </div>
               </div>
             </div>
 
-            {/* Portfolio Section - Stunning Grid */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-[40px] p-8 md:p-10 shadow-[0_4px_40px_rgba(0,0,0,0.03)] border border-primary/20 ring-1 ring-slate-100/50 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+            {/* Portfolio Section */}
+            <div 
+              id="portfolio" 
+              ref={portfolioRef}
+              className="group bg-white rounded-[40px] p-8 md:p-10 shadow-[0_4px_40px_rgba(0,0,0,0.02)] border border-slate-100 ring-1 ring-slate-100/50 transition-all duration-500 hover:shadow-xl hover:shadow-slate-200/20"
+            >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shadow-inner">
-                    <Briefcase size={26} strokeWidth={2.5} />
+                  <div className="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center border border-indigo-100 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                    <Briefcase size={24} strokeWidth={2.5} />
                   </div>
                   <h3 className="text-2xl font-black text-slate-900 font-cairo tracking-tight">معرض الأعمال</h3>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-1.5 bg-slate-50 rounded-full border border-slate-100">
-                  <span className="text-[13px] font-black text-slate-400 font-cairo">إجمالي الأعمال:</span>
-                  <span className="text-sm font-black text-primary">{data.portfolios?.length || 0}</span>
+                <div className="flex items-center gap-2 px-5 py-2 bg-indigo-50/50 rounded-full border border-indigo-100/50">
+                  <span className="text-[13px] font-black text-indigo-400 font-cairo">إجمالي الأعمال:</span>
+                  <span className="text-sm font-black text-indigo-600">{data.portfolios?.length || 0}</span>
                 </div>
               </div>
               
               <PortfolioSection portfolio={data.portfolios || []} />
             </div>
 
-            {/* Reviews Section - Premium Design */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-[40px] p-8 md:p-10 shadow-[0_4px_40px_rgba(0,0,0,0.03)] border border-white/40 ring-1 ring-slate-100/50 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
+            {/* Reviews Section */}
+            <div 
+              id="reviews" 
+              ref={reviewsRef}
+              className="group bg-white rounded-[40px] p-8 md:p-10 shadow-[0_4px_40px_rgba(0,0,0,0.02)] border border-slate-100 ring-1 ring-slate-100/50 transition-all duration-500 hover:shadow-xl hover:shadow-slate-200/20"
+            >
               <div className="flex items-center gap-4 mb-10">
-                <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shadow-inner">
-                  <Star size={26} strokeWidth={2.5} />
+                <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center border border-amber-100 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                  <Star size={24} strokeWidth={2.5} />
                 </div>
                 <h3 className="text-2xl font-black text-slate-900 font-cairo tracking-tight">التقييمات والآراء</h3>
               </div>
@@ -97,11 +177,11 @@ export default function FreelancerProfileDetail({ data }: FreelancerProfileDetai
         </div>
       </div>
 
-      {/* Floating Mobile Action (New) */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 lg:hidden z-50">
-        <button className="bg-slate-900 text-white px-10 py-5 rounded-full font-black font-cairo text-lg shadow-2xl flex items-center gap-3 animate-bounce shadow-primary/40 active:scale-95 transition-all">
+      {/* Floating Mobile Action ) */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 lg:hidden z-50 w-full px-6 max-w-sm">
+        <button className="w-full bg-slate-900 text-white p-5 rounded-2xl font-black font-cairo text-lg flex items-center justify-center gap-3 active:scale-95 transition-all  border border-white/10 backdrop-blur-md">
           تواصل مع المستقل
-          <User size={20} />
+          <MessageSquare size={20} />
         </button>
       </div>
     </div>

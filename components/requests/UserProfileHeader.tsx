@@ -1,52 +1,60 @@
-import { User, Briefcase } from "lucide-react";
+import { User, Plus } from "lucide-react";
+import Link from "next/link";
+import { getUserName } from "@/utils/user";
+import { UserProfile } from "@/types/user";
 
 interface UserProfileHeaderProps {
-  userProfile: any;
-  currentUser: any;
+  userProfile?: UserProfile;
 }
 
-export default function UserProfileHeader({ userProfile, currentUser }: UserProfileHeaderProps) {
+export default function UserProfileHeader({ userProfile }: UserProfileHeaderProps) {
   return (
-    <header className="bg-white shadow-sm border-b border-gray-100 bg-linear-to-br from-primary to-primary-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-35">
-          {userProfile && (
-            <div className="flex items-center hover:scale-105 transition-all duration-300  gap-4 space-x-3 space-x-reverse bg-linear-to-l shadow-lg from-primary to-primary-200 rounded-2xl px-4 py-4">
-              <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
-                  {userProfile.profileImage ? (
-                    <img
-                      src={userProfile.profileImage}
-                      alt="Profile"
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                  ) : (
-                    <User className="w-5 h-5 text-white" />
-                  )}
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+    <header className="relative bg-linear-to-r from-primary/60 to-primary/90 overflow-hidden">
+
+
+      <div className="relative max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+        
+          <div className="flex items-center gap-6" dir="rtl">
+            <div className="relative group">
+              <div className="w-20 h-20 bg-white/20 backdrop-blur-2xl rounded-full flex items-center justify-center overflow-hidden border border-white/30 shadow-xl">
+                {userProfile?.profilePictureUrl ? (
+                  <img
+                    src={userProfile.profilePictureUrl  }
+                    alt="Profile image"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User className="w-10 h-10 text-white/50" />
+                )}
               </div>
-              <div className="text-start">
-                <p className="text-2xl font-semibol font-bold  text-gray-900">
-                  {userProfile.firstName && userProfile.lastName
-                    ? `${userProfile.firstName} ${userProfile.lastName}`
-                    : userProfile.username || 'المستخدم'}
-                </p>
-                <p className="text-sm text-gray-700">
-                  {currentUser?.isFreelancer ? 'مستقل' : currentUser?.isClient ? 'عميل' : 'مستخدم'}
-                </p>
+            
+            </div>
+            
+            <div className="text-right">
+              <h1 className="text-2xl md:text-3xl font-black text-white mb-1 tracking-tight">
+                {getUserName(userProfile)}
+              </h1>
+              <div className="flex items-center justify-start gap-2">
+                <span className="text-teal-50 font-black bg-white/10 px-4 mt-2 rounded-2xl text-[10px] uppercase tracking-widest border border-white/10">
+                  {userProfile?.isClient ? 'صاحب مشاريع' : userProfile?.isFreelancer ? 'مستقل' : 'مستخدم'}
+                </span>
               </div>
-            </div>
-          )}
-          <div className="flex items-center space-x-4 space-x-reverse gap-4 shadow-2xl bg-linear-to-l from-primary to-primary-200 rounded-2xl p-4">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
-              <Briefcase className="w-6 h-6 text-white" />
-            </div>
-            <div className="flex flex-col gap-2 items-start">
-              <h1 className="text-xl font-bold text-gray-900">طلباتي</h1>
-              <p className="text-sm text-gray-600">إدارة عروضك ومشاريعك</p>
             </div>
           </div>
+
+          {/* Left side: Action Button */}
+          {userProfile?.isClient && (
+            <Link 
+              href="/projects/create" 
+              className="group flex items-center gap-4 bg-white text-primary px-10 py-3 rounded-4xl font-black shadow-2xl shadow-black/10 hover:bg-teal-50 transition-all duration-300 hover:scale-105 active:scale-95"
+            >
+              <div className="bg-primary/10 p-2 rounded-xl transition-transform duration-500 group-hover:rotate-90">
+                <Plus className="w-5 h-5" />
+              </div>
+              <span className="text-base">إضافة طلب جديد</span>
+            </Link>
+          )}
         </div>
       </div>
     </header>

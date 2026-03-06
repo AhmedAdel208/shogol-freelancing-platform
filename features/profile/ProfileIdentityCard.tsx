@@ -1,5 +1,4 @@
 
-
 import Image from "next/image";
 import Link from "next/link";
 import { Camera, Eye, Settings, User as UserIcon, Mail } from "lucide-react";
@@ -54,7 +53,7 @@ export default function ProfileIdentityCard({ profile }: ProfileIdentityCardProp
             className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-slate-100 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 hover:border-slate-200 transition-all active:scale-[0.98]"
           >
             <Eye size={18} />
-            <span>عرض كزائر</span>
+            <span>عرض ملفي</span>
           </Link>
           <Link href="/profile/edit" className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-primary/10 text-primary rounded-2xl font-black hover:bg-primary hover:text-white transition-all active:scale-[0.98]">
             <Settings size={18} />
