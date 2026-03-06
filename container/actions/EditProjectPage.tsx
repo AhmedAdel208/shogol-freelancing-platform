@@ -11,8 +11,7 @@ import {
   EditProjectFormData,
 } from "@/lib/validation/editProjectSchema";
 import { useUpdateProject } from "@/hooks/project/useUpdateProject";
-import FormField from "@/components/form/FormField";
-import Button from "@/components/form/Button";
+import { Button, FormInput } from "@/container/reusable/form";
 import { Save } from "lucide-react";
 import { formatDeadlineForInput } from "@/utils/date";
 import Spinner from "@/common/Spinner";
@@ -101,59 +100,51 @@ export default function EditProjectPage() {
       className="bg-[#1f2937] rounded-2xl p-6 space-y-6"
     >
       {/* Title */}
-      <FormField
+      <FormInput
         label="عنوان المشروع"
-        name="title"
+        type="text"
         placeholder="أدخل عنوان المشروع"
         required
-        register={register}
+        registration={register("title")}
         error={errors.title?.message}
       />
 
       {/* Description */}
-      <FormField
+      <FormInput
         label="وصف المشروع"
-        name="description"
         type="textarea"
         placeholder="أدخل وصف تفصيلي للمشروع"
         required
-        register={register}
+        registration={register("description")}
         error={errors.description?.message}
         rows={5}
       />
 
       {/* Budget */}
-      <FormField
+      <FormInput
         label="الميزانية (ريال)"
-        name="budget"
         type="number"
         placeholder="أدخل الميزانية"
         required
-        register={register}
+        registration={register("budget", { valueAsNumber: true })}
         error={errors.budget?.message}
-        min={1}
-        max={1000000}
       />
 
       {/* Duration */}
-      <FormField
+      <FormInput
         label="مدة المشروع (أيام)"
-        name="durationInDays"
         type="number"
         placeholder="أدخل مدة المشروع بالأيام"
         required
-        register={register}
+        registration={register("durationInDays", { valueAsNumber: true })}
         error={errors.durationInDays?.message}
-        min={1}
-        max={365}
       />
 
       {/* Deadline */}
-      <FormField
+      <FormInput
         label="الموعد النهائي (اختياري)"
-        name="deadline"
         type="date"
-        register={register}
+        registration={register("deadline")}
         error={errors.deadline?.message}
       />
 

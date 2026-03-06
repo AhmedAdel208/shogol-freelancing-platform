@@ -1,0 +1,101 @@
+"use client";
+
+import { useState, useRef } from "react";
+import { Paperclip, Send, X } from "lucide-react";
+
+interface Props {
+  onSend: (content: string, attachment?: File) => void;
+  isSending: boolean;
+}
+
+export default function ChatInput({ onSend, isSending }: Props) {
+  const [text, setText] = useState("");
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleSend = () => {
+    if (!text.trim() && !attachment) return;
+    onSend(text.trim(), attachment || undefined);
+    setText("");
+    setAttachment(null);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  return (
+    <div className="p-4 sm:p-6 bg-white border-t border-gray-100 space-y-3">
+      {/* Attachment preview */}
+      {attachment && (
+        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+          <div className="flex-1 text-right">
+            <p className="text-xs font-bold text-gray-600 font-cairo truncate">
+              {attachment.name}
+            </p>
+            <p className="text-[10px] text-gray-400 font-cairo">
+              {(attachment.size / 1024).toFixed(1)} KB
+            </p>
+          </div>
+          <button
+            onClick={() => setAttachment(null)}
+            className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Input row */}
+      <div className="relative flex items-center gap-3 sm:gap-4">
+        <div className="flex-1 relative flex items-center bg-gray-50 rounded-2xl border border-gray-100 px-3 sm:px-4 group focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="p-2 text-gray-400 hover:text-primary transition-colors cursor-pointer"
+          >
+            <Paperclip size={18} />
+          </button>
+          <input
+            type="text"
+            autoFocus
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="إرسال رسالة"
+            className="flex-1 bg-transparent border-none outline-none py-3 sm:py-4 px-2 text-right text-gray-700 font-medium font-cairo text-sm"
+          />
+          <input
+            ref={fileRef}
+            type="file"
+            className="hidden"
+            accept="image/*,.pdf,.doc,.docx"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) setAttachment(file);
+              e.target.value = "";
+            }}
+          />
+        </div>
+
+        <button
+          onClick={handleSend}
+          disabled={isSending || (!text.trim() && !attachment)}
+          className={`shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-xl cursor-pointer ${
+            text.trim() || attachment
+              ? "bg-primary text-white shadow-primary/30 hover:scale-105 active:scale-95"
+              : "bg-gray-100 text-gray-400 shadow-none cursor-not-allowed"
+          }`}
+        >
+          {isSending ? (
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <Send size={20} className="-rotate-135" />
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}

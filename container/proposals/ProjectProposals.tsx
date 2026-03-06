@@ -40,7 +40,7 @@ export default function ProjectProposals({
 
   if (!projectProposals || projectProposals.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-border p-6 text-center">
+      <div className="bg-white  w-[50%] mx-auto  rounded-xl border border-border p-6 text-center">
         <p className="text-gray-medium">
           لا توجد عروض مقدمة لهذا المشروع حتى الآن
         </p>

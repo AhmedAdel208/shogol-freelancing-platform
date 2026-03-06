@@ -1,16 +1,28 @@
 "use client";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useJobRequests } from "@/hooks/useJobRequests";
 import { useAnnouncementsFilters } from "@/hooks/useAnnouncementsFilters";
 import { transformJobRequestToProject } from "@/utils/dataTransforms";
 import SearchAndFilters from "./SearchAndFilters";
 import ProjectCard from "./ProjectCard";
-import EmptyState from "./EmptyState";
+import EmptyState from "@/common/EmptyState";
+import ErrorState from "@/common/ErrorState";
 import ResultsCounter from "./ResultsCounter";
 import Loading from "@/common/Loading";
 
 export default function AdsSection() {
+  const searchParams = useSearchParams();
   const { apiParams, filters, updateFilter } = useAnnouncementsFilters();
-  const { data, isLoading, error } = useJobRequests(apiParams);
+  const { data, isLoading, error, refetch } = useJobRequests(apiParams);
+
+  // Read search query from URL on mount
+  useEffect(() => {
+    const searchFromUrl = searchParams.get("search");
+    if (searchFromUrl) {
+      updateFilter("searchTerm", searchFromUrl);
+    }
+  }, [searchParams]);
 
   const projects =
     data?.jobRequests?.filter((project) => project.status === "Pending") || [];
@@ -19,10 +31,10 @@ export default function AdsSection() {
 
   return (
     <div
-      className="min-h-screen bg-[#F8FAFC] py-12 px-4  sm:px-6 lg:px-8 font-sans"
+      className="min-h-screen bg-[#F8FAFC] py-8 px-4  sm:px-6 lg:px-8 font-sans"
       dir="rtl"
     >
-      <div className="max-w-8xl mx-auto space-y-8">
+      <div className="max-w-8xl mx-auto space-y-6">
         {/* Header Section */}
         <div className="space-y-3 text-center">
           <div className="flex items-center justify-center gap-3">
@@ -51,9 +63,7 @@ export default function AdsSection() {
         <ResultsCounter currentCount={projects.length} />
 
         {error && (
-          <div className="text-center py-12 text-red-500">
-            حدث خطأ أثناء جلب الإعلانات. يرجى المحاولة لاحقاً.
-          </div>
+          <ErrorState message="حدث خطأ أثناء جلب الإعلانات. يرجى المحاولة لاحقاً." onRetry={refetch} />
         )}
 
         {!isLoading && !error && projects.length === 0 && <EmptyState />}

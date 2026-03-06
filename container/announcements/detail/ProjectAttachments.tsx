@@ -3,7 +3,7 @@ import Image from "next/image";
 
 interface Attachment {
   id: string;
-  fileUrl: string;  // ✅ was "url"
+  fileUrl: string;  
   fileName: string;
   type?: string;
 }
@@ -18,70 +18,70 @@ export default function ProjectAttachments({ attachments }: ProjectAttachmentsPr
   }
 
   return (
-    <div className="pt-8 relative mt-4">
-      <div className="absolute top-0 right-0 left-0 h-px bg-linear-to-l from-transparent via-gray-200 to-transparent" />
-      
-      <div className="flex items-center justify-end gap-3 mb-6 text-right font-cairo">
-        <h3 className="text-[1.3rem] font-black text-gray-900 tracking-tight">
-          المرفقات
-        </h3>
-        <div className="w-10 h-10 rounded-[14px] bg-primary/10 flex items-center justify-center text-primary/80 border border-primary/20 shadow-inner">
+    <div className="pt-10 relative">
+      <div className="flex items-center gap-3 mb-8" dir="rtl">
+        <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400">
            <Paperclip size={20} strokeWidth={2.5} />
         </div>
+        <h3 className="text-xl font-black text-gray-900 font-cairo text-right">
+          الملفات المرفقة
+        </h3>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4" dir="rtl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" dir="rtl">
         {attachments.map((file) => {
           const isImage = file.fileName && /\.(jpg|jpeg|png|gif|webp)$/i.test(file.fileName);
-              const fileUrl = file.fileUrl; // ✅ was file.url
+          const fileUrl = file.fileUrl;
           
           return (
             <div 
               key={file.id} 
-              className="group relative flex flex-col bg-slate-50/50 rounded-3xl border border-slate-100 overflow-hidden hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 hover:-translate-y-1"
+              className="group relative flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300"
             >
-       {isImage && fileUrl ? (
-  <div className="aspect-video relative w-full overflow-hidden bg-slate-100">
-    <Image
-      src={fileUrl}  // ✅
-      alt={file.fileName || "attachment"}
-      fill
-      className="object-cover group-hover:scale-105 transition-transform duration-700"
-    />
-    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-      <a href={fileUrl} target="_blank" rel="noopener noreferrer"  // ✅
-        className="bg-white/90 p-3 rounded-full text-primary hover:bg-white hover:scale-110 transition-all shadow-lg">
-        <ExternalLink size={20} />
-      </a>
-    </div>
-  </div>
-) : (
-  <div className="aspect-video flex items-center justify-center bg-slate-100">
-    <FileText size={48} className="text-slate-300" />
-  </div>
-)}
-              
-              <div className="p-4 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm border border-slate-100">
-                    {isImage ? <ImageIcon className="text-primary/60" size={18} /> : <FileText className="text-primary/60" size={18} />}
+              <div className="aspect-video relative w-full overflow-hidden bg-gray-50 flex items-center justify-center">
+                {isImage && fileUrl ? (
+                  <>
+                    <Image
+                      src={fileUrl}
+                      alt={file.fileName || "attachment"}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <a href={fileUrl} target="_blank" rel="noopener noreferrer"
+                        className="bg-white/90 p-3 rounded-full text-gray-900 hover:bg-white hover:scale-110 transition-all shadow-lg active:scale-95">
+                        <ExternalLink size={20} />
+                      </a>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+                      <FileText size={24} />
+                    </div>
                   </div>
-                  <span className="text-[15px] font-bold font-cairo text-slate-700 truncate">
+                )}
+              </div>
+              
+              <div className="p-4 flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center shrink-0 border border-gray-100">
+                    {isImage ? <ImageIcon className="text-gray-400" size={16} /> : <FileText className="text-gray-400" size={16} />}
+                  </div>
+                  <span className="text-sm font-bold font-cairo text-gray-700 truncate">
                     {file.fileName || "ملف مرفق"}
                   </span>
                 </div>
                 
-                {file.url && (
-                  <a 
-                    href={file.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-primary hover:text-primary/80 text-[14px] font-black font-cairo transition-colors"
-                  >
-                    <span className="mb-px underline underline-offset-4 decoration-primary/30 group-hover:decoration-primary transition-all">فتح {isImage ? "الصورة" : "الملف"}</span>
-                    <ExternalLink size={14} />
-                  </a>
-                )}
+                <a 
+                  href={fileUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 flex items-center justify-center gap-2 bg-gray-50 hover:bg-primary/5 text-gray-500 hover:text-primary rounded-xl text-xs font-black font-cairo transition-all duration-300"
+                >
+                  <span>عرض {isImage ? "الصورة" : "الملف كاملة"}</span>
+                  <ExternalLink size={14} strokeWidth={2.5} />
+                </a>
               </div>
             </div>
           );

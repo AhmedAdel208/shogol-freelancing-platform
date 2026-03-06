@@ -1,10 +1,8 @@
 "use client";
 import { useState } from "react";
 import RequestSidebar from "@/components/requests/RequestSidebar";
-import RequestContent from "@/components/requests/RequestContent";
 import RequestsLayout from "@/components/requests/RequestsLayout";
 import UserProfileHeader from "@/components/requests/UserProfileHeader";
-import StatsCards from "@/components/requests/StatsCards";
 import ProposalList from "@/components/requests/ProposalList";
 import { useRequestsData } from "@/hooks/requests/useRequestsData";
 import LoadingPage from "../loading";
@@ -126,8 +124,7 @@ export default function PendingPage() {
 
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-4 -mt-8 relative z-10">
           <div className="flex flex-col lg:flex-row gap-8 items-start">
-            {/* Right Column: Sidebar (on the Right in RTL, now moving to Left) */}
-            <aside className=" shrink-0 transition-all duration-500 w-full lg:w-auto">
+            <aside className="shrink-0 transition-all sticky top-40 duration-500 w-full lg:w-auto z-10">
                <RequestSidebar
                 activeItem={activeSection}
                 onItemClick={handleSidebarClick}
@@ -144,7 +141,7 @@ export default function PendingPage() {
                     <h2 className="text-xl font-black text-gray-800 tracking-tight">{sectionContent.title}</h2>
                  </div>
 
-                 <div className="p-8 pt-0">
+                 <div className="p-6 pt-0">
                    {isLoading ? (
                      <div className="space-y-6">
                        {[1, 2, 3].map((i) => (

@@ -33,7 +33,7 @@ export default function AnnouncementDetailPage() {
   } = useProjectDetail({
     id: projectId,
   });
-  console.log(project);
+
 
   // Check if current user is the owner of this project
   const isOwner = user?.id === project?.clientId;
@@ -66,20 +66,20 @@ export default function AnnouncementDetailPage() {
       </header>
 
       <section
-        className="px-4 md:px-6  lg:px-8 min-h-[90vh] w-full max-w-8xl mx-auto py-4 md:py-6 flex-1"
+        className="px-4 md:px-6 lg:px-8 min-h-screen w-full max-w-8xl mx-auto py-6 md:py-8"
         dir="ltr"
       >
-        <div className="flex flex-col lg:flex-row gap-8 flex-1">
+        <div className="flex flex-col lg:flex-row gap-10">
           {/* Sidebar - Actions (Left side in RTL) */}
-          <aside className="w-full lg:w-100 shrink-0 order-2 lg:order-1 flex flex-col gap-6 lg:sticky lg:top-24 h-fit z-50">
+          <aside className="w-full lg:w-96 shrink-0 order-2 lg:order-1 flex flex-col gap-6 lg:sticky lg:top-28 h-fit">
             {!isOwner && (
               <ClientInfo
                 project={project}
                 onSendMessage={() => console.log("Send message")}
               />
             )}
-            {isOwner || isFreelancer || !isAuthenticated ? (
-              <div className="bg-[#ffffff] rounded-3xl shadow-[0_2px_10px_rgb(0,0,0,0.03)] border border-gray-100/80 p-8">
+            {(isOwner || isFreelancer || !isAuthenticated) && (
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
                 <ProjectActions
                   projectOwnerId={project.clientId}
                   jobRequestId={project.id}
@@ -93,26 +93,23 @@ export default function AnnouncementDetailPage() {
                   onShowProposalForm={() => setShowProposalForm(true)}
                 />
               </div>
-            ) : null}
+            )}
           </aside>
 
           {/* Main Content (Right side in RTL) */}
-          <main className="flex-1 order-1 lg:order-2 bg-white p-6 sm:p-8 md:p-10 shadow-[0_10px_50px_-12px_rgba(0,0,0,0.03)] rounded-[32px] border border-gray-100/50 flex flex-col relative overflow-hidden z-0">
-            {/* Subtle light accent background */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/2 rounded-full blur-[100px] -z-10 translate-x-1/2 -translate-y-1/2" />
-
+          <main className="flex-1 order-1 lg:order-2 bg-white p-6   shadow-sm rounded-4xl border border-gray-100 flex flex-col relative">
             {/* Project Header: Title, Status, Meta */}
             <ProjectHeader project={project} />
 
             {/* Info Cards: Budget, Duration, Deadline */}
             <ProjectDetails project={project} />
 
-            {/* Description Section - Balanced padding and font */}
+            {/* Description Section */}
             <div className="mb-8 font-cairo" dir="rtl">
-              <h3 className="text-lg font-black text-gray-800 mb-4 text-right">
-                التفاصيل
+              <h3 className="text-xl font-black text-gray-900 mb-4">
+                وصف المشروع
               </h3>
-              <div className="text-[15px] text-gray-500 leading-8 text-right bg-gray-50/30 p-6 rounded-2xl border border-gray-100/80">
+              <div className="text-[16px] text-gray-600 leading-relaxed text-right bg-gray-50/50 p-4 rounded-2xl border border-gray-100 transition-colors hover:bg-white hover:shadow-sm">
                 {project.description}
               </div>
             </div>
@@ -121,18 +118,20 @@ export default function AnnouncementDetailPage() {
             <ProjectSkills project={project} />
 
             {/* Attachments Section */}
-            <ProjectAttachments attachments={project.attachments} />
+            <div className="mt-6">
+              <ProjectAttachments attachments={project.attachments} />
+            </div>
 
             {/* Proposal Submission (Inline) */}
             {isFreelancer && !isOwner && !hasSubmittedProposal && showProposalForm && (
-              <div id="proposal-form-section" className="mt-10 mb-6 animate-in fade-in slide-in-from-top-4 duration-700">
+              <div id="proposal-form-section" className="mt-12 pt-12 border-t border-gray-100 animate-in fade-in slide-in-from-top-4 duration-500">
                 <CreateProposalForm jobRequestId={projectId} />
               </div>
             )}
           </main>
         </div>
 
-        <div className="w-full lg:w-[calc(100%-400px)] ml-auto mt-12 mb-20 animate-in fade-in duration-1000">
+        <div className="w-full lg:w-[calc(100%-400px)] ml-auto mt-6 mb-20 animate-in fade-in duration-1000">
           <ProjectProposals jobRequestId={project.id.toString()} />
         </div>
       </section>

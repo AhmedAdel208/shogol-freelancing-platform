@@ -10,20 +10,50 @@ import InstagramIcon from "@/public/icons/InstagramIcon";
 import LinksFooter from "./LinksFooter";
 import Copyright from "./Copywright";
 import { useAuth } from "@/hooks/auth/useAuth";
+import { motion } from "framer-motion";
+
+const footerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.15,
+    },
+  },
+};
+
+const columnVariants = {
+  hidden: { opacity: 0, y: 25 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.25, 0.4, 0.25, 1] as const },
+  },
+};
+
+import { useUiStore } from "@/stores/useUiStore";
 
 export default function Footer() {
   const { isAuthenticated, isMounted } = useAuth();
+  const { footerAnimationPlayed, setFooterAnimationPlayed } = useUiStore();
 
   return (
     <footer className="relative bg-dark text-white overflow-hidden mt-12" dir="rtl">
       {/* Top Gradient Border */}
       <div className="h-4.5 bg-linear-to-r from-[#29B1BE] to-[#6B79B9]" />
       <div className="relative z-10 max-w-8xl mx-auto px-12 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8"
+          variants={footerVariants}
+          initial={footerAnimationPlayed ? "visible" : "hidden"}
+          whileInView="visible"
+          onViewportEnter={() => setFooterAnimationPlayed(true)}
+          viewport={{ once: true, amount: 0.15 }}
+        >
           <LinksFooter />
 
           {/* Column 2 - Links */}
-          <div>
+          <motion.div variants={columnVariants}>
             <h4 className="text-white font-black text-xl font-cairo mb-6">روابط</h4>
             <ul className="space-y-4 text-gray-300 text-lg font-bold font-cairo">
               <li><Link href="/contact" className="hover:text-primary transition-colors">تواصل معنا</Link></li>
@@ -31,10 +61,10 @@ export default function Footer() {
               <li><Link href="/terms-of-use" className="hover:text-primary transition-colors">شروط الاستخدام</Link></li>
               <li><Link href="/guarantee" className="hover:text-primary transition-colors">ضمان حقوقك</Link></li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Column 3 - Dynamic Pages */}
-          <div>
+          <motion.div variants={columnVariants}>
             <h4 className="text-white font-black text-xl font-cairo mb-6">صفحات</h4>
             <ul className="space-y-4 text-gray-300 text-lg font-bold font-cairo">
               {isMounted && isAuthenticated ? (
@@ -51,11 +81,11 @@ export default function Footer() {
               <li><Link href="/requests" className="hover:text-primary transition-colors">تصفح كل الطلبات</Link></li>
               <li><Link href="/workers" className="hover:text-primary transition-colors">تصفح المستقلين</Link></li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Column 4 - App Download */}
-                <div className="text-right">
-            <h4 className="text-primary font-bold text-xl  mb-4">
+          <motion.div variants={columnVariants} className="text-right">
+            <h4 className="text-primary font-bold text-xl mb-4">
               حمل تطبيق شغل
             </h4>
             <div className="space-y-3">
@@ -78,11 +108,11 @@ export default function Footer() {
                 />
               </a>
             </div>
-          </div>
+          </motion.div>
 
           {/* Column 5 - Social */}
-          <div className="text-right">
-            <h4 className="text-primary font-bold text-xl  mb-4">تابعنا</h4>
+          <motion.div variants={columnVariants} className="text-right">
+            <h4 className="text-primary font-bold text-xl mb-4">تابعنا</h4>
             <div className="flex items-center justify-start gap-4">
               <a
                 href="#"
@@ -103,8 +133,8 @@ export default function Footer() {
                 <FacebookIcon />
               </a>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* Copyright */}
@@ -112,4 +142,3 @@ export default function Footer() {
     </footer>
   );
 }
-

@@ -26,44 +26,47 @@ export default function ProjectHeader({ project }: ProjectHeaderProps) {
       };
 
   return (
-    <div className="mb-8 relative" dir="ltr">
-      {/* Decorative Blur behind header */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -z-10" />
-
+    <div className="mb-6 relative" dir="rtl">
       {/* Top Meta Area */}
-      <div className="flex items-center justify-end gap-3 mb-6">
-        {/* Status Pill (Elevated) */}
-        <div className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full ${statusConfig.bg} ${statusConfig.shadow} ${statusConfig.text}`}>
-          {statusConfig.icon}
-          <span className="text-[13px] font-extrabold font-cairo mb-px tracking-wide">{mapStatus(project.status)}</span>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        {/* Status Pill - Refined and Modern */}
+        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg border w-fit ${
+          isPending 
+            ? "bg-amber-50 border-amber-200 text-amber-700" 
+            : project.status === "Accepted"
+            ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+            : "bg-slate-50 border-slate-200 text-slate-700"
+        }`}>
+          {isPending ? <Clock size={14} strokeWidth={2.5} /> : project.status === "Accepted" ? <CheckCircle2 size={14} strokeWidth={2.5} /> : <User size={14} strokeWidth={2.5} />}
+          <span className="text-[13px] font-bold font-cairo">{mapStatus(project.status)}</span>
         </div>
 
+        {/* Meta Stats Row */}
+        <div className="flex items-center gap-4 text-gray-500">
+          <div className="flex items-center gap-2 group cursor-default">
+            <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center transition-colors group-hover:bg-primary/5 group-hover:border-primary/20">
+              <CalendarDays className="w-4 h-4 text-gray-400 group-hover:text-primary" strokeWidth={2} />
+            </div>
+            <span className="font-cairo text-sm text-gray-600">{formatTimeAgo(project.createdAt)}</span>
+          </div>
+          
+          <div className="w-px h-4 bg-gray-200 hidden sm:block" />
 
+          <div className="flex items-center gap-2 group cursor-default">
+            <div className="w-8 h-8 rounded-lg bg-primary/5 border border-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary/10 group-hover:border-primary/20">
+              <User className="w-4 h-4 text-primary" strokeWidth={2} />
+            </div>
+            <p className="font-cairo text-sm font-bold text-gray-700">
+              {project.proposalsCount} <span className="font-medium text-gray-500 mr-1">عروض مقدمة</span>
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Title */}
-      <h1 className="text-[30px] sm:text-[34px] md:text-[36px] lg:text-[38px] font-black font-cairo text-transparent bg-clip-text bg-linear-to-b from-gray-900 via-gray-800 to-gray-600 mb-5 text-right leading-tight tracking-tight -mr-1">
+      {/* Title - Clean and Impactful */}
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-black font-cairo text-gray-900 leading-tight tracking-tight">
         {project.title}
       </h1>
-
-      {/* Bottom Meta Info Layout */}
-      <div className="flex flex-wrap items-center gap-4 text-gray-500 justify-end mt-2">
-        <div className="flex items-center gap-2 bg-linear-to-b from-white to-gray-50 px-4 py-2 rounded-xl border border-gray-200/60 shadow-sm">
-          <span className="font-cairo font-bold text-[14px] leading-none mb-px">{formatTimeAgo(project.createdAt)}</span>
-          <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
-            <CalendarDays className="w-3.5 h-3.5 text-primary" strokeWidth={2.5} />
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-2 bg-linear-to-b from-white to-primary/30 px-4 py-2 rounded-xl border border-purple-100/60 shadow-sm relative overflow-hidden group">
-          <div className="absolute inset-x-0 bottom-0 h-0.5 bg-linear-to-r from-primary-400 to-primary transform translate-y-full group-hover:translate-y-0 transition-transform" />
-          <span className="font-cairo font-black text-[15px] text-primary leading-none mb-px" dir="rtl">{project.proposalsCount} <span className="font-bold text-sm text-primary/80 mr-1">عروض مقدمة</span></span>
-          <div className="w-6 h-6 rounded-md bg-purple-100 flex items-center justify-center relative">
-            <User className="w-3.5 h-3.5 text-primary relative z-10 box-content" strokeWidth={3} />
-            <Sparkles className="absolute -top-1 -right-1 w-3 h-3 text-primary animate-pulse" />
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

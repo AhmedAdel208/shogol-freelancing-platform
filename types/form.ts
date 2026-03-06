@@ -1,5 +1,5 @@
 import type { UseFormRegisterReturn } from "react-hook-form";
-import type React from "react";
+import type { LucideIcon } from "lucide-react";
 
 export interface FormInputProps {
   label?: string;
@@ -10,6 +10,7 @@ export interface FormInputProps {
   error?: string;
   registration?: UseFormRegisterReturn;
   className?: string;
+  rows?: number;
 }
 
 export interface PasswordInputProps {
@@ -48,9 +49,12 @@ export interface CheckboxProps {
 
 export interface ButtonProps {
   children: React.ReactNode;
-  type?: "button" | "submit";
+  type?: "button" | "submit" | "reset";
   onClick?: () => void;
   className?: string;
-  variant?: "primary" | "secondary" | "outline";
+  variant?: "primary" | "secondary" | "outline" | "danger";
+  size?: "sm" | "md" | "lg";
   disabled?: boolean;
+  loading?: boolean;
+  icon?: LucideIcon;
 }

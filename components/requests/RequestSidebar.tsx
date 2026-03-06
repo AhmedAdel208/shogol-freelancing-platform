@@ -159,7 +159,7 @@ export default function RequestSidebar({
 
   return (
     <aside className="w-full lg:w-85 sticky top-24">
-      <div className="bg-white/90 backdrop-blur-2xl rounded-4xl border border-gray-100 shadow-2xl shadow-black/5 overflow-hidden transition-all duration-500">
+      <div className="bg-white/90 backdrop-blur-2xl rounded-3xl border border-gray-100 shadow-2xl shadow-black/5 overflow-hidden transition-all duration-500">
         
         {/* Section: My Requests */}
         <div className="p-8">

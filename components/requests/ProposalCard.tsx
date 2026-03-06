@@ -74,7 +74,7 @@ export default function ProposalCard({
 
   return (
     <>
-      <div className="group bg-white rounded-3xl border border-gray-200 p-8 hover:shadow-xl transition-all duration-300 relative text-right flex flex-col gap-6" dir="rtl">
+      <div className="group bg-white rounded-xl border border-gray-200 p-6 hover:shadow-xl transition-all duration-300 relative text-right flex flex-col gap-6" dir="rtl">
         {/* Status Badge Top Right */}
         <div className="flex justify-start">
           <span className={`px-5 py-2 rounded-full text-[10px] font-black border ${currentStatus.color}`}>
@@ -148,24 +148,33 @@ export default function ProposalCard({
         {/* Action Buttons Area */}
         <div className="flex flex-row items-center justify-between gap-4">
           {/* Icons Area */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             {offer.status === 'Pending' && (
               <>
-                <button 
-                  onClick={handleDelete}
-                  className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-red-500 transition-all hover:bg-red-50"
-                  title="حذف"
-                >
-                  <Trash className="w-5 h-5" />
-                </button>
-                
-                {isClient && (
+                {isClient ? (
+                  <>
+                    <button 
+                      onClick={handleDelete}
+                      className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-red-500 transition-all hover:bg-red-50"
+                      title="حذف"
+                    >
+                      <Trash className="w-5 h-5" />
+                    </button>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); onEditJobRequest?.(offer.id); }}
+                      className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-primary transition-all hover:bg-primary/5"
+                      title="تعديل"
+                    >
+                      <Edit className="w-5 h-5" />
+                    </button>
+                  </>
+                ) : (
                   <button 
-                    onClick={(e) => { e.stopPropagation(); onEditJobRequest?.(offer.id); }}
-                    className="p-3 bg-gray-50 rounded-xl text-gray-400 hover:text-primary transition-all hover:bg-primary/5"
-                    title="تعديل"
+                    onClick={handleDelete}
+                    className="flex items-center gap-2 text-red-500 hover:text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg font-bold font-cairo text-sm transition-all"
                   >
-                    <Edit className="w-5 h-5" />
+                    سحب العرض
+                    <Trash className="w-4 h-4" />
                   </button>
                 )}
               </>
@@ -173,7 +182,7 @@ export default function ProposalCard({
           </div>
 
           {/* Main Buttons */}
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
             <button 
               onClick={handleViewDetails}
               className="flex items-center gap-2 border-2 border-primary text-primary px-8 py-3 rounded-xl font-black text-sm hover:bg-primary/5 transition-all active:scale-95"
@@ -193,7 +202,7 @@ export default function ProposalCard({
               </button>
             )}
 
-            {!isClient && (offer.status === 'InProgress' || offer.status === 'Accepted' || offer.status === 'Pending') && (
+            {!isClient && (offer.status === 'InProgress' || offer.status === 'Accepted') && (
               <button 
                 onClick={handleDeliver}
                 className="flex items-center gap-2 bg-primary text-white px-10 py-3 rounded-xl font-black text-sm hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 active:scale-95"

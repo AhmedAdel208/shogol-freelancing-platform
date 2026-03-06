@@ -8,7 +8,7 @@ export default function Navicons() {
     <div className="flex items-center gap-10">
       {/* Chat Icon - Sophisticated Rounded Style */}
       <Link 
-        href="/chat" 
+        href="/messages" 
         className="group relative w-12 h-12 flex items-center justify-center rounded-[18px] bg-slate-100 hover:bg-primary transition-all duration-400 active:scale-95 shadow-[0_4px_10px_rgb(0,0,0,0.03)]"
       >
         <MessageSquareMore 

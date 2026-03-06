@@ -2,23 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import { userService } from "@/lib/api/user";
+import { useUpdateBio } from "@/hooks/profile/useProfile";
 
 export function useBio() {
   const router = useRouter();
   const [bio, setBio] = useState("");
   const MAX_CHARS = 500;
 
-  const updateBioMutation = useMutation({
-    mutationFn: (bioText: string) => userService.updateBio({ bio: bioText }),
-    onSuccess: () => {
-      router.push("/"); 
-    },
-    onError: (err: any) => {
-      console.error("Error updating bio:", err);
-      alert(err.message || "حدث خطأ أثناء حفظ النبذة التعريفية");
-    }
+  const updateBioMutation = useUpdateBio(() => {
+    router.push("/"); 
   });
 
   const handleFinish = () => {
