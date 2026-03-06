@@ -16,7 +16,7 @@ export default function Navicons() {
     queryKey: ["chat-conversations"],
     queryFn: chatApi.getConversations,
     enabled: isAuthenticated,
-    refetchInterval: 15000,
+    refetchInterval: 5000,
     staleTime: 0,
   });
 

@@ -6,7 +6,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { chatApi } from "@/lib/api/chat";
 import {
   startChatHub,
-  stopChatHub,
   onReceiveMessage,
   onUserOnline,
   onUserOffline,
@@ -14,7 +13,6 @@ import {
 } from "@/lib/signalr/chatHub";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { toast } from "@/common/toast";
-
 
 const QUERY_KEYS = {
   conversations: ["chat-conversations"] as const,
@@ -30,14 +28,15 @@ export function useChat() {
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   const [isTyping, setIsTyping] = useState<Record<number, boolean>>({});
   const hubStartedRef = useRef(false);
+
+  // Ref always tracks the latest selected conversation (avoids stale closures)
   const selectedIdRef = useRef<number | null>(null);
+  useEffect(() => { selectedIdRef.current = selectedConversationId; }, [selectedConversationId]);
 
+  // ─── SignalR Connection (runs ONCE per auth session) ────────
   useEffect(() => {
-    selectedIdRef.current = selectedConversationId;
-  }, [selectedConversationId]);
+    if (!isAuthenticated) return;
 
-  // ─── Real-time SignalR ───────────────────────────────────
-  useEffect(() => {
     let token: string | null = null;
     if (typeof window !== "undefined") {
       token = localStorage.getItem("token");
@@ -48,9 +47,9 @@ export function useChat() {
         } catch { /* ignore */ }
       }
     }
-    if (!isAuthenticated || !token) return;
+    if (!token) return;
 
-    let cleanups: (() => void)[] = [];
+    const cleanups: (() => void)[] = [];
 
     const bootstrap = async () => {
       try {
@@ -58,107 +57,84 @@ export function useChat() {
         await startChatHub();
         hubStartedRef.current = true;
 
+        // New message received
         cleanups.push(
           onReceiveMessage(() => {
-            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
             const activeId = selectedIdRef.current;
             if (activeId) {
-              queryClient.invalidateQueries({
-                queryKey: QUERY_KEYS.messages(activeId),
-              });
-              // Auto mark-as-read since user is actively viewing this conversation
-              chatApi.markAsRead(activeId).then(() => {
-                queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
-              }).catch(() => {});
+              // User is viewing this chat → refresh messages + auto mark-as-read
+              queryClient.invalidateQueries({ queryKey: QUERY_KEYS.messages(activeId) });
+              chatApi.markAsRead(activeId)
+                .then(() => queryClient.refetchQueries({ queryKey: QUERY_KEYS.conversations }))
+                .catch(() => {});
+            } else {
+              // User is NOT in a chat → just refresh conversations for badge
+              queryClient.refetchQueries({ queryKey: QUERY_KEYS.conversations });
             }
           })
         );
 
+        // Online / Offline
         cleanups.push(
           onUserOnline((userId) => {
-            const normalizedId = String(userId).toLowerCase();
-            console.log("👤 User Online:", normalizedId);
-            setOnlineUsers((prev: Set<string>) => {
-              const next = new Set(prev);
-              next.add(normalizedId);
-              return next;
-            });
-            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
+            const id = String(userId).toLowerCase();
+            setOnlineUsers((prev) => { const n = new Set(prev); n.add(id); return n; });
           })
         );
-
         cleanups.push(
           onUserOffline((userId) => {
-            const normalizedId = String(userId).toLowerCase();
-            console.log("👤 User Offline:", normalizedId);
-            setOnlineUsers((prev: Set<string>) => {
-              const next = new Set(prev);
-              next.delete(normalizedId);
-              return next;
-            });
-            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
+            const id = String(userId).toLowerCase();
+            setOnlineUsers((prev) => { const n = new Set(prev); n.delete(id); return n; });
           })
         );
 
+        // Typing indicator
         cleanups.push(
           onUserTyping((data) => {
             if (data.userId.toLowerCase() === user?.id?.toLowerCase()) return;
-            
-            setIsTyping(prev => ({ ...prev, [data.conversationId]: data.isTyping }));
-            
-            // Infer online if typing!
+            setIsTyping((prev) => ({ ...prev, [data.conversationId]: data.isTyping }));
             if (data.isTyping) {
-              setOnlineUsers((prev: Set<string>) => {
-                const next = new Set(prev);
-                next.add(data.userId.toLowerCase());
-                return next;
-              });
+              setOnlineUsers((prev) => { const n = new Set(prev); n.add(data.userId.toLowerCase()); return n; });
             }
           })
         );
 
+        // Message read receipts
         cleanups.push(
           onMessageRead((convId) => {
             queryClient.invalidateQueries({ queryKey: QUERY_KEYS.messages(convId) });
-            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
+            queryClient.refetchQueries({ queryKey: QUERY_KEYS.conversations });
           })
         );
-      } catch { /* connection error */ }
+      } catch { /* connection error – silent */ }
     };
 
     bootstrap();
-
-    return () => {
-      cleanups.forEach((fn) => fn());
-    };
+    return () => { cleanups.forEach((fn) => fn()); };
   }, [isAuthenticated, queryClient, user?.id]);
 
-  // Handle Joining/Leaving Conversation Groups separately
+  // ─── Join / Leave conversation group (lightweight, no re-connect) ──
   useEffect(() => {
-    if (!isAuthenticated || !selectedConversationId) return;
-
+    if (!isAuthenticated || !selectedConversationId || !hubStartedRef.current) return;
     let mounted = true;
-    const handleGroup = async () => {
+
+    (async () => {
       try {
         const { joinConversation } = await import("@/lib/signalr/chatHub");
         if (mounted) joinConversation(selectedConversationId);
       } catch { /* ignore */ }
-    };
+    })();
 
-    handleGroup();
-    return () => {
-      mounted = false;
-      // We don't strictly need to leave conversation group on cleanup 
-      // as the hub handles it, but we could if needed.
-    };
+    return () => { mounted = false; };
   }, [selectedConversationId, isAuthenticated]);
 
-  // ─── REST Queries ────────────────────────────────────────
+  // ─── REST Queries ─────────────────────────────────────────────
   const conversationsQuery = useQuery({
     queryKey: QUERY_KEYS.conversations,
     queryFn: chatApi.getConversations,
     enabled: isAuthenticated,
     refetchInterval: 30_000,
+    staleTime: 0,
   });
 
   const messagesQuery = useQuery({
@@ -175,15 +151,17 @@ export function useChat() {
   });
 
   const conversations = Array.isArray(conversationsQuery.data) ? conversationsQuery.data : [];
+  const messages = Array.isArray(messagesQuery.data) ? messagesQuery.data : [];
+  const selectedConversation = conversations.find((c) => c.id === selectedConversationId);
 
-  // ─── Mutations & Actions ─────────────────────────────────
+  // ─── Mutations ────────────────────────────────────────────────
   const sendMutation = useMutation({
-    mutationFn: ({ receiverId, content, attachment }: { receiverId: string, content: string, attachment?: File }) =>
+    mutationFn: ({ receiverId, content, attachment }: { receiverId: string; content: string; attachment?: File }) =>
       chatApi.sendMessage(receiverId, content, attachment),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
-      if (selectedConversationId) {
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.messages(selectedConversationId) });
+      if (selectedIdRef.current) {
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.messages(selectedIdRef.current) });
       }
     },
   });
@@ -191,39 +169,51 @@ export function useChat() {
   const markReadMutation = useMutation({
     mutationFn: (conversationId: number) => chatApi.markAsRead(conversationId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
+      queryClient.refetchQueries({ queryKey: QUERY_KEYS.conversations });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (conversationId: number) => chatApi.deleteConversation(conversationId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
+      queryClient.refetchQueries({ queryKey: QUERY_KEYS.conversations });
       setSelectedConversationId(null);
       toast.success("تم حذف المحادثة بنجاح");
     },
     onError: () => {
       toast.error("فشل في حذف المحادثة. حاول مرة أخرى.");
-    }
+    },
   });
 
-  const messages = Array.isArray(messagesQuery.data) ? messagesQuery.data : [];
-  const selectedConversation = conversations.find((c) => c.id === selectedConversationId);
-
-  // ─── Syncing Status ───────────────────────────────────────
-  
-  // Sync from online-users API
+  // ─── Sync online status from API ──────────────────────────────
   useEffect(() => {
     if (onlineUsersQuery.data) {
-      setOnlineUsers((prev: Set<string>) => {
+      setOnlineUsers((prev) => {
         const next = new Set(prev);
-        onlineUsersQuery.data.forEach(id => next.add(String(id).toLowerCase()));
+        onlineUsersQuery.data.forEach((id: string) => next.add(String(id).toLowerCase()));
         return next;
       });
     }
   }, [onlineUsersQuery.data]);
 
-  // Sync selection from 'user' search param only once per param
+  // Sync online from conversation data
+  useEffect(() => {
+    if (conversations.length > 0) {
+      setOnlineUsers((prev) => {
+        const next = new Set(prev);
+        let changed = false;
+        conversations.forEach((c) => {
+          if (c.isOnline) {
+            const id = String(c.otherUserId).toLowerCase();
+            if (!next.has(id)) { next.add(id); changed = true; }
+          }
+        });
+        return changed ? next : prev;
+      });
+    }
+  }, [conversations]);
+
+  // ─── Auto-select from URL param (?user=xxx) ───────────────────
   const handledUserParams = useRef(new Set<string>());
 
   useEffect(() => {
@@ -231,9 +221,7 @@ export function useChat() {
     if (userToChatId && conversations.length > 0) {
       const paramLower = userToChatId.toLowerCase();
       if (!handledUserParams.current.has(paramLower)) {
-        const target = conversations.find(c => 
-          String(c.otherUserId).toLowerCase() === paramLower
-        );
+        const target = conversations.find((c) => String(c.otherUserId).toLowerCase() === paramLower);
         if (target) {
           handledUserParams.current.add(paramLower);
           setSelectedConversationId(target.id);
@@ -241,47 +229,30 @@ export function useChat() {
         }
       }
     }
-  }, [searchParams, conversations, markReadMutation]);
+  }, [searchParams, conversations]);
 
-  // Mark as read when new messages arrive for the selected conversation
+  // Auto mark-as-read when viewing a conversation with unread messages
   useEffect(() => {
     if (selectedConversationId && messages.length > 0) {
-      const hasUnread = selectedConversation?.unreadCount && selectedConversation.unreadCount > 0;
-      if (hasUnread) {
+      if (selectedConversation?.unreadCount && selectedConversation.unreadCount > 0) {
         markReadMutation.mutate(selectedConversationId);
       }
     }
-  }, [selectedConversationId, messages.length, selectedConversation?.unreadCount, markReadMutation]);
+  }, [selectedConversationId, messages.length, selectedConversation?.unreadCount]);
 
-  // Sync from conversations initial state
-  useEffect(() => {
-    if (conversations.length > 0) {
-      setOnlineUsers((prev: Set<string>) => {
-        const next = new Set(prev);
-        let changes = false;
-        conversations.forEach(c => {
-          if (c.isOnline) {
-            const id = String(c.otherUserId).toLowerCase();
-            if (!next.has(id)) {
-              next.add(id);
-              changes = true;
-            }
-          }
-        });
-        return changes ? next : prev;
-      });
-    }
-  }, [conversations]);
-
+  // ─── Actions ──────────────────────────────────────────────────
   const selectConversation = useCallback(
     async (id: number) => {
       const { joinConversation, leaveConversation } = await import("@/lib/signalr/chatHub");
-      if (selectedConversationId) leaveConversation(selectedConversationId);
+      if (selectedIdRef.current) leaveConversation(selectedIdRef.current);
       setSelectedConversationId(id);
       joinConversation(id);
-      markReadMutation.mutate(id);
+      // Mark as read immediately
+      chatApi.markAsRead(id)
+        .then(() => queryClient.refetchQueries({ queryKey: QUERY_KEYS.conversations }))
+        .catch(() => {});
     },
-    [selectedConversationId, markReadMutation]
+    [queryClient]
   );
 
   const sendMessage = useCallback(
@@ -293,25 +264,24 @@ export function useChat() {
   );
 
   const deleteConversation = useCallback(
-    (conversationId: number) => {
-      deleteMutation.mutate(conversationId);
-    },
+    (conversationId: number) => { deleteMutation.mutate(conversationId); },
     [deleteMutation]
   );
 
   const refetchConversations = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
+    queryClient.refetchQueries({ queryKey: QUERY_KEYS.conversations });
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.onlineUsers });
   }, [queryClient]);
 
   const sendTypingStatus = useCallback(
     (status: boolean) => {
-      if (!selectedConversationId) return;
+      const id = selectedIdRef.current;
+      if (!id) return;
       import("@/lib/signalr/chatHub").then(({ sendTypingEvent }) => {
-        sendTypingEvent(selectedConversationId, status);
+        sendTypingEvent(id, status);
       });
     },
-    [selectedConversationId]
+    []
   );
 
   return {
@@ -327,7 +297,7 @@ export function useChat() {
     isFetchingConversations: conversationsQuery.isFetching,
     isLoadingMessages: messagesQuery.isLoading,
     isFetchingMessages: messagesQuery.isFetching,
-    isInitialLoading: (conversationsQuery.isLoading && conversations.length === 0),
+    isInitialLoading: conversationsQuery.isLoading && conversations.length === 0,
     isSending: sendMutation.isPending,
     selectConversation,
     sendMessage,

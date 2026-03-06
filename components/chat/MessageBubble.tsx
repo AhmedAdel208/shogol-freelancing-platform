@@ -115,7 +115,7 @@ export default function MessageBubble({ message, isMine, avatarUrl }: Props) {
 
           {/* Footer info (Time & Status) */}
           <div className={`flex items-center gap-1.5 mt-1 ${isMine ? "justify-end" : "justify-start"}`}>
-            <span className={`text-[15px] font-black ${isMine ? "text-white/60" : "text-gray-400"}`}>
+            <span className={`text-[10px] font-bold ${isMine ? "text-white/60" : "text-gray-400"}`}>
               {time}
             </span>
             {isMine && (

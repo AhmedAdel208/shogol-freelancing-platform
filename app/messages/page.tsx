@@ -43,7 +43,6 @@ export default function MessagesPage() {
     selectConversation(id);
     setShowChatMobile(true);
   };
-  console.log(onlineUsers)
 
   return (
     <div className="flex flex-col min-h-screen bg-bg" dir="rtl">
