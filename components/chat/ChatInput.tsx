@@ -6,18 +6,35 @@ import { Paperclip, Send, X } from "lucide-react";
 interface Props {
   onSend: (content: string, attachment?: File) => void;
   isSending: boolean;
+  onTyping?: (isTyping: boolean) => void;
 }
 
-export default function ChatInput({ onSend, isSending }: Props) {
+export default function ChatInput({ onSend, isSending, onTyping }: Props) {
   const [text, setText] = useState("");
   const [attachment, setAttachment] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+    if (onTyping) {
+      onTyping(true);
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = setTimeout(() => {
+        onTyping(false);
+      }, 2000);
+    }
+  };
 
   const handleSend = () => {
     if (!text.trim() && !attachment) return;
     onSend(text.trim(), attachment || undefined);
     setText("");
     setAttachment(null);
+    if (onTyping) {
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      onTyping(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -28,7 +45,7 @@ export default function ChatInput({ onSend, isSending }: Props) {
   };
 
   return (
-    <div className="p-4 sm:p-6 bg-white border-t border-gray-100 space-y-3">
+    <div className="p-4 sm:p-6 w-[90%] mx-auto bg-white border-t border-gray-100 space-y-3">
       {/* Attachment preview */}
       {attachment && (
         <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
@@ -51,10 +68,10 @@ export default function ChatInput({ onSend, isSending }: Props) {
 
       {/* Input row */}
       <div className="relative flex items-center gap-3 sm:gap-4">
-        <div className="flex-1 relative flex items-center bg-gray-50 rounded-2xl border border-gray-100 px-3 sm:px-4 group focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+        <div className="flex-1 relative flex items-center bg-gray-50 rounded-2xl border border-gray-300 px-3 sm:px-4 group focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
           <button
             onClick={() => fileRef.current?.click()}
-            className="p-2 text-gray-400 hover:text-primary transition-colors cursor-pointer"
+            className="p-3 text-gray-600 hover:text-primary transition-colors cursor-pointer"
           >
             <Paperclip size={18} />
           </button>
@@ -62,7 +79,7 @@ export default function ChatInput({ onSend, isSending }: Props) {
             type="text"
             autoFocus
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={handleTextChange}
             onKeyDown={handleKeyDown}
             placeholder="إرسال رسالة"
             className="flex-1 bg-transparent border-none outline-none py-3 sm:py-4 px-2 text-right text-gray-700 font-medium font-cairo text-sm"
@@ -86,7 +103,7 @@ export default function ChatInput({ onSend, isSending }: Props) {
           className={`shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-xl cursor-pointer ${
             text.trim() || attachment
               ? "bg-primary text-white shadow-primary/30 hover:scale-105 active:scale-95"
-              : "bg-gray-100 text-gray-400 shadow-none cursor-not-allowed"
+              : "bg-gray-300 text-gray-400 shadow-none cursor-not-allowed"
           }`}
         >
           {isSending ? (

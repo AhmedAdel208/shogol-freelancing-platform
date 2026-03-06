@@ -13,6 +13,7 @@ import {
   onMessageRead,
 } from "@/lib/signalr/chatHub";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { toast } from "@/common/toast";
 
 
 const QUERY_KEYS = {
@@ -29,6 +30,11 @@ export function useChat() {
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   const [isTyping, setIsTyping] = useState<Record<number, boolean>>({});
   const hubStartedRef = useRef(false);
+  const selectedIdRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    selectedIdRef.current = selectedConversationId;
+  }, [selectedConversationId]);
 
   // ─── Real-time SignalR ───────────────────────────────────
   useEffect(() => {
@@ -55,10 +61,15 @@ export function useChat() {
         cleanups.push(
           onReceiveMessage(() => {
             queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
-            if (selectedConversationId) {
+            const activeId = selectedIdRef.current;
+            if (activeId) {
               queryClient.invalidateQueries({
-                queryKey: QUERY_KEYS.messages(selectedConversationId),
+                queryKey: QUERY_KEYS.messages(activeId),
               });
+              // Auto mark-as-read since user is actively viewing this conversation
+              chatApi.markAsRead(activeId).then(() => {
+                queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
+              }).catch(() => {});
             }
           })
         );
@@ -112,11 +123,6 @@ export function useChat() {
             queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
           })
         );
-
-        if (selectedConversationId) {
-          const { joinConversation } = await import("@/lib/signalr/chatHub");
-          joinConversation(selectedConversationId);
-        }
       } catch { /* connection error */ }
     };
 
@@ -124,10 +130,28 @@ export function useChat() {
 
     return () => {
       cleanups.forEach((fn) => fn());
-      stopChatHub();
-      hubStartedRef.current = false;
     };
-  }, [isAuthenticated, queryClient, selectedConversationId, user?.id]);
+  }, [isAuthenticated, queryClient, user?.id]);
+
+  // Handle Joining/Leaving Conversation Groups separately
+  useEffect(() => {
+    if (!isAuthenticated || !selectedConversationId) return;
+
+    let mounted = true;
+    const handleGroup = async () => {
+      try {
+        const { joinConversation } = await import("@/lib/signalr/chatHub");
+        if (mounted) joinConversation(selectedConversationId);
+      } catch { /* ignore */ }
+    };
+
+    handleGroup();
+    return () => {
+      mounted = false;
+      // We don't strictly need to leave conversation group on cleanup 
+      // as the hub handles it, but we could if needed.
+    };
+  }, [selectedConversationId, isAuthenticated]);
 
   // ─── REST Queries ────────────────────────────────────────
   const conversationsQuery = useQuery({
@@ -152,6 +176,40 @@ export function useChat() {
 
   const conversations = Array.isArray(conversationsQuery.data) ? conversationsQuery.data : [];
 
+  // ─── Mutations & Actions ─────────────────────────────────
+  const sendMutation = useMutation({
+    mutationFn: ({ receiverId, content, attachment }: { receiverId: string, content: string, attachment?: File }) =>
+      chatApi.sendMessage(receiverId, content, attachment),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
+      if (selectedConversationId) {
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.messages(selectedConversationId) });
+      }
+    },
+  });
+
+  const markReadMutation = useMutation({
+    mutationFn: (conversationId: number) => chatApi.markAsRead(conversationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (conversationId: number) => chatApi.deleteConversation(conversationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
+      setSelectedConversationId(null);
+      toast.success("تم حذف المحادثة بنجاح");
+    },
+    onError: () => {
+      toast.error("فشل في حذف المحادثة. حاول مرة أخرى.");
+    }
+  });
+
+  const messages = Array.isArray(messagesQuery.data) ? messagesQuery.data : [];
+  const selectedConversation = conversations.find((c) => c.id === selectedConversationId);
+
   // ─── Syncing Status ───────────────────────────────────────
   
   // Sync from online-users API
@@ -165,18 +223,35 @@ export function useChat() {
     }
   }, [onlineUsersQuery.data]);
 
-  // Sync selection from 'user' search param
+  // Sync selection from 'user' search param only once per param
+  const handledUserParams = useRef(new Set<string>());
+
   useEffect(() => {
     const userToChatId = searchParams.get("user");
     if (userToChatId && conversations.length > 0) {
-      const target = conversations.find(c => 
-        String(c.otherUserId).toLowerCase() === userToChatId.toLowerCase()
-      );
-      if (target && target.id !== selectedConversationId) {
-        setSelectedConversationId(target.id);
+      const paramLower = userToChatId.toLowerCase();
+      if (!handledUserParams.current.has(paramLower)) {
+        const target = conversations.find(c => 
+          String(c.otherUserId).toLowerCase() === paramLower
+        );
+        if (target) {
+          handledUserParams.current.add(paramLower);
+          setSelectedConversationId(target.id);
+          markReadMutation.mutate(target.id);
+        }
       }
     }
-  }, [searchParams, conversations, selectedConversationId]);
+  }, [searchParams, conversations, markReadMutation]);
+
+  // Mark as read when new messages arrive for the selected conversation
+  useEffect(() => {
+    if (selectedConversationId && messages.length > 0) {
+      const hasUnread = selectedConversation?.unreadCount && selectedConversation.unreadCount > 0;
+      if (hasUnread) {
+        markReadMutation.mutate(selectedConversationId);
+      }
+    }
+  }, [selectedConversationId, messages.length, selectedConversation?.unreadCount, markReadMutation]);
 
   // Sync from conversations initial state
   useEffect(() => {
@@ -198,25 +273,6 @@ export function useChat() {
     }
   }, [conversations]);
 
-  // ─── Mutations & Actions ─────────────────────────────────
-  const sendMutation = useMutation({
-    mutationFn: ({ receiverId, content, attachment }: { receiverId: string, content: string, attachment?: File }) =>
-      chatApi.sendMessage(receiverId, content, attachment),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
-      if (selectedConversationId) {
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.messages(selectedConversationId) });
-      }
-    },
-  });
-
-  const markReadMutation = useMutation({
-    mutationFn: (conversationId: number) => chatApi.markAsRead(conversationId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
-    },
-  });
-
   const selectConversation = useCallback(
     async (id: number) => {
       const { joinConversation, leaveConversation } = await import("@/lib/signalr/chatHub");
@@ -236,13 +292,27 @@ export function useChat() {
     [sendMutation]
   );
 
+  const deleteConversation = useCallback(
+    (conversationId: number) => {
+      deleteMutation.mutate(conversationId);
+    },
+    [deleteMutation]
+  );
+
   const refetchConversations = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.conversations });
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.onlineUsers });
   }, [queryClient]);
 
-  const messages = Array.isArray(messagesQuery.data) ? messagesQuery.data : [];
-  const selectedConversation = conversations.find((c) => c.id === selectedConversationId);
+  const sendTypingStatus = useCallback(
+    (status: boolean) => {
+      if (!selectedConversationId) return;
+      import("@/lib/signalr/chatHub").then(({ sendTypingEvent }) => {
+        sendTypingEvent(selectedConversationId, status);
+      });
+    },
+    [selectedConversationId]
+  );
 
   return {
     conversations,
@@ -250,13 +320,20 @@ export function useChat() {
     selectedConversation,
     selectedConversationId,
     onlineUsers,
+    isTyping: selectedConversationId ? isTyping[selectedConversationId] : false,
     currentUserId: user?.id ?? null,
-    isLoadingConversations: conversationsQuery.isLoading || conversationsQuery.isFetching,
-    isLoadingMessages: messagesQuery.isLoading || messagesQuery.isFetching,
+    currentUserImage: (user as any)?.profilePictureUrl ?? undefined,
+    isLoadingConversations: conversationsQuery.isLoading && conversations.length === 0,
+    isFetchingConversations: conversationsQuery.isFetching,
+    isLoadingMessages: messagesQuery.isLoading,
+    isFetchingMessages: messagesQuery.isFetching,
     isInitialLoading: (conversationsQuery.isLoading && conversations.length === 0),
     isSending: sendMutation.isPending,
     selectConversation,
     sendMessage,
     refetchConversations,
+    sendTypingStatus,
+    deleteConversation,
+    isDeleting: deleteMutation.isPending,
   };
 }

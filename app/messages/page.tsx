@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useChat } from "@/hooks/chat/useChat";
+import { useProfile } from "@/hooks/profile/useProfile";
 import {
   ConversationList,
   ChatHeader,
@@ -15,6 +16,7 @@ import Footer from "@/components/landing/footer/Footer";
 
 export default function MessagesPage() {
   const [showChatMobile, setShowChatMobile] = useState(false);
+  const { data: profile } = useProfile();
 
   const {
     conversations,
@@ -22,14 +24,19 @@ export default function MessagesPage() {
     selectedConversation,
     selectedConversationId,
     onlineUsers,
+    isTyping,
     currentUserId,
+    currentUserImage,
     isLoadingConversations,
+    isFetchingConversations,
     isLoadingMessages,
-    isInitialLoading,
     isSending,
     selectConversation,
     sendMessage,
     refetchConversations,
+    sendTypingStatus,
+    deleteConversation,
+    isDeleting,
   } = useChat();
 
   const handleSelectConversation = (id: number) => {
@@ -60,6 +67,7 @@ export default function MessagesPage() {
               onSelect={handleSelectConversation}
               onRefresh={refetchConversations}
               isLoading={isLoadingConversations}
+              isFetching={isFetchingConversations}
             />
           </div>
 
@@ -76,11 +84,16 @@ export default function MessagesPage() {
                   image={selectedConversation.otherUserImage}
                   isOnline={selectedConversation.isOnline || onlineUsers.has(selectedConversation.otherUserId)}
                   onBack={() => setShowChatMobile(false)}
+                  onDelete={() => deleteConversation(selectedConversation.id)}
+                  isDeleting={isDeleting}
                 />
 
                 <MessageList
                   messages={messages}
                   currentUserId={currentUserId}
+                  currentUserImage={profile?.profilePictureUrl || currentUserImage}
+                  otherUserImage={selectedConversation.otherUserImage}
+                  isTyping={isTyping}
                   isLoading={isLoadingMessages}
                 />
 
@@ -94,6 +107,7 @@ export default function MessagesPage() {
                     )
                   }
                   isSending={isSending}
+                  onTyping={sendTypingStatus}
                 />
               </>
             ) : (
@@ -103,7 +117,6 @@ export default function MessagesPage() {
         </div>
       </main>
 
-      <Footer />
     </div>
   );
 }

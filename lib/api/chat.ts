@@ -82,6 +82,11 @@ export const chatApi = {
     await apiClient.post(`${BASE}/conversations/${conversationId}/mark-read`);
   },
 
+  /** Delete a conversation entirely */
+  deleteConversation: async (conversationId: number): Promise<void> => {
+    await apiClient.delete(`${BASE}/conversations/${conversationId}`);
+  },
+
   /** Check if a specific user is online */
   getUserOnlineStatus: async (userId: string): Promise<boolean> => {
     const { data } = await apiClient.get(`${BASE}/user/${userId}/online-status`);

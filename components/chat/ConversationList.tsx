@@ -13,6 +13,7 @@ interface Props {
   onSelect: (id: number) => void;
   onRefresh: () => void;
   isLoading: boolean;
+  isFetching: boolean;
 }
 
 export default function ConversationList({
@@ -22,6 +23,7 @@ export default function ConversationList({
   onSelect,
   onRefresh,
   isLoading,
+  isFetching,
 }: Props) {
   const [search, setSearch] = useState("");
 
@@ -39,10 +41,10 @@ export default function ConversationList({
           </h1>
           <button 
             onClick={onRefresh}
-            disabled={isLoading}
+            disabled={isFetching}
             className="p-2 text-gray-400 hover:text-primary transition-colors hover:bg-gray-50 rounded-xl disabled:opacity-50"
           >
-            <RotateCcw size={20} className={isLoading ? "animate-spin" : ""} />
+            <RotateCcw size={20} className={isFetching ? "animate-spin" : ""} />
           </button>
         </div>
 

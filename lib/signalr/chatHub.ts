@@ -145,6 +145,19 @@ export async function leaveConversation(conversationId: number) {
   }
 }
 
+/** Indicate typing status to others in the conversation */
+export async function sendTypingEvent(conversationId: number, isTyping: boolean) {
+  const conn = getConnection();
+  if (conn.state === HubConnectionState.Connected) {
+    try {
+      await conn.invoke("UserTyping", conversationId, isTyping);
+    } catch (err) {
+      // Best-effort, swallow if backend method name differs
+      console.debug("[SignalR] Typing event not supported by backend:", err);
+    }
+  }
+}
+
 /** Check online status via hub invocation */
 export async function checkUserOnlineStatus(userId: string): Promise<boolean> {
   const conn = getConnection();

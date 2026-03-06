@@ -37,7 +37,6 @@ export default function AnnouncementDetailPage() {
 
   // Check if current user is the owner of this project
   const isOwner = user?.id === project?.clientId;
-  const isClient = user?.isClient;
   const isFreelancer = user?.isFreelancer;
 
   const hasSubmittedProposal = project?.proposals?.some(

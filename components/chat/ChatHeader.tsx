@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreVertical, ArrowRight } from "lucide-react";
+import { ArrowRight, Trash2 } from "lucide-react";
 import UserAvatar from "./UserAvatar";
 import { getImageUrl } from "@/utils/image";
 
@@ -10,6 +10,8 @@ interface Props {
   isOnline: boolean;
   lastSeen?: string;
   onBack: () => void;
+  onDelete?: () => void;
+  isDeleting?: boolean;
 }
 
 export default function ChatHeader({
@@ -18,6 +20,8 @@ export default function ChatHeader({
   isOnline,
   lastSeen,
   onBack,
+  onDelete,
+  isDeleting,
 }: Props) {
   return (
     <div className="px-4 sm:px-6 py-4 bg-white border-b border-gray-100 flex items-center justify-between">
@@ -45,9 +49,24 @@ export default function ChatHeader({
         </div>
       </div>
 
-      <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors hover:bg-gray-50 rounded-xl">
-        <MoreVertical size={20} />
-      </button>
+      {onDelete && (
+        <button
+          onClick={() => {
+            if (confirm("هل أنت متأكد من حذف هذه المحادثة بالكامل؟ لا يمكن التراجع عن هذا الإجراء.")) {
+              onDelete();
+            }
+          }}
+          disabled={isDeleting}
+          className="p-2 text-gray-400 hover:text-red-500 transition-colors hover:bg-red-50 rounded-xl disabled:opacity-50 flex shrink-0"
+          title="حذف المحادثة"
+        >
+          {isDeleting ? (
+            <div className="w-5 h-5 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <Trash2 size={20} />
+          )}
+        </button>
+      )}
     </div>
   );
 }

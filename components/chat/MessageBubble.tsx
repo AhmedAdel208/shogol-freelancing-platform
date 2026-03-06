@@ -6,18 +6,28 @@ import { getImageUrl } from "@/utils/image";
 interface Props {
   message: ChatMessage;
   isMine: boolean;
+  avatarUrl?: string;
 }
 
-export default function MessageBubble({ message, isMine }: Props) {
+export default function MessageBubble({ message, isMine, avatarUrl }: Props) {
   const formatTime = (dateStr: string): string => {
     if (!dateStr) return "";
     try {
-      const date = new Date(dateStr);
+      // Append Z to parse as UTC if not already present
+      const date = new Date(dateStr.endsWith("Z") || dateStr.includes("+") ? dateStr : dateStr + "Z");
       if (isNaN(date.getTime())) return "";
-      return date.toLocaleTimeString("ar-EG", {
-        hour: "2-digit",
+
+      const parts = new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
         minute: "2-digit",
-      });
+        hour12: true,
+      }).formatToParts(date);
+
+      const hours = parts.find((p) => p.type === "hour")?.value;
+      const minutes = parts.find((p) => p.type === "minute")?.value;
+      const dayPeriod = parts.find((p) => p.type === "dayPeriod")?.value;
+
+      return `${hours}:${minutes} ${dayPeriod?.toLowerCase() === "pm" ? "م" : "ص"}`;
     } catch {
       return "";
     }
@@ -34,15 +44,30 @@ export default function MessageBubble({ message, isMine }: Props) {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className={`flex items-end gap-2 ${
+      className={`flex items-end gap-2 mb-4 ${
         isMine ? "flex-row self-start" : "flex-row-reverse self-end"
       }`}
     >
-      <div className={`max-w-[90%] flex flex-col ${isMine ? "items-start" : "items-end"}`}>
+      <div className="shrink-0 mb-1">
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt="User avatar"
+            className="w-7 h-7 rounded-full object-cover shadow-sm border border-gray-100/50"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center shadow-sm border border-gray-100/50">
+             <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path></svg>
+          </div>
+        )}
+      </div>
+
+      <div className={`max-w-[85%] flex flex-col ${isMine ? "items-start" : "items-end"}`}>
         <div
-          className={`relative px-3.5 py-2 rounded-2xl shadow-sm text-sm font-cairo ${
+          className={`relative px-3.5 py-2 rounded-2xl mt-4 shadow-sm text-sm font-cairo ${
             isMine
-              ? "bg-[#2d3748] text-white rounded-tr-none"
+              ? "bg-gray-700 text-white rounded-tr-none"
               : "bg-white border border-gray-100 text-gray-800 rounded-tl-none"
           }`}
         >
@@ -90,7 +115,7 @@ export default function MessageBubble({ message, isMine }: Props) {
 
           {/* Footer info (Time & Status) */}
           <div className={`flex items-center gap-1.5 mt-1 ${isMine ? "justify-end" : "justify-start"}`}>
-            <span className={`text-[9px] font-black ${isMine ? "text-white/60" : "text-gray-400"}`}>
+            <span className={`text-[15px] font-black ${isMine ? "text-white/60" : "text-gray-400"}`}>
               {time}
             </span>
             {isMine && (
