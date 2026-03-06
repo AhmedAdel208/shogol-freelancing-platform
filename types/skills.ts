@@ -11,3 +11,14 @@ export interface SkillCategory {
   nameEn: string;
   skills: Skill[];
 }
+
+export interface UserSkill {
+  id: number;
+  skillId: number;
+  skillNameAr: string;
+  skillNameEn: string;
+}
+
+export interface UserSkillsResponse {
+  skills: UserSkill[];
+}

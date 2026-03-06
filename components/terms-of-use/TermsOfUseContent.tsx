@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Home, ChevronLeft } from "lucide-react";
+import Link from "next/link";
 
 interface TermSection {
   id: string;
@@ -97,7 +98,21 @@ export default function TermsOfUseContent() {
   };
 
   return (
-    <div className="relative max-w-5xl mx-auto px-6 py-20">
+    <div className="relative max-w-5xl mx-auto px-6 py-10 lg:py-20">
+      
+      {/* Breadcrumbs */}
+      <nav className="flex items-center gap-2 text-gray-500 text-sm mb-12 bg-gray-900/50 w-fit px-4 py-2 rounded-full border border-gray-800 backdrop-blur-sm">
+        <Link href="/" className="hover:text-primary flex items-center gap-2 transition-colors">
+          <Home className="w-4 h-4" />
+          <span>الرئيسية</span>
+        </Link>
+        <ChevronLeft className="w-4 h-4" />
+        <Link href="/help-center" className="hover:text-primary transition-colors">
+          مركز المساعدة
+        </Link>
+        <ChevronLeft className="w-4 h-4" />
+        <span className="text-gray-300">شروط الاستخدام</span>
+      </nav>
 
       {/* Header */}
       <motion.div
@@ -106,10 +121,10 @@ export default function TermsOfUseContent() {
         transition={{ duration: 0.6 }}
         className="text-center mb-16"
       >
-        <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent">
+        <h1 className="text-4xl lg:text-6xl font-black mb-6 bg-linear-to-r from-blue-400 via-indigo-500 to-purple-600 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(99,102,241,0.3)]">
           شروط الاستخدام
         </h1>
-        <p className="text-gray-400 text-lg">
+        <p className="text-gray-400 text-lg lg:text-xl">
           آخر تحديث: {new Date().toLocaleDateString("ar-SA")}
         </p>
       </motion.div>
@@ -126,7 +141,7 @@ export default function TermsOfUseContent() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl border border-gray-700 overflow-hidden shadow-xl"
+              className="bg-linear-to-br from-gray-900 to-gray-800 rounded-2xl border border-gray-700 overflow-hidden shadow-xl"
             >
               {/* Header Button */}
               <motion.button
@@ -198,7 +213,7 @@ export default function TermsOfUseContent() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="mt-24 text-center bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-12 border border-gray-700 shadow-2xl"
+        className="mt-24 text-center bg-linear-to-br from-gray-900 to-gray-800 rounded-3xl p-12 border border-gray-700 shadow-2xl"
       >
         <h2 className="text-3xl font-bold mb-4 text-white">
           هل لديك أسئلة؟
@@ -211,7 +226,7 @@ export default function TermsOfUseContent() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.97 }}
           onClick={handleContactSupport}
-          className="bg-gradient-to-r cursor-pointer from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-10 py-4 rounded-xl font-semibold shadow-xl transition-all duration-300"
+          className="bg-linear-to-r cursor-pointer from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-10 py-4 rounded-xl font-semibold shadow-xl transition-all duration-300"
         >
           تواصل مع الدعم
         </motion.button>

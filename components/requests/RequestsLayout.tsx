@@ -7,13 +7,11 @@ export default function RequestsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div dir="rtl" className=" bg-gray-100">
+    <div dir="rtl" className="min-h-screen bg-gray-50 flex flex-col">
       <LinksHeader />
-      <div className=" mx-auto flex flex-col lg:flex-row gap-6">
-        <div className="flex-1 bg-white rounded-2xl shadow ">
-          {children}
-        </div>
-      </div>
+      <main className="flex-1">
+        {children}
+      </main>
       <Footer />
     </div>
   );

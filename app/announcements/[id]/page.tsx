@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { useDeleteProject } from "@/hooks/project/useDeleteProject";
 import Footer from "@/components/landing/footer/Footer";
 import LinksHeader from "@/components/landing/header/LinksHeader";
@@ -11,8 +12,8 @@ import ProjectDetails from "@/container/announcements/detail/ProjectDetails";
 import ProjectSkills from "@/container/announcements/detail/ProjectSkills";
 import ProjectAttachments from "@/container/announcements/detail/ProjectAttachments";
 import ProjectActions from "@/container/announcements/detail/ProjectActions";
-import ProjectProposals from "@/components/proposals/ProjectProposals";
-import CreateProposalForm from "@/components/proposals/CreateProposalForm";
+import ProjectProposals from "@/container/proposals/ProjectProposals";
+import CreateProposalForm from "@/container/proposals/CreateProposalForm";
 import ErrorState from "@/container/announcements/detail/ErrorState";
 import ClientInfo from "@/container/announcements/detail/ClientInfo";
 import { useAuth } from "@/hooks/auth/useAuth";
@@ -23,6 +24,7 @@ export default function AnnouncementDetailPage() {
   const router = useRouter();
   const projectId = params.id as string;
   const { isAuthenticated, user } = useAuth();
+  const [showProposalForm, setShowProposalForm] = useState(false);
 
   const {
     data: project,
@@ -88,15 +90,16 @@ export default function AnnouncementDetailPage() {
                     router.push(`/announcements/edit/${projectId}`)
                   }
                   onDeleteProject={handleDeleteProject}
+                  onShowProposalForm={() => setShowProposalForm(true)}
                 />
               </div>
             ) : null}
           </aside>
 
           {/* Main Content (Right side in RTL) */}
-          <main className="flex-1 order-1 lg:order-2 bg-[#ffffff] p-6 md:p-10 shadow-[0_2px_40px_rgba(0,0,0,0.04)] rounded-4xl border border-white flex flex-col relative overflow-hidden z-0">
-            {/* Soft decorative background blur */}
-            <div className="absolute top-0 right-0 w-125 h-125 bg-primary/5 rounded-full blur-[100px] -z-10 translate-x-1/2 -translate-y-1/2" />
+          <main className="flex-1 order-1 lg:order-2 bg-white p-6 sm:p-8 md:p-10 shadow-[0_10px_50px_-12px_rgba(0,0,0,0.03)] rounded-[32px] border border-gray-100/50 flex flex-col relative overflow-hidden z-0">
+            {/* Subtle light accent background */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/2 rounded-full blur-[100px] -z-10 translate-x-1/2 -translate-y-1/2" />
 
             {/* Project Header: Title, Status, Meta */}
             <ProjectHeader project={project} />
@@ -104,14 +107,14 @@ export default function AnnouncementDetailPage() {
             {/* Info Cards: Budget, Duration, Deadline */}
             <ProjectDetails project={project} />
 
-            {/* Description Section */}
-            <div className="mb-6 font-cairo" dir="rtl">
-              <h3 className="text-[1.15rem] font-bold text-gray-900 mb-3 text-right">
+            {/* Description Section - Balanced padding and font */}
+            <div className="mb-8 font-cairo" dir="rtl">
+              <h3 className="text-lg font-black text-gray-800 mb-4 text-right">
                 التفاصيل
               </h3>
-              <p className="text-[16px] text-gray-600 leading-8 text-right bg-slate-50/50 p-5 rounded-[20px] border border-slate-100/60 shadow-inner">
+              <div className="text-[15px] text-gray-500 leading-8 text-right bg-gray-50/30 p-6 rounded-2xl border border-gray-100/80">
                 {project.description}
-              </p>
+              </div>
             </div>
 
             {/* Skills Section */}
@@ -121,16 +124,16 @@ export default function AnnouncementDetailPage() {
             <ProjectAttachments attachments={project.attachments} />
 
             {/* Proposal Submission (Inline) */}
-            {isFreelancer && !isOwner && !hasSubmittedProposal && (
-              <div className="mt-12 mb-8">
+            {isFreelancer && !isOwner && !hasSubmittedProposal && showProposalForm && (
+              <div id="proposal-form-section" className="mt-10 mb-6 animate-in fade-in slide-in-from-top-4 duration-700">
                 <CreateProposalForm jobRequestId={projectId} />
               </div>
             )}
           </main>
         </div>
 
-        <div className="w-full lg:w-[calc(100%-440px)] ml-auto mt-8 mb-16">
-          <ProjectProposals jobRequestId={project.id} />
+        <div className="w-full lg:w-[calc(100%-400px)] ml-auto mt-12 mb-20 animate-in fade-in duration-1000">
+          <ProjectProposals jobRequestId={project.id.toString()} />
         </div>
       </section>
 

@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { toast } from "@/lib/toast";
+import { toast } from "@/common/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { jobRequestService } from "@/lib/api/jobRequests";
 

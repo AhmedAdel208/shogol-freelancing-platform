@@ -16,6 +16,7 @@ export default function ProjectActions({
   onDeleteProject,
   onProposalSuccess,
   hasSubmittedProposal,
+  onShowProposalForm,
 }: ProjectActionsProps) {
   const { isAuthenticated, isMounted, user } = useAuth();
 
@@ -45,6 +46,7 @@ export default function ProjectActions({
         jobRequestId={jobRequestId}
         onProposalSuccess={onProposalSuccess}
         hasSubmittedProposal={hasSubmittedProposal}
+        onShowForm={onShowProposalForm}
       />
     );
   }

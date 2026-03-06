@@ -24,7 +24,7 @@ export default function NewHero() {
       />
 
       {/* Overlays */}
-      <div className="absolute inset-0 bg-slate-950/70" />
+      <div className="absolute inset-0 bg-slate-950/50" />
       <div className="absolute inset-0 bg-linear-to-b from-slate-950/30 via-transparent to-slate-950/90" />
       <div className="absolute inset-0 bg-linear-to-l from-primary/10 via-transparent to-teal-900/60" />
 
@@ -45,7 +45,7 @@ export default function NewHero() {
               <h1 className=" leading-[1.05] font-extrabold tracking-tight text-[32px] md:text-[48px] lg:text-[62px]">
                 <span className="text-white block">منصة شغل</span>
               </h1>
-              <p className="text-white mx-auto text-xl font-bold leading-relaxed mt-6 max-w-xl">
+              <p className="text-white mx-auto text-xl font-bold leading-relaxed mt-8 max-w-xl">
                 منصة شغل تجمع بين نخبة المستقلين وأصحاب المشاريع الطموحة في
                 بيئة عمل ذكية، آمنة، ومحفزة للنجاح.
               </p>

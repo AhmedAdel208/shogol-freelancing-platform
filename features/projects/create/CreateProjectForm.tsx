@@ -37,7 +37,7 @@ export default function CreateProjectForm() {
   }
 
   return (
-    <div className="max-w-3xl min-h-[90vh]  mx-auto px-4 py-8" dir="ltr">
+    <div className="max-w-3xl min-h-[90vh]  mx-auto px-4 py-8" dir="rtl">
       {/* Header Section */}
       <div className="text-center mb-12 space-y-4">
         <h1 className="text-3xl md:text-4xl font-black font-cairo text-dark mb-4 drop-shadow-sm">

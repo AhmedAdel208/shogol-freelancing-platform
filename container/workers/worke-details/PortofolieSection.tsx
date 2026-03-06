@@ -57,7 +57,7 @@ export default function PortfolioSection({ portfolio }: { portfolio: Portfolio[]
                    {/* Gradient Overlay for Text Visibility */}
                    <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-8 md:p-12 text-white text-right">
                       <div className="space-y-3 max-w-2xl bg-black/10 backdrop-blur-sm p-6 md:p-8 rounded-[32px] border border-white/10 animate-in fade-in slide-in-from-bottom-5 duration-700">
-                         <h3 className="text-2xl md:text-3xl lg:text-4xl font-black font-cairo leading-tight">
+                         <h3 className="text-2xl text-primary md:text-3xl lg:text-4xl font-black font-cairo leading-tight">
                             {item.title}
                          </h3>
                          <p className="text-slate-300 font-bold font-cairo text-sm md:text-base leading-relaxed line-clamp-2">
