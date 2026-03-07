@@ -1,6 +1,6 @@
+import { Plus } from "lucide-react";
 import ProposalCard from "./ProposalCard";
 import EmptyState from "./EmptyState";
-import ClientEmptyState from "./ClientEmptyState";
 
 interface ProposalListProps {
   sectionContent: {
@@ -30,14 +30,22 @@ export default function ProposalList({
   
   if (!sectionContent?.data || sectionContent.data.length === 0) {
     if (isClient) {
-      return <ClientEmptyState />;
+      return (
+        <EmptyState
+          title="لا توجد طلبات"
+          description="لم تقم بإنشاء أي طلبات عمل بعد. ابدأ بإنشاء طلب جديد للعثور على المستقلين المناسبين لمشروعك."
+          buttonText="إنشاء طلب جديد"
+          buttonIcon={Plus}
+          href="/announcements/create"
+        />
+      );
     }
     return (
       <EmptyState
         title="لا توجد بيانات حالياً"
         description="لم يتم العثور على أي طلبات أو عروض في هذا القسم"
         buttonText="تصفح المشاريع"
-        onButtonClick={() => window.location.href = "/announcements"}
+        href="/announcements"
       />
     );
   }

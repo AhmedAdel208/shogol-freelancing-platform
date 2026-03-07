@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { jobRequestService } from "@/lib/api/jobRequests";
 import { requestsService } from "@/lib/api/requests";
-import { userService } from "@/lib/api/user";
 import { proposalApi } from "@/lib/api/proposal";
 import { toast } from "@/common/toast";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -59,7 +59,7 @@ export function useRequestsData() {
   });
 
   const deleteJobRequestMutation = useMutation({
-    mutationFn: (jobRequestId: number) => proposalApi.deleteJobRequest(jobRequestId),
+    mutationFn: (jobRequestId: number) => jobRequestService.deleteJobRequest(jobRequestId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: REQUESTS_QUERY_KEYS.all });
       toast.success("تم حذف الطلب بنجاح");
@@ -70,8 +70,8 @@ export function useRequestsData() {
   });
 
   const evaluateFreelancerMutation = useMutation({
-    mutationFn: ({ jobRequestId, freelancerId, rating, comment }: { jobRequestId: number; freelancerId: string; rating: number; comment: string }) => 
-      proposalApi.evaluateFreelancer(jobRequestId, freelancerId, rating, comment),
+    mutationFn: ({ jobRequestId, rating, comment }: { jobRequestId: number; rating: number; comment: string }) => 
+      jobRequestService.evaluateFreelancer(jobRequestId, rating, comment),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: REQUESTS_QUERY_KEYS.all });
       toast.success("تم تقييم المستقل بنجاح");
@@ -82,7 +82,7 @@ export function useRequestsData() {
   });
 
   const deliverRequestMutation = useMutation({
-    mutationFn: (jobRequestId: number) => proposalApi.deliverRequest(jobRequestId),
+    mutationFn: (jobRequestId: number) => jobRequestService.deliverRequest(jobRequestId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: REQUESTS_QUERY_KEYS.all });
       toast.success("تم تسليم الطلب بنجاح");
@@ -107,7 +107,7 @@ export function useRequestsData() {
     handleDeliverRequest: (id: number) => deliverRequestMutation.mutate(id),
     handleEditJobRequest,
     isEvaluating: evaluateFreelancerMutation.isPending,
-    handleEvaluateFreelancer: (jobRequestId: number, freelancerId: string, rating: number, comment: string) => 
-      evaluateFreelancerMutation.mutate({ jobRequestId, freelancerId, rating, comment })
+    handleEvaluateFreelancer: (jobRequestId: number, _freelancerId: string, rating: number, comment: string) => 
+      evaluateFreelancerMutation.mutate({ jobRequestId, rating, comment })
   };
 }

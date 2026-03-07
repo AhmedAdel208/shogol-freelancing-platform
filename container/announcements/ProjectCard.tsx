@@ -1,7 +1,7 @@
 import Image from "next/image";
 import {
   CalendarDays,
- 
+
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatTimeAgo, mapStatus } from "@/utils";
@@ -31,7 +31,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
       <div className="p-6 sm:p-7 flex flex-col h-full">
         {/* Card Header & Status */}
-        <div className="flex justify-between items-start mb-4 gap-4" dir="rtl">
+        <div className="flex justify-between items-start mb-3 gap-4" dir="rtl">
           <div className="flex-1 min-w-0">
             <h2 className="text-xl md:text-2xl font-black font-cairo text-gray-800 leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-300">
               {project.title}
@@ -106,7 +106,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </div> */}
 
         {/* Bottom Bar: Client Info simplified */}
-        <div className="flex items-center justify-end gap-2 " dir="ltr">
+        <div className="flex items-center justify-end gap-2 -mt-5 " dir="ltr">
           <span className="text-[12px] font-bold text-gray-600 font-cairo group-hover:text-primary transition-colors">
             {project.clientName}
           </span>

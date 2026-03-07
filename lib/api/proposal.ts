@@ -36,26 +36,4 @@ export const proposalApi = {
     const response = await apiClient.delete(`/Proposal/${proposalId}`);
     return response.data;
   },
-
-  // ✅ delete job request
-  deleteJobRequest: async (jobRequestId: number): Promise<{ message: string }> => {
-    const response = await apiClient.delete(`/JobRequest/${jobRequestId}`);
-    return response.data;
-  },
-
-  // ✅ evaluate freelancer
-  evaluateFreelancer: async (jobRequestId: number, freelancerId: string, rating: number, comment: string): Promise<{ message: string }> => {
-    const response = await apiClient.post(`/FreelancerReview/add`, {
-      jobRequestId,
-      rating,
-      comment
-    });
-    return response.data;
-  },
-
-  // ✅ deliver request
-  deliverRequest: async (jobRequestId: number): Promise<{ message: string }> => {
-    const response = await apiClient.post(`/JobRequest/${jobRequestId}/freelancer-completed`);
-    return response.data;
-  },
 };

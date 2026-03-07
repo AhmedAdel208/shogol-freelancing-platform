@@ -16,11 +16,11 @@ export default function ProfileActions({ user }: ProfileActionsProps) {
 
   const handleContact = () => {
     if (!isAuthenticated) {
-      router.push("/signup");
+      router.push("/login?redirect=" + encodeURIComponent(window.location.pathname));
       return;
     }
-    // Handle authenticated contact logic here
-    toast.info("سيتم تفعيل الدردشة قريباً");
+    // Navigate to chat with this specific user
+    router.push(`/messages?user=${user.id}`);
   };
 
   const handleCopyLink = () => {

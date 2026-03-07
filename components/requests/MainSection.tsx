@@ -14,10 +14,10 @@ interface MainSectionProps {
 }
 
 const MainSection: React.FC<MainSectionProps> = ({ user, offers, loading, error }) => (
-  <main style={{ flex: 1, background: '#fff', borderRadius: 16, boxShadow: '0 2px 8px #eee', padding: '32px 40px', marginBottom: 24 }}>
+  <main style={{ flex: 1, background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px #eee', padding: '32px 40px', marginBottom: 24 }}>
     {/* Header */}
     <div style={{ display: 'flex', alignItems: 'center', marginBottom: 32 }}>
-      <img src={user.photo} alt="User" style={{ width: 64, height: 64, borderRadius: '50%', marginRight: 24 }} />
+      <img src={user.photo} alt="User" style={{ width: 64, height: 64, borderRadius: '10%', marginRight: 24 }} />
       <span style={{ fontSize: 24, fontWeight: 'bold' }}>{user.name}</span>
     </div>
     {/* Offers Container */}

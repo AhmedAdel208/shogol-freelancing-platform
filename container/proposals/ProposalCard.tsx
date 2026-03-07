@@ -1,10 +1,9 @@
-"use client";
-
+import { useRouter } from "next/navigation";
 import { ProposalDisplay } from "@/lib/validation/proposalSchema";
 import Image from "next/image";
 import { proposalApi } from "@/lib/api/proposal";
 import { useState } from "react";
-import { Star, Clock, Wallet, CheckCircle2, Briefcase, XCircle, Loader2 } from "lucide-react";
+import { Star, Clock, Wallet, CheckCircle2, Briefcase, XCircle, Loader2, MessageSquare } from "lucide-react";
 import { toast } from "@/common/toast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -41,8 +40,16 @@ export default function ProposalCard({
   proposal,
   isProjectOwner = false,
 }: ProposalCardProps) {
+  const router = useRouter();
   const [accepting, setAccepting] = useState(false);
   const queryClient = useQueryClient();
+
+  const handleContactFreelancer = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (proposal.freelancerId) {
+      router.push(`/messages?user=${proposal.freelancerId}`);
+    }
+  };
 
   const handleAcceptProposal = async () => {
     if (!confirm("هل أنت متأكد من قبول هذا العرض؟")) return;
@@ -88,8 +95,11 @@ export default function ProposalCard({
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
           
           <div className="flex items-center gap-4">
-            {/* Elite Avatar Design */}
-            <div className="relative w-14 h-14 bg-slate-50 rounded-[18px] flex items-center justify-center shrink-0 ring-4 ring-white shadow-md shadow-gray-200/50">
+            {/* Elite Avatar Design - Clickable for Owner */}
+            <div 
+              onClick={isProjectOwner ? handleContactFreelancer : undefined}
+              className={`relative w-14 h-14 bg-slate-50 rounded-[18px] flex items-center justify-center shrink-0 ring-4 ring-white shadow-md shadow-gray-200/50 ${isProjectOwner ? 'cursor-pointer hover:ring-primary/20 transition-all' : ''}`}
+            >
               {proposal.freelancerAvatar ? (
                 <Image
                   src={proposal.freelancerAvatar}
@@ -109,9 +119,17 @@ export default function ProposalCard({
 
             {/* Named & Stats */}
             <div className="flex flex-col justify-center">
-              <h3 className="font-extrabold text-gray-900 text-[1.15rem] leading-tight font-cairo mb-1.5">
-                {proposal.freelancerName}
-              </h3>
+              <div 
+                onClick={isProjectOwner ? handleContactFreelancer : undefined}
+                className={`flex items-center gap-2 group/name ${isProjectOwner ? 'cursor-pointer' : ''}`}
+              >
+                <h3 className="font-extrabold text-gray-900 text-[1.15rem] leading-tight font-cairo mb-1.5 group-hover/name:text-primary transition-colors">
+                  {proposal.freelancerName}
+                </h3>
+                {isProjectOwner && (
+                  <MessageSquare size={14} className="text-primary opacity-0 group-hover/name:opacity-100 transition-opacity mb-1" />
+                )}
+              </div>
               
               <div className="flex flex-wrap items-center gap-2.5 text-sm font-medium">
                 {/* Stunning Premium Star Box */}

@@ -1,4 +1,4 @@
-import { Briefcase } from "lucide-react";
+import { LucideIcon, Briefcase } from "lucide-react";
 import Link from "next/link";
 
 interface EmptyStateProps {
@@ -6,7 +6,9 @@ interface EmptyStateProps {
   description?: string;
   buttonText?: string;
   onButtonClick?: () => void;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: LucideIcon;
+  buttonIcon?: LucideIcon;
+  href?: string;
 }
 
 export default function EmptyState({
@@ -14,7 +16,9 @@ export default function EmptyState({
   description = "لم يتم العثور على عروض مطابقة للمعايير المحددة",
   buttonText = "تصفح المشاريع",
   onButtonClick,
-  icon: Icon = Briefcase
+  icon: Icon = Briefcase,
+  buttonIcon: ButtonIcon,
+  href = "/announcements",
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-24 px-6 bg-white/50 backdrop-blur-sm rounded-[3rem] border border-white/50 shadow-xs">
@@ -33,10 +37,11 @@ export default function EmptyState({
       )}
       
       <Link
-        href="/announcements"
+        href={href}
         onClick={onButtonClick}
-        className="bg-[#00b5bc] hover:bg-[#00a3a9] text-white px-12 py-4 rounded-2xl font-black text-lg transition-all duration-300 shadow-xl shadow-[#00b5bc]/20 hover:scale-105 active:scale-95"
+        className="inline-flex items-center gap-3 bg-[#00b5bc] hover:bg-[#00a3a9] text-white px-12 py-4 rounded-2xl font-black text-lg transition-all duration-300 shadow-xl shadow-[#00b5bc]/20 hover:scale-105 active:scale-95"
       >
+        {ButtonIcon && <ButtonIcon className="w-6 h-6" />}
         {buttonText}
       </Link>
     </div>

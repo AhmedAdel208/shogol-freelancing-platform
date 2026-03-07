@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import { Notification } from '../types';
-import { notificationsApi } from '../api/notificationsApi';
+import { Notification } from '@/components/notifications/types';
+import { notificationsApi } from '@/components/notifications/api/notificationsApi';
 import { signalRService } from '@/lib/signalr/signalrService';
 
 interface NotificationState {

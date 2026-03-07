@@ -24,42 +24,41 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8" dir="rtl">
       {/* Budget Card */}
-      <div className="bg-white rounded-xl border border-border p-4 flex items-center gap-3 justify-end hover:shadow-md transition-shadow">
-        <div className="text-right">
-          <span className="text-gray-medium text-sm block mb-1">الميزانية</span>
-          <p className="text-lg font-bold text-primary">
-            {project.budget} ريـال
+      <div className="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-4 hover:shadow-xl hover:shadow-gray-100/50 transition-all duration-300 group">
+        <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
+          <Banknote className="w-6 h-6 text-primary group-hover:text-white" />
+        </div>
+        <div className="flex flex-col">
+          <span className="text-gray-400 text-[13px] font-bold font-cairo mb-0.5">الميزانية</span>
+          <p className="text-lg font-black text-gray-900 font-cairo">
+            {project.budget} <span className="text-sm font-bold text-gray-400 mr-0.5">ريال</span>
           </p>
         </div>
-        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-          <Banknote className="w-5 h-5 text-primary" />
-        </div>
       </div>
+
       {/* Deadline Card */}
-      <div className="bg-white rounded-xl border border-border p-4 flex items-center gap-3 justify-end hover:shadow-md transition-shadow">
-        <div className="text-right">
-          <span className="text-gray-medium text-sm block mb-1">
-            الموعد النهائي
-          </span>
-          <p className="text-lg font-bold text-red-500">{getDeadlineDate()}</p>
+      <div className="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-4 hover:shadow-xl hover:shadow-gray-100/50 transition-all duration-300 group">
+        <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+          <CalendarDays className="w-6 h-6 text-orange-500 group-hover:text-white" />
         </div>
-        <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-          <CalendarDays className="w-5 h-5 text-red-500" />
+        <div className="flex flex-col">
+          <span className="text-gray-400 text-[13px] font-bold font-cairo mb-0.5">الموعد النهائي</span>
+          <p className="text-lg font-black text-gray-900 font-cairo">{getDeadlineDate()}</p>
         </div>
       </div>
 
       {/* Duration Card */}
-      <div className="bg-white rounded-xl border border-border p-5 flex items-center gap-3 justify-end hover:shadow-md transition-shadow">
-        <div className="text-right">
-          <span className="text-gray-medium text-sm block mb-1">المدة</span>
-          <p className="text-lg font-bold text-dark">
-            {project.durationInDays} يوم
-          </p>
+      <div className="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-4 hover:shadow-xl hover:shadow-gray-100/50 transition-all duration-300 group">
+        <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+          <Clock className="w-6 h-6 text-blue-500 group-hover:text-white" />
         </div>
-        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
-          <Clock className="w-5 h-5 text-dark" />
+        <div className="flex flex-col">
+          <span className="text-gray-400 text-[13px] font-bold font-cairo mb-0.5">المدة المتوقعة</span>
+          <p className="text-lg font-black text-gray-900 font-cairo">
+            {project.durationInDays} <span className="text-sm font-bold text-gray-400 mr-0.5">يوم</span>
+          </p>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateProjectService } from "@/lib/api/updateProject";
+import { jobRequestService } from "@/lib/api/jobRequests";
 import { EditProjectFormData } from "@/lib/validation/editProjectSchema";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -12,7 +12,7 @@ export function useUpdateProject() {
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: EditProjectFormData }) =>
-      updateProjectService.updateProject(id, data),
+      jobRequestService.updateJobRequest(id, data),
     onSuccess: (_, variables) => {
       toast.success("تم تحديث المشروع بنجاح");
       router.back();

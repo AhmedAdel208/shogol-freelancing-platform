@@ -11,7 +11,7 @@ export function useProfile() {
   });
 }
 
-export function useUpdateBio() {
+export function useUpdateBio(onSuccessCb?: () => void) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -19,9 +19,10 @@ export function useUpdateBio() {
     onSuccess: () => {
       toast.success("تم تحديث السيرة الذاتية بنجاح");
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      onSuccessCb?.();
     },
-    onError: () => {
-      toast.error("فشل في تحديث السيرة الذاتية");
+    onError: (error: any) => {
+      toast.error(error?.message || "فشل في تحديث السيرة الذاتية");
     },
   });
 }
@@ -36,9 +37,8 @@ export function useUpdateProfile(onSuccessCb?: () => void) {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       onSuccessCb?.();
     },
-    onError: () => {
-     
-      toast.error("فشل في تحديث الملف الشخصي");
+    onError: (error: any) => {
+      toast.error(error?.message || "فشل في تحديث الملف الشخصي");
     },
   });
 }
@@ -48,6 +48,7 @@ export function useCoverImage(id?: string) {
     queryKey: ["cover-image", id],
     queryFn: () => userService.getCoverImage(id!),
     enabled: !!id,
+    staleTime: 1000 * 60 * 5, 
   });
 }
 
