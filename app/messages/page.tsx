@@ -12,7 +12,7 @@ import {
 } from "@/components/chat";
 import Gradientline from "@/components/ui/header/Gradientline";
 import LinksHeader from "@/components/landing/header/LinksHeader";
-import Footer from "@/components/landing/footer/Footer";
+
 
 export default function MessagesPage() {
   const [showChatMobile, setShowChatMobile] = useState(false);

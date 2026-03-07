@@ -5,6 +5,7 @@ import Link from "next/link";
 import { MessageSquareMore, Bell } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { chatApi } from "@/lib/api/chat";
+import { notificationsApi } from "@/lib/api/notifications";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { startChatHub, onReceiveMessage, onMessageRead } from "@/lib/signalr/chatHub";
 
@@ -18,6 +19,13 @@ export default function Navicons() {
     enabled: isAuthenticated,
     refetchInterval: 5000,
     staleTime: 0,
+  });
+
+  const { data: unreadNotificationsCount = 0 } = useQuery({
+    queryKey: ["notifications-unread-count"],
+    queryFn: notificationsApi.getUnreadCount,
+    enabled: isAuthenticated,
+    refetchInterval: 10000,
   });
 
   // Listen for real-time events to update badge globally
@@ -78,6 +86,11 @@ export default function Navicons() {
             className="text-[#209fa9] group-hover:rotate-12 transition-transform duration-300" 
             strokeWidth={2.2}
           />
+          {unreadNotificationsCount > 0 && (
+            <div className="absolute -top-2 -right-2 min-w-[18px] h-[18px] px-1 flex items-center justify-center bg-red-500 text-white text-[9px] font-black rounded-full shadow-lg shadow-red-500/20 z-10 transition-transform animate-in zoom-in">
+              {unreadNotificationsCount > 99 ? "+99" : unreadNotificationsCount}
+            </div>
+          )}
         </div>
         
         <div className="absolute inset-0 bg-slate-900/2 opacity-0 group-hover:opacity-100 transition-opacity rounded-[18px] pointer-events-none" />
